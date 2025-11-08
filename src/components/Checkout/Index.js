@@ -1,0 +1,550 @@
+import "react-native-get-random-values";
+import React, { useEffect, useState, useCallback } from 'react';
+import { FlatList,StyleSheet, Alert, View ,Keyboard, ScrollView,TouchableWithoutFeedback} from 'react-native';
+import { useSelector } from 'react-redux';
+import { Snackbar } from 'react-native-paper';
+import RazorpayCheckout from 'react-native-razorpay';
+import axios from 'axios';
+import Toast from 'react-native-toast-message';
+import moment from 'moment';
+import VehicleDetails from './VehicleDetails';
+import OwnerDetails from './OwnerDetails';
+import InsuranceDetails from './InsuranceDetails';
+import PriceBreakout from './PriceBreakout';
+import SubmitButton from '../FormComponents/SubmitButton';
+import LocationMap from '../FormComponents/LocationMap';
+import Dropdown from '../FormComponents/Dropdown';
+import RouteMap from '../FormComponents/RouteMap'; 
+import { REACT_NATIVE_SERVER_URL, RAZORPAY_KEY_ID } from "@env";
+import { useNavigation } from '@react-navigation/native';
+ 
+const Index = (props) => {
+  const { route: vehicleRoute } = props;
+  const navigation = useNavigation();
+  const { serviceId, planPrice, planId, planDuration, vehicleId, planActive, planActiveDate } = vehicleRoute.params;
+    const [showSnackbar, setShowSnackbar] = useState(false);
+  const [message, setMessage] = useState('');
+  const [location, setLocation] = useState({ latitude: 28.6132, longitude: 77.2092, address:null});
+
+  const [vehicleData, setVehicleData] = useState({
+    number: '',
+    model: '',
+    manufacturer: '',
+    year: '',
+    registrationDate: '',
+    registrationTime: '',
+    fuelType: '',
+  });
+
+  // Membership state can be used for display if needed.
+  const [membershipDetails, setMembershipDetails] = useState({
+    plan: '',
+    status: '',
+    startDate: '',
+    expireDate: '',
+  }); 
+
+  const [ownerData, setOwnerData] = useState({
+    ownerName: '',
+    ownerContact: '',
+    ownerAlternateContact: '',
+    ownerEmail: '',
+    ownerAddress: '',
+    aadharOrPan: '',
+    parkingNo: '',
+  });
+  const [membershipStatus] = useState('active');
+
+  const [insuranceData, setInsuranceData] = useState({
+    policyNumber: '',
+    providerName: '',
+    startDate: new Date(),
+    startTime: new Date(),
+    expiryDate: new Date(),
+    expiryTime: new Date(),
+  });
+
+  const userId = useSelector((state) => state.auth.userId);
+  const [serviceData, setServiceData] = useState({ serviceType: '' });
+
+  const [routeData, setRouteData] = useState(null); 
+  const [isLoading, setIsLoading] = useState(false);
+  const services = ['On Site Repairs', 'Battery Jumpstart', 'Fuel Delivery','Towing Service'];
+  const fetchAllData = async () => {
+    try {
+      const response = await axios.get(`${REACT_NATIVE_SERVER_URL}/api/payment/vehicle/${vehicleId}`);
+      if (response.data && response.data.length > 0) {
+        // Extract other data (unchanged)
+        const vehicleDetailsData = response.data[0].vehicleDetails;
+        setVehicleData({
+          number: vehicleDetailsData.number || '',
+          model: vehicleDetailsData.model || '',
+          manufacturer: vehicleDetailsData.manufacturer || '',
+          year: vehicleDetailsData.year || '',
+          registrationDate: vehicleDetailsData.registrationDate || '',
+          registrationTime: vehicleDetailsData.registrationTime || '',
+          fuelType: vehicleDetailsData.fuelType || '',
+        });
+
+        const ownerDetailsData = response.data[0].ownerDetails;
+        setOwnerData({
+          ownerName: ownerDetailsData.ownerName || '',
+          ownerContact: ownerDetailsData.ownerContact || '',
+          ownerAlternateContact: ownerDetailsData.ownerAlternateContact || '',
+          ownerEmail: ownerDetailsData.ownerEmail || '',
+          ownerAddress: ownerDetailsData.ownerAddress || '',
+          aadharOrPan: ownerDetailsData.aadharOrPan || '',
+          parkingNo: ownerDetailsData.parkingNo || '',
+        });
+
+        const insuranceDetailsData = response.data[0].insuranceDetails;
+        setInsuranceData({
+          policyNumber: insuranceDetailsData.policyNumber || '',
+          providerName: insuranceDetailsData.providerName || '',
+          startDate: insuranceDetailsData.startDate || new Date(),
+          startTime: insuranceDetailsData.startTime || new Date(),
+          expiryDate: insuranceDetailsData.expiryDate || new Date(),
+          expiryTime: insuranceDetailsData.expiryTime || new Date(),
+        });
+
+        const serviceDetailsData = response.data[0].serviceDetails;
+        setServiceData({
+          serviceType: serviceDetailsData.serviceType || '',
+        });
+
+        const locationData = response.data[0].location;
+        if (locationData) {
+        setLocation({
+          latitude: locationData.latitude, 
+          longitude: locationData.longitude,
+          address: locationData.address,
+        });
+      }
+        // NEW: Extract route data if available
+        const routeDetails = response.data[0].route;
+        if (routeDetails) {
+          setRouteData({
+            origin: {
+              latitude: routeDetails.origin.latitude,
+              longitude: routeDetails.origin.longitude,
+              address: routeDetails.origin.address,
+            },
+            destination: {
+              latitude: routeDetails.destination.latitude,
+              longitude: routeDetails.destination.longitude,
+              address: routeDetails.destination.address,
+            },
+            distance: routeDetails.distance,
+            duration: routeDetails.duration,
+          });
+        }
+
+      } else {
+        console.log('No data found for vehicle ID:', vehicleId);
+      }
+    } catch (error) {
+      console.error('Error fetching all data:', error);
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Unable to fetch vehicle data',
+        position: 'bottom',
+        visibilityTime: 3000,
+      });
+    }
+  }; 
+  useEffect(() => {
+    if(vehicleId){
+    fetchAllData();
+   }
+  },[]);
+  // Validation helper
+  const validateField = useCallback((value, message) => {
+    if (!value || value.toString().trim() === '') {
+      Toast.show({
+        type: 'error',
+        text1: 'Validation Error',
+        text2: message,
+        position: 'bottom',
+        visibilityTime: 3000,
+      });
+      return false;
+    }
+    return true;
+  }, []);
+
+  const validateInputs = () => {
+    if (
+      !validateField(vehicleData.number, 'Vehicle number is required') ||
+      !validateField(vehicleData.model, 'Vehicle model is required') ||
+      !validateField(vehicleData.manufacturer, 'Manufacturer is required') ||
+      !validateField(vehicleData.year, 'Vehicle year is required') ||
+      !validateField(vehicleData.registrationDate, 'Registration date is required') ||
+      !validateField(vehicleData.registrationTime, 'Registration time is required') ||
+      !validateField(vehicleData.fuelType, 'Fuel type is required')
+    )
+      return false;
+
+    if (
+      !validateField(ownerData.ownerName, 'Owner name is required') ||
+      !validateField(ownerData.ownerContact, 'Owner contact is required') ||
+      !validateField(ownerData.ownerEmail, 'Owner email is required') ||
+      !validateField(ownerData.ownerAddress, 'Owner address is required') ||
+      !validateField(ownerData.aadharOrPan, 'Aadhar/PAN is required') ||
+      !validateField(ownerData.parkingNo, 'Parking number is required')
+    )
+      return false;
+
+    if (
+      !validateField(insuranceData.policyNumber, 'Policy number is required') ||
+      !validateField(insuranceData.providerName, 'Provider name is required') ||
+      !validateField(insuranceData.startDate, 'Insurance start date is required') ||
+      !validateField(insuranceData.startTime, 'Insurance start time is required') ||
+      !validateField(insuranceData.expiryDate, 'Insurance expiry date is required') ||
+      !validateField(insuranceData.expiryTime, 'Insurance expiry time is required')
+    )
+      return false;
+
+    if (serviceId === '673f16bd7a12ef01b200c941') {
+      if (!validateField(serviceData.serviceType, 'Service type is required')) return false;
+    }
+
+    if (
+      !validateField(location.latitude, 'Location latitude is required') ||
+      !validateField(location.longitude, 'Location longitude is required')
+    )
+      return false;
+
+    if (serviceId === '673f16c47a12ef01b200c943' && routeData === null) {
+      Toast.show({
+        type: 'error',
+        text1: 'Validation Error',
+        text2: 'Please select a route (From and To addresses) using RouteMap',  
+        position: 'bottom',
+        visibilityTime: 3000,
+      });
+      return false;
+    }
+    return true;
+  };
+
+  const handlePlanChange = (value) => {
+    setServiceData({ serviceType: value });
+  };
+
+  const handleVehicleChange = (field, value) => {
+    setVehicleData((prevData) => ({ ...prevData, [field]: value }));
+  };
+
+  const handleOwnerChange = (field, value) => {
+    setOwnerData((prevData) => ({ ...prevData, [field]: value }));
+  };
+  const handleInsuranceChange = (field, value) => {
+    setInsuranceData((prevData) => ({ ...prevData, [field]: value }));
+  };
+
+  const handleLocationChange = (region) => {
+    setLocation(region);
+  };
+
+  const handleRouteSelect = useCallback((data) => {
+    setRouteData(data);
+  }, []);
+
+  // Use cloned moment to avoid mutating the original date.
+  const calculateMembershipDates = (duration) => {
+    const start = moment();
+    const mStartDate = start.format('DD/MM/YYYY');
+    const mExpireDate = start.clone().add(duration, 'months').format('DD/MM/YYYY');
+    return { mStartDate, mExpireDate };
+  };
+
+  const handlePayment = async () => {
+    if (!validateInputs()) return;
+    setIsLoading(true);
+    try {
+      const { mStartDate, mExpireDate } = calculateMembershipDates(planDuration);
+      // Create a local membership object
+      const membership = {
+        plan: planId,
+        status: membershipStatus,
+        startDate: mStartDate,
+        expireDate: mExpireDate,
+      };
+
+      // Optionally update state if you need to display membership details
+      setMembershipDetails(membership);
+
+      const paymentRequestResponse = await axios.post(
+        `${REACT_NATIVE_SERVER_URL}/api/payment/save-request`,
+        {
+          vehicleData,
+          membershipDetails: membership,
+          ownerData,
+          insuranceData,
+          serviceType: serviceData.serviceType,
+          location,
+          route: routeData,
+          userId,
+          serviceId,
+          planId,
+          amount: planActive ? planPrice : planPrice,
+          currency: 'INR',
+          status: 'PENDING',
+        }
+      );
+
+      if (!paymentRequestResponse.data.success) {
+        throw new Error('Failed to save payment request');
+      }
+      console.log('paymentRequest', paymentRequestResponse.data);
+      const paymentRequestId = paymentRequestResponse.data.paymentRequestId;
+      const fetchedVehicleId = paymentRequestResponse.data.vehicleId;
+
+      let paymentData = null;
+
+      if (!planActive) {
+        try {
+          const options = {
+            description: `Payment for plan ${membership.plan}`,
+            image: `${REACT_NATIVE_SERVER_URL}/uploads/noimage.png`,
+            currency: 'INR',
+            key: RAZORPAY_KEY_ID,
+            amount: planPrice * 100,
+            name: 'EliteSewa',
+            prefill: {
+              email: ownerData.ownerEmail,
+              contact: ownerData.ownerContact,
+              name: ownerData.ownerName,
+            },
+            notes: { serviceId, planId },
+            theme: { color: '#F37254' },
+          };
+
+          paymentData = await RazorpayCheckout.open(options);
+        } catch (error) {
+          console.error('Payment Failed:', error);
+        }
+      }
+
+      const paymentId = planActive ? paymentData?.razorpay_payment_id : paymentData?.razorpay_payment_id;
+      if (!paymentId) {
+        return Alert.alert('Payment Failed', 'No payment ID received.');
+      }
+
+      const paymentResponse = await axios.post(`${REACT_NATIVE_SERVER_URL}/api/payment/save-response`, {
+        userName: ownerData.ownerName,
+        userId,
+        serviceId,
+        planId,
+        paymentId,
+        amount: planActive ? planPrice : planPrice,
+        currency: 'INR',
+        status: 'SUCCESS',
+        startDate: mStartDate,
+        expireDate: mExpireDate,
+        paymentRequestId,
+        planActiveDate: planActive ? new Date().toISOString() : new Date().toISOString(),
+        vehicleId: fetchedVehicleId,
+      });
+      navigation.navigate('PaymentSuccess', {
+        paymentId,
+        vehicleNumber: vehicleData.number,
+        planActive,
+        planPrice: planActive ? planPrice : planPrice,
+      });
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Payment Failed',
+        text2: error.message || 'An error occurred during payment',
+        position: 'bottom',
+        visibilityTime: 3000,
+      });
+      navigation.navigate('PaymentFailed', {
+        planPrice: planActive ? planPrice : planPrice,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+ 
+  const handleSubmit = () => {
+    handlePayment();
+  };
+
+  // useEffect(() => {
+  //   if (vehicleId) {
+  //     const fetchAllData = async () => {
+  //       try {
+  //         const response = await axios.get(`${REACT_NATIVE_SERVER_URL}/api/payment/vehicle/${vehicleId}`);
+  //         if (response.data && response.data.length > 0) {
+  //           // Extract other data (unchanged)
+  //           const vehicleDetailsData = response.data[0].vehicleDetails;
+  //           setVehicleData({
+  //             number: vehicleDetailsData.number || '',
+  //             model: vehicleDetailsData.model || '',
+  //             manufacturer: vehicleDetailsData.manufacturer || '',
+  //             year: vehicleDetailsData.year || '',
+  //             registrationDate: vehicleDetailsData.registrationDate || '',
+  //             fuelType: vehicleDetailsData.fuelType || '',
+  //           });
+  
+  //           const ownerDetailsData = response.data[0].ownerDetails;
+  //           setOwnerData({
+  //             ownerName: ownerDetailsData.ownerName || '',
+  //             ownerContact: ownerDetailsData.ownerContact || '',
+  //             ownerAlternateContact: ownerDetailsData.ownerAlternateContact || '',
+  //             ownerEmail: ownerDetailsData.ownerEmail || '',
+  //             ownerAddress: ownerDetailsData.ownerAddress || '',
+  //             aadharOrPan: ownerDetailsData.aadharOrPan || '',
+  //             parkingNo: ownerDetailsData.parkingNo || '',
+  //           });
+  
+  //           const insuranceDetailsData = response.data[0].insuranceDetails;
+  //           setInsuranceData({
+  //             policyNumber: insuranceDetailsData.policyNumber || '',
+  //             providerName: insuranceDetailsData.providerName || '',
+  //             startDate: insuranceDetailsData.startDate || new Date(),
+  //             expiryDate: insuranceDetailsData.expiryDate || new Date(),
+  //           });
+  
+  //           const serviceDetailsData = response.data[0].serviceDetails;
+  //           setServiceData({
+  //             serviceType: serviceDetailsData.serviceType || '',
+  //           });
+  
+  //           const locationData = response.data[0].location;
+  //           if (locationData) {
+  //           setLocation({
+  //             latitude: locationData.latitude, 
+  //             longitude: locationData.longitude,
+  //             address: locationData.address,
+  //           });
+  //         }
+  //           // NEW: Extract route data if available
+  //           const routeDetails = response.data[0].route;
+  //           if (routeDetails) {
+  //             setRouteData({
+  //               origin: {
+  //                 latitude: routeDetails.origin.latitude,
+  //                 longitude: routeDetails.origin.longitude,
+  //                 address: routeDetails.origin.address,
+  //               },
+  //               destination: {
+  //                 latitude: routeDetails.destination.latitude,
+  //                 longitude: routeDetails.destination.longitude,
+  //                 address: routeDetails.destination.address,
+  //               },
+  //               distance: routeDetails.distance,
+  //               duration: routeDetails.duration,
+  //             });
+  //           }
+  
+  //         } else {
+  //           console.log('No data found for vehicle ID:', vehicleId);
+  //         }
+  //       } catch (error) {
+  //         console.error('Error fetching all data:', error);
+  //         Toast.show({
+  //           type: 'error',
+  //           text1: 'Error',
+  //           text2: 'Unable to fetch vehicle data',
+  //           position: 'bottom',
+  //           visibilityTime: 3000,
+  //         });
+  //       }
+  //     }; 
+   
+  //     fetchAllData();
+  //   }
+  // }, [vehicleId]);
+
+  
+  const formComponents = [
+    { key: 'vehicleDetails', component: <VehicleDetails vehicleData={vehicleData} onChange={handleVehicleChange} active={planActive}/> },
+    { key: 'ownerDetails', component: <OwnerDetails ownerData={ownerData} onChange={handleOwnerChange} /> },
+    { key: 'insuranceDetails', component: <InsuranceDetails insuranceData={insuranceData} onChange={handleInsuranceChange} serviceid={serviceId} /> },
+    ...(serviceId === '673f16bd7a12ef01b200c941'
+      ? [{ key: 'locationMap', component: <LocationMap label="Choose Location" onLocationSelect={handleLocationChange} locationData={location} /> }]
+      : []),
+    ...(serviceId === '673f16c47a12ef01b200c943'
+      ? [{ key: 'routeMap', component: <RouteMap onRouteSelect={handleRouteSelect} routeData={routeData}  /> }]
+      : []),
+    ...(serviceId === '673f16bd7a12ef01b200c941'
+      ? [{ key: 'dropdown', component: <Dropdown label="Select Service Type" selectedValue={serviceData.serviceType} onValueChange={handlePlanChange} options={services}  /> }]
+      : []),
+    { key: 'submitButton', component: <SubmitButton onSubmit={handleSubmit} /> },
+    ...(serviceId === '673f16c47a12ef01b200c943'
+      ? [{ key: 'priceBreakout', component: <PriceBreakout serviceid={serviceId} locationData={routeData}  planPrice={planPrice} /> }]
+      : []),
+  ];
+
+  return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.container}>
+          <View style={styles.updateform}>
+            <FlatList
+              data={formComponents}
+              renderItem={({ item }) => <View>{item.component}</View>}
+              keyExtractor={(item) => item.key}
+            />
+          </View>
+
+          {/* Snackbar to show messages */}
+          <Snackbar
+            visible={showSnackbar}
+            onDismiss={() => setShowSnackbar(false)}
+            duration={Snackbar.DURATION_SHORT}
+          >
+            {message}
+          </Snackbar>
+      </View>
+    </TouchableWithoutFeedback >
+  );
+};
+const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: 'center', padding: 10 },
+  updateform: { backgroundColor: '#fff', paddingHorizontal: 15, paddingVertical: 40, borderRadius: 10 },
+  input: {
+    backgroundColor: "#fff",
+    color: 'inherit',
+    borderWidth: 1,
+    borderColor: '#d1d5db',
+    borderRadius: 4,
+    padding: 10,
+    height: 45,
+  },
+  label: {
+    color: 'gray',
+    fontSize: 14,
+    fontWeight: '800',
+    marginBottom: 5,
+  },
+  button: {
+    marginTop: 20,
+    borderRadius: 4,
+  },
+  buttonContent: {
+    backgroundColor: '#09b5e1',
+    borderRadius: 1,
+  },
+  buttonLabel: { color: '#fff' },
+  errorText: {
+    color: 'red',
+    fontSize: 12,
+  },
+  isFocused: {
+    borderColor: '#09b5e1',
+    borderWidth: 2,
+    elevation: 5,
+    shadowColor: '#3b82f6',
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+  },
+  divider: {
+    marginBottom: 15,
+  },
+});
+export default Index;
