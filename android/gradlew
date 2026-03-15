@@ -1,5 +1,10 @@
 #!/bin/sh
 
+NODE_BINARY=${NODE_BINARY:-/Users/rahulsharma/.nvm/versions/node/v20.20.1/bin/node}
+export NODE_BINARY
+PATH="/Users/rahulsharma/.nvm/versions/node/v20.20.1/bin:/usr/local/bin:$PATH"
+export PATH
+
 #
 # Copyright © 2015-2021 the original authors.
 #

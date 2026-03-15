@@ -25,7 +25,8 @@ react {
 
     /* Bundling */
     //   A list containing the node command and its flags. Default is just 'node'.
-    // nodeExecutableAndArgs = ["node"]
+    def nodeBinary = project.findProperty('NODE_BINARY') ?: 'node'
+    nodeExecutableAndArgs = [nodeBinary]
     //
     //   The command to run when bundling. By default is 'bundle'
     // bundleCommand = "ram-bundle"
@@ -79,11 +80,11 @@ android {
 
     namespace "com.elitesewa"
     defaultConfig {
-        applicationId "com.elitesewa"
+        applicationId "in.elitesewa.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 2
-        versionName "1.0.1"
+        versionCode 1
+        versionName "1.0.0"
     }
     signingConfigs {
         debug {
@@ -93,10 +94,10 @@ android {
             keyPassword 'android'
         }
         release {
-            storeFile file('elitesewa-release-key.keystore')
-            storePassword 'elitesewa123'
-            keyAlias 'elitesewa-key-alias'
-            keyPassword 'elitesewa123'
+            storeFile file('elitesewa-release-key-new.keystore')
+            storePassword 'EliteSewa@2026'
+            keyAlias 'elitesewa-key'
+            keyPassword 'EliteSewa@2026'
         }
     }
     buildTypes {

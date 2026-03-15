@@ -19,3 +19,27 @@ buildscript {
 }
 
 apply plugin: "com.facebook.react.rootproject"
+
+def nodeBinary = (findProperty('NODE_BINARY') ?: 'node').toString()
+
+ext {
+    react = [
+        nodeExecutableAndArgs: [nodeBinary],
+    ]
+}
+
+gradle.beforeProject { Project p ->
+    p.plugins.whenPluginAdded { plugin ->
+        def pluginClassName = plugin.getClass().getName()
+        def isAndroidLibrary = pluginClassName == 'com.android.build.gradle.LibraryPlugin'
+        def isAndroidApp = pluginClassName == 'com.android.build.gradle.AppPlugin'
+
+        if (isAndroidLibrary || isAndroidApp) {
+            if (p.hasProperty('android')) {
+                p.android {
+                    compileSdk rootProject.ext.compileSdkVersion
+                }
+            }
+        }
+    }
+}
