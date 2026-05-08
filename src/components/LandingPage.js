@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet, Image, Linking, TouchableOpacity, Alert } from 'react-native';
 import { Appbar, Button, Text, Card } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { APP_CONFIG } from '../constants/appConfig';
 
 const LandingPage = ({ onRoleSelect }) => {
   const handleRoleSelection = async (role) => {
@@ -39,9 +40,26 @@ const LandingPage = ({ onRoleSelect }) => {
           </Button>
         </Card.Actions>
       </Card>
-      <Text variant="headlineLarge" style={styles.slug}>
-      By continuing, you agree to our Terms of Service
-      </Text>
+      <View style={styles.termsContainer}>
+        <Text style={styles.slug}>
+          By continuing, you agree to our{' '}
+        </Text>
+        <TouchableOpacity onPress={() => {
+          Linking.openURL(APP_CONFIG.TERMS_OF_SERVICE_URL).catch(err => {
+            Alert.alert('Error', 'Unable to open Terms of Service. Please visit: ' + APP_CONFIG.TERMS_OF_SERVICE_URL);
+          });
+        }}>
+          <Text style={styles.termsLink}>Terms of Service</Text>
+        </TouchableOpacity>
+        <Text style={styles.slug}> and </Text>
+        <TouchableOpacity onPress={() => {
+          Linking.openURL(APP_CONFIG.PRIVACY_POLICY_URL).catch(err => {
+            Alert.alert('Error', 'Unable to open Privacy Policy. Please visit: ' + APP_CONFIG.PRIVACY_POLICY_URL);
+          });
+        }}>
+          <Text style={styles.termsLink}>Privacy Policy</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -87,11 +105,24 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     backgroundColor:'green',
   },
+  termsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 16,
+    paddingHorizontal: 20,
+  },
   slug:{
     fontSize: 12,
-    marginTop: 6,
     color:'gray',
     textAlign: 'center',
+  },
+  termsLink: {
+    fontSize: 12,
+    color: '#09b5e1',
+    textDecorationLine: 'underline',
+    fontWeight: '600',
   }
 });
 

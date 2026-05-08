@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   Image,
   RefreshControl,
+  Linking,
+  Alert,
 } from 'react-native'; 
 import { useSelector, useDispatch } from 'react-redux';
 import { Svg, Path } from 'react-native-svg';
@@ -17,6 +19,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import defaultImage from '../assets/male.png';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { APP_CONFIG } from '../constants/appConfig';
 
 function ProfileScreen() {
   const dispatch = useDispatch();
@@ -384,33 +387,130 @@ function ProfileScreen() {
           </Svg>
         </TouchableOpacity>
 
-        {/* <TouchableOpacity
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            backgroundColor: 'white',
-            borderColor: '#FEE2E2',
-            borderWidth: 1,
-            paddingVertical: 12,
-            paddingHorizontal: 24,
-            borderRadius: 12,
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.1,
-            shadowRadius: 6,
+      </View>
+    </View>
+
+    {/* Legal & Support Section */}
+    <View style={styles.containerBox}>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>Legal & Support</Text>
+      </View>
+      <View style={styles.detailsContainer}>
+        <TouchableOpacity
+          style={styles.legalRow}
+          onPress={() => {
+            Linking.openURL(APP_CONFIG.PRIVACY_POLICY_URL).catch(err => {
+              Alert.alert('Error', 'Unable to open Privacy Policy. Please visit: ' + APP_CONFIG.PRIVACY_POLICY_URL);
+            });
           }}
-          onPress={() =>{handleLogout()}}
         >
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} fill="none" viewBox="0 0 24 24" stroke="red">
-              <Path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          <View style={styles.icon}>
+            <Svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" fill="none" viewBox="0 0 24 24" stroke="#09b5e1">
+              <Path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </Svg>
-            <Text style={{ color: '#E53E3E', marginLeft: 8 }}>Logout</Text>
           </View>
-          <Svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} fill="red" viewBox="0 0 20 20">
+          <View style={styles.detailText}>
+            <Text style={styles.label}>Privacy Policy</Text>
+          </View>
+          <Svg xmlns="http://www.w3.org/2000/svg" width={16} height={16} fill="#09b5e1" viewBox="0 0 20 20">
             <Path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
           </Svg>
-        </TouchableOpacity> */}
+        </TouchableOpacity>
+        <View style={styles.divider} />
+        <TouchableOpacity
+          style={styles.legalRow}
+          onPress={() => {
+            Linking.openURL(APP_CONFIG.TERMS_OF_SERVICE_URL).catch(err => {
+              Alert.alert('Error', 'Unable to open Terms of Service. Please visit: ' + APP_CONFIG.TERMS_OF_SERVICE_URL);
+            });
+          }}
+        >
+          <View style={styles.icon}>
+            <Svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" fill="none" viewBox="0 0 24 24" stroke="#09b5e1">
+              <Path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </Svg>
+          </View>
+          <View style={styles.detailText}>
+            <Text style={styles.label}>Terms of Service</Text>
+          </View>
+          <Svg xmlns="http://www.w3.org/2000/svg" width={16} height={16} fill="#09b5e1" viewBox="0 0 20 20">
+            <Path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+          </Svg>
+        </TouchableOpacity>
+        <View style={styles.divider} />
+        <TouchableOpacity
+          style={styles.legalRow}
+          onPress={() => {
+            Linking.openURL(APP_CONFIG.REFUND_POLICY_URL).catch(err => {
+              Alert.alert('Error', 'Unable to open Refund Policy. Please visit: ' + APP_CONFIG.REFUND_POLICY_URL);
+            });
+          }}
+        >
+          <View style={styles.icon}>
+            <Svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" fill="none" viewBox="0 0 24 24" stroke="#09b5e1">
+              <Path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+            </Svg>
+          </View>
+          <View style={styles.detailText}>
+            <Text style={styles.label}>Refund Policy</Text>
+          </View>
+          <Svg xmlns="http://www.w3.org/2000/svg" width={16} height={16} fill="#09b5e1" viewBox="0 0 20 20">
+            <Path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+          </Svg>
+        </TouchableOpacity>
+        <View style={styles.divider} />
+        <TouchableOpacity
+          style={styles.legalRow}
+          onPress={() => {
+            Alert.alert(
+              'Delete Account',
+              'Are you sure you want to delete your account? This action cannot be undone. All your data will be permanently deleted.',
+              [
+                { text: 'Cancel', style: 'cancel' },
+                {
+                  text: 'Delete',
+                  style: 'destructive',
+                  onPress: async () => {
+                    try {
+                      // Call API to delete account
+                      const userDataString = await AsyncStorage.getItem('userData');
+                      if (userDataString) {
+                        const parsedUserData = JSON.parse(userDataString);
+                        const { role, user } = parsedUserData;
+                        await axios.delete(`${REACT_NATIVE_SERVER_URL}/api/${role}/delete-account`, {
+                          params: { mobile: user },
+                        });
+                        // Clear local storage
+                        await AsyncStorage.clear();
+                        showSnackbarMessage('Account deleted successfully');
+                        // Navigate to landing page
+                        navigation.reset({
+                          index: 0,
+                          routes: [{ name: 'LandingPage' }],
+                        });
+                      }
+                    } catch (error) {
+                      showSnackbarMessage('Error deleting account: ' + error.message);
+                    }
+                  },
+                },
+              ]
+            );
+          }}
+        >
+          <View style={styles.icon}>
+            <Svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" fill="none" viewBox="0 0 24 24" stroke="#E53E3E">
+              <Path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </Svg>
+          </View>
+          <View style={styles.detailText}>
+            <Text style={[styles.label, { color: '#E53E3E' }]}>Delete Account</Text>
+            <Text style={[styles.value, { fontSize: 12, color: '#718096' }]}>Permanently delete your account and data</Text>
+          </View>
+          <Svg xmlns="http://www.w3.org/2000/svg" width={16} height={16} fill="#E53E3E" viewBox="0 0 20 20">
+            <Path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+          </Svg>
+        </TouchableOpacity>
       </View>
     </View>
      </>
@@ -536,7 +636,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#E2E8F0',
     marginHorizontal: 16,
   },
-
+  legalRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    justifyContent: 'space-between',
+  },
 });
 
 export default ProfileScreen;
