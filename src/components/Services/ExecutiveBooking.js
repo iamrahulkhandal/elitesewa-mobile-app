@@ -82,6 +82,14 @@ const ExecutiveBooking = ({ navigation }) => {
           <Text style={styles.buttonText}>Service Complete</Text>
         </TouchableOpacity>
       )}
+
+      {/* Executives upload date-wise daily wash photos for the booking. */}
+      <TouchableOpacity
+        style={[styles.button, styles.dailyButton]}
+        onPress={() => navigation.navigate('DailyWashUpload', { item_id: item._id })}
+      >
+        <Text style={styles.buttonText}>Daily Wash Update</Text>
+      </TouchableOpacity>
     </View>
   );
 
@@ -138,6 +146,9 @@ const styles = StyleSheet.create({
   },
   completeButton: {
     backgroundColor: '#2ecc71',
+  },
+  dailyButton: {
+    backgroundColor: '#09b5e1',
   },
   buttonText: {
     color: '#fff',

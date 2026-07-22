@@ -8,7 +8,8 @@ import ProfileScreen from '../screens/ProfileScreen';
 import ExecutiveProfileScreen from '../screens/ExecutiveProfileScreen';
 import Booking from '../components/Services/Booking';
 import ExecutiveBooking from '../components/Services/ExecutiveBooking';
-import { useHeaderTitle } from './HeaderTitleContext'; 
+import PaymentHistoryScreen from '../screens/PaymentHistoryScreen';
+import { useHeaderTitle } from './HeaderTitleContext';
 
 const Tab = createBottomTabNavigator();
 
@@ -51,6 +52,8 @@ const BottomTabNavigator = ({ route }) => {
                         iconName = focused ? 'briefcase' : 'briefcase-outline';
                     } else if (route.name === 'ExecutiveProfile') {
                         iconName = focused ? 'person-circle' : 'person-circle-outline';
+                    } else if (route.name === 'Payments' || route.name === 'ExecutivePayments') {
+                        iconName = focused ? 'receipt' : 'receipt-outline';
                     }
                     return <Icon name={iconName} size={size} color={color} />;
                 },
@@ -79,15 +82,21 @@ const BottomTabNavigator = ({ route }) => {
                         component={CustomerHomeScreen} 
                         initialParams={{ activeTab: 'Home' }}  
                     />
-                    <Tab.Screen 
-                        name="Booking" 
-                        component={Booking} 
-                        initialParams={{ activeTab: 'Booking' }} 
+                    <Tab.Screen
+                        name="Booking"
+                        component={Booking}
+                        initialParams={{ activeTab: 'Booking' }}
                     />
-                    <Tab.Screen 
-                        name="Profile" 
-                        component={ProfileScreen} 
-                        initialParams={{ activeTab: 'Profile' }} 
+                    <Tab.Screen
+                        name="Payments"
+                        component={PaymentHistoryScreen}
+                        initialParams={{ activeTab: 'Payments' }}
+                        options={{ title: 'Payment History' }}
+                    />
+                    <Tab.Screen
+                        name="Profile"
+                        component={ProfileScreen}
+                        initialParams={{ activeTab: 'Profile' }}
                     />
                 </>
             )}
@@ -99,15 +108,21 @@ const BottomTabNavigator = ({ route }) => {
                         component={ExecutiveHomeScreen} 
                         initialParams={{ activeTab: 'EHome' }} 
                     />
-                    <Tab.Screen 
-                        name="ExecutiveBooking" 
-                        component={ExecutiveBooking} 
-                        initialParams={{ activeTab: 'ExecutiveBooking' }} 
+                    <Tab.Screen
+                        name="ExecutiveBooking"
+                        component={ExecutiveBooking}
+                        initialParams={{ activeTab: 'ExecutiveBooking' }}
                     />
-                    <Tab.Screen 
-                        name="ExecutiveProfile" 
-                        component={ExecutiveProfileScreen} 
-                        initialParams={{ activeTab: 'ExecutiveProfile' }} 
+                    <Tab.Screen
+                        name="ExecutivePayments"
+                        component={PaymentHistoryScreen}
+                        initialParams={{ activeTab: 'ExecutivePayments' }}
+                        options={{ title: 'Payment History' }}
+                    />
+                    <Tab.Screen
+                        name="ExecutiveProfile"
+                        component={ExecutiveProfileScreen}
+                        initialParams={{ activeTab: 'ExecutiveProfile' }}
                     />
                 </>
             )}

@@ -6,6 +6,7 @@ import { useCallback } from 'react';
 import Swiper from 'react-native-swiper';
 import { REACT_NATIVE_SERVER_URL } from '@env';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Import FontAwesome icons
+import DailyWashUpdates from './DailyWashUpdates';
 const { width: screenWidth } = Dimensions.get('window');
 const BookingDetails = ({ route }) => {
   const { item_id } = route.params;
@@ -145,6 +146,11 @@ const fetchBookingDetails = async () => {
         <DetailsRow label="Fuel Type" value={vehicleId.vehicleDetails?.fuelType || 'N/A'} />
         <DetailsRow label="registrationDate" value={vehicleId.vehicleDetails?.registrationDate ? new Date(vehicleId.vehicleDetails.registrationDate).toLocaleDateString('en-GB')  // Format: DD/MM/YYYY
 : 'N/A'} />
+      </Card>
+
+      {/* Daily Wash Updates (date-wise photos + per-day customer comments) */}
+      <Card title="Daily Wash Updates">
+        <DailyWashUpdates paymentResponseId={item_id} />
       </Card>
 
       {/* Service Details */}

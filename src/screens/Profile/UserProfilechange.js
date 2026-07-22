@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, TextInput, Button, Image ,StyleSheet,TouchableOpacity,SafeAreaView,Text, Alert,ScrollView} from 'react-native';
 import { createUser, updateUser } from '../apis/UserService';
 import FeatherIcon from 'react-native-vector-icons/Feather';
-import { launchImageLibrary } from 'react-native-image-picker';
+import { launchCamera } from 'react-native-image-picker';
+import { ensureCameraPermission } from '../../utils/cameraPermission';
 import BackTitleHeader from '../../src/components/Shared/BackTitleHeader';
 
 export default function UserProfilechange({ route, navigation }) {
@@ -47,8 +48,12 @@ const validateForm = () => {
     }
   };
 
-  const handleImagePick = () => {
-    launchImageLibrary({ noData: true }, (response) => {
+  const handleImagePick = async () => {
+    const hasPermission = await ensureCameraPermission();
+    if (!hasPermission) return;
+
+    // Camera only — capture a live photo instead of picking from the gallery.
+    launchCamera({ mediaType: 'photo', noData: true, saveToPhotos: false }, (response) => {
       if (response.assets) {
 
         setImage(response.assets[0]); 

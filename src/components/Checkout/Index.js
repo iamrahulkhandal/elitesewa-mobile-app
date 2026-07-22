@@ -301,58 +301,95 @@ const Index = (props) => {
       const paymentRequestId = paymentRequestResponse.data.paymentRequestId;
       const fetchedVehicleId = paymentRequestResponse.data.vehicleId;
 
-      let paymentData = null;
-
       if (!planActive) {
-        try {
-          const options = {
-            description: `Payment for plan ${membership.plan}`,
-            image: `${REACT_NATIVE_SERVER_URL}/uploads/noimage.png`,
-            currency: 'INR',
-            key: RAZORPAY_KEY_ID,
-            amount: planPrice * 100,
-            name: 'EliteSewa',
-            prefill: {
-              email: ownerData.ownerEmail,
-              contact: ownerData.ownerContact,
-              name: ownerData.ownerName,
-            },
-            notes: { serviceId, planId },
-            theme: { color: '#F37254' },
-          };
+        // --- New paid booking: create a server-side order, pay, then verify. ---
+        // 1) Create the Razorpay order on the server so the payment can be
+        //    cryptographically verified afterwards (never trust the client).
+        const orderResponse = await axios.post(`${REACT_NATIVE_SERVER_URL}/api/payment/create-order`, {
+          amount: planPrice,
+          currency: 'INR',
+          notes: { serviceId, planId, userId },
+        });
 
-          paymentData = await RazorpayCheckout.open(options);
-        } catch (error) {
-          console.error('Payment Failed:', error);
+        if (!orderResponse.data?.success || !orderResponse.data?.orderId) {
+          throw new Error(orderResponse.data?.message || 'Unable to create payment order.');
         }
-      }
 
-      const paymentId = planActive ? paymentData?.razorpay_payment_id : paymentData?.razorpay_payment_id;
-      if (!paymentId) {
-        return Alert.alert('Payment Failed', 'No payment ID received.');
-      }
+        const { orderId, keyId } = orderResponse.data;
 
-      const paymentResponse = await axios.post(`${REACT_NATIVE_SERVER_URL}/api/payment/save-response`, {
-        userName: ownerData.ownerName,
-        userId,
-        serviceId,
-        planId,
-        paymentId,
-        amount: planActive ? planPrice : planPrice,
-        currency: 'INR',
-        status: 'SUCCESS',
-        startDate: mStartDate,
-        expireDate: mExpireDate,
-        paymentRequestId,
-        planActiveDate: planActive ? new Date().toISOString() : new Date().toISOString(),
-        vehicleId: fetchedVehicleId,
-      });
-      navigation.navigate('PaymentSuccess', {
-        paymentId,
-        vehicleNumber: vehicleData.number,
-        planActive,
-        planPrice: planActive ? planPrice : planPrice,
-      });
+        // 2) Open Razorpay Checkout bound to that order.
+        const options = {
+          description: `Payment for plan ${membership.plan}`,
+          image: `${REACT_NATIVE_SERVER_URL}/uploads/noimage.png`,
+          currency: 'INR',
+          key: keyId || RAZORPAY_KEY_ID,
+          order_id: orderId,
+          amount: planPrice * 100,
+          name: 'EliteSewa',
+          prefill: {
+            email: ownerData.ownerEmail,
+            contact: ownerData.ownerContact,
+            name: ownerData.ownerName,
+          },
+          notes: { serviceId, planId },
+          theme: { color: '#F37254' },
+        };
+
+        // RazorpayCheckout.open rejects on user cancel / failure — let it bubble
+        // to the outer catch so we never record an unpaid booking as success.
+        const paymentData = await RazorpayCheckout.open(options);
+
+        // 3) Verify the signature server-side. The PaymentResponse is only
+        //    persisted (status SUCCESS) when verification passes.
+        const verifyResponse = await axios.post(`${REACT_NATIVE_SERVER_URL}/api/payment/verify`, {
+          razorpay_order_id: paymentData.razorpay_order_id || orderId,
+          razorpay_payment_id: paymentData.razorpay_payment_id,
+          razorpay_signature: paymentData.razorpay_signature,
+          userId,
+          serviceId,
+          planId,
+          amount: planPrice,
+          currency: 'INR',
+          paymentRequestId,
+          planActiveDate: new Date().toISOString(),
+          vehicleId: fetchedVehicleId,
+        });
+
+        if (!verifyResponse.data?.success) {
+          throw new Error(verifyResponse.data?.message || 'Payment verification failed.');
+        }
+
+        navigation.navigate('PaymentSuccess', {
+          paymentId: verifyResponse.data.paymentResponse?.paymentId,
+          vehicleNumber: vehicleData.number,
+          planActive,
+          planPrice,
+        });
+      } else {
+        // --- Re-service request on an already-paid active plan: no new charge. ---
+        const paymentResponse = await axios.post(`${REACT_NATIVE_SERVER_URL}/api/payment/save-response`, {
+          userName: ownerData.ownerName,
+          userId,
+          serviceId,
+          planId,
+          paymentId: `PLAN-${paymentRequestId}`,
+          amount: planPrice,
+          currency: 'INR',
+          status: 'SUCCESS',
+          startDate: mStartDate,
+          expireDate: mExpireDate,
+          paymentRequestId,
+          planActiveDate: new Date().toISOString(),
+          vehicleId: fetchedVehicleId,
+        });
+
+        navigation.navigate('PaymentSuccess', {
+          paymentId: paymentResponse.data?.paymentResponse?.paymentId,
+          vehicleNumber: vehicleData.number,
+          planActive,
+          planPrice,
+        });
+      }
     } catch (error) {
       Toast.show({
         type: 'error',

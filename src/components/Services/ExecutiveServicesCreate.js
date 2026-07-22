@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import * as ImagePicker from 'react-native-image-picker';
+import { ensureCameraPermission } from '../../utils/cameraPermission';
 import { REACT_NATIVE_SERVER_URL } from '@env';
 
 // Form Reducer for Managing State More Efficiently
@@ -54,9 +55,14 @@ const ExecutiveServicesCreate = ({route , navigation}) =>{
       return;
     }
 
-    const result = await ImagePicker.launchImageLibrary({
+    const hasPermission = await ensureCameraPermission();
+    if (!hasPermission) return;
+
+    // Camera only — users must capture a live photo, not pick from the gallery.
+    const result = await ImagePicker.launchCamera({
       mediaType: 'photo',
       quality: 1,
+      saveToPhotos: false,
     });
 
     if (result.didCancel || !result.assets || result.assets.length === 0) {

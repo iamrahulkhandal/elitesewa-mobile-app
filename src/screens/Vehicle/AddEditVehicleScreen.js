@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Button, TextInput, FlatList, Image,StyleSheet, TouchableOpacity, Alert, Text,ScrollView} from 'react-native';
-import { launchImageLibrary } from 'react-native-image-picker';
+import { launchCamera } from 'react-native-image-picker';
+import { ensureCameraPermission } from '../../utils/cameraPermission';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {API_URL} from '@env';
@@ -58,15 +59,18 @@ const AddEditVehicleScreen = ({ route, navigation }) => {
   }, [vehicle]);
 
   // Handle image selection
-  const selectImages = () => {
+  const selectImages = async () => {
+    const hasPermission = await ensureCameraPermission();
+    if (!hasPermission) return;
+
+    // Camera only — capture a live photo instead of picking from the gallery.
     const options = {
       mediaType: 'photo',
       quality: 1,
-      multiple: true,
-      selectionLimit: 3,
+      saveToPhotos: false,
     };
 
-    launchImageLibrary(options, (response) => {
+    launchCamera(options, (response) => {
       if (response.assets) {
         const newImages = response.assets.map((image) => ({
           uri: image.uri,

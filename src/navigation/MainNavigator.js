@@ -7,7 +7,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { logoutAndClear } from '../store/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { HeaderTitleProvider } from './HeaderTitleContext';
-//import PaymentScreen from '../screens/PaymentScreen';
 import RoleBasedLogin from '../components/RoleBasedLogin';
 import ExecutiveProfileUpdate from '../components/ExecutiveProfileUpdate';
 import CustomerProfileUpdate from '../components/CustomerProfileUpdate';
@@ -32,6 +31,7 @@ import ServicesView from '../components/Services/ServicesView';
 import TestimonialCreate from '../components/Testimonials/TestimonialCreate';
 import TestimonialListing from '../components/Testimonials/TestimonialListing';
 import BookingDetails from '../components/Services/BookingDetails';
+import DailyWashUpload from '../screens/Services/DailyWashUpload';
 import ProfileScreen from '../screens/ProfileScreen';
 import Checkout from '../components/Checkout/Index';
 import PaymentSuccessScreen from '../screens/PaymentSuccessScreen';
@@ -195,23 +195,6 @@ const MainNavigator = ({ role, startRouteName }) => {
             },
           }}
         />
-        { /* }
-        <Stack.Screen
-          name="PaymentScreen"
-          component={PaymentScreen}
-          options={{
-            title: 'Payment',
-            headerShown: true,
-            headerTitleAlign: 'center',
-            headerStyle: {
-              backgroundColor: '#f8f9fa',
-            },
-            headerTitleStyle: {
-              fontWeight: 'bold',
-            },
-          }}
-        />
-        { */ }
         <Stack.Screen
           name="Checkout"
           component={Checkout}
@@ -485,6 +468,21 @@ const MainNavigator = ({ role, startRouteName }) => {
           options={{
             title: 'Booking Details',
 
+            headerTitleAlign: 'center',
+            headerStyle: {
+              backgroundColor: '#f8f9fa',
+            },
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+          }}
+        />
+
+        <Stack.Screen
+          name="DailyWashUpload"
+          component={DailyWashUpload}
+          options={{
+            title: 'Daily Wash Update',
             headerTitleAlign: 'center',
             headerStyle: {
               backgroundColor: '#f8f9fa',
