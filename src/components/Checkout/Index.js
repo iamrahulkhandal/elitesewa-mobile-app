@@ -9,7 +9,7 @@ import Toast from 'react-native-toast-message';
 import moment from 'moment';
 import VehicleDetails from './VehicleDetails';
 import OwnerDetails from './OwnerDetails';
-import InsuranceDetails from './InsuranceDetails';
+import Schedule from './Schedule';
 import PriceBreakout from './PriceBreakout';
 import SubmitButton from '../FormComponents/SubmitButton';
 import LocationMap from '../FormComponents/LocationMap';
@@ -65,6 +65,7 @@ const Index = (props) => {
   });
 
   const userId = useSelector((state) => state.auth.userId);
+  const userMobile = useSelector((state) => state.auth.user); // stored as the customer's mobile
   const [serviceData, setServiceData] = useState({ serviceType: '' });
 
   const [routeData, setRouteData] = useState(null); 
@@ -152,12 +153,56 @@ const Index = (props) => {
         visibilityTime: 3000,
       });
     }
-  }; 
+  };
+
+  // Prefill Owner + Vehicle Number from the customer's saved profile so they
+  // don't re-type details they already gave at account creation. Used for new
+  // bookings (no prior vehicle record to pull from).
+  const prefillFromProfile = async () => {
+    if (!userMobile) return;
+    try {
+      const response = await axios.get(`${REACT_NATIVE_SERVER_URL}/api/customer/profile`, {
+        params: { mobile: userMobile },
+      });
+      const customer = response.data;
+      if (!customer) return;
+
+      const addressParts = [
+        customer.streetAddress,
+        customer.apartment,
+        customer.locality,
+        customer.city,
+        customer.district,
+        customer.state,
+        customer.pincode,
+      ].filter(Boolean);
+
+      setOwnerData((prev) => ({
+        ...prev,
+        ownerName: prev.ownerName || customer.name || '',
+        ownerContact: prev.ownerContact || customer.mobile || '',
+        ownerEmail: prev.ownerEmail || customer.email || '',
+        ownerAddress: prev.ownerAddress || addressParts.join(', '),
+      }));
+
+      if (customer.vehicleNumber) {
+        setVehicleData((prev) => ({ ...prev, number: prev.number || customer.vehicleNumber }));
+      }
+    } catch (error) {
+      // Prefill is a convenience only — ignore failures silently.
+      console.log('Profile prefill skipped:', error.message);
+    }
+  };
+
   useEffect(() => {
-    if(vehicleId){
-    fetchAllData();
-   }
-  },[]);
+    if (vehicleId) {
+      // Existing vehicle: prefill from its saved record.
+      fetchAllData();
+    } else {
+      // New booking: prefill owner + vehicle number from the customer profile.
+      prefillFromProfile();
+    }
+  }, []);
   // Validation helper
   const validateField = useCallback((value, message) => {
     if (!value || value.toString().trim() === '') {
@@ -174,34 +219,19 @@ const Index = (props) => {
   }, []);
 
   const validateInputs = () => {
+    // Vehicle: only number and model are required for a car wash booking.
     if (
       !validateField(vehicleData.number, 'Vehicle number is required') ||
-      !validateField(vehicleData.model, 'Vehicle model is required') ||
-      !validateField(vehicleData.manufacturer, 'Manufacturer is required') ||
-      !validateField(vehicleData.year, 'Vehicle year is required') ||
-      !validateField(vehicleData.registrationDate, 'Registration date is required') ||
-      !validateField(vehicleData.registrationTime, 'Registration time is required') ||
-      !validateField(vehicleData.fuelType, 'Fuel type is required')
+      !validateField(vehicleData.model, 'Vehicle model is required')
     )
       return false;
 
+    // Owner: Aadhaar/PAN and parking number are optional now.
     if (
       !validateField(ownerData.ownerName, 'Owner name is required') ||
       !validateField(ownerData.ownerContact, 'Owner contact is required') ||
       !validateField(ownerData.ownerEmail, 'Owner email is required') ||
-      !validateField(ownerData.ownerAddress, 'Owner address is required') ||
-      !validateField(ownerData.aadharOrPan, 'Aadhar/PAN is required') ||
-      !validateField(ownerData.parkingNo, 'Parking number is required')
-    )
-      return false;
-
-    if (
-      !validateField(insuranceData.policyNumber, 'Policy number is required') ||
-      !validateField(insuranceData.providerName, 'Provider name is required') ||
-      !validateField(insuranceData.startDate, 'Insurance start date is required') ||
-      !validateField(insuranceData.startTime, 'Insurance start time is required') ||
-      !validateField(insuranceData.expiryDate, 'Insurance expiry date is required') ||
-      !validateField(insuranceData.expiryTime, 'Insurance expiry time is required')
+      !validateField(ownerData.ownerAddress, 'Owner address is required')
     )
       return false;
 
@@ -501,7 +531,7 @@ const Index = (props) => {
   const formComponents = [
     { key: 'vehicleDetails', component: <VehicleDetails vehicleData={vehicleData} onChange={handleVehicleChange} active={planActive}/> },
     { key: 'ownerDetails', component: <OwnerDetails ownerData={ownerData} onChange={handleOwnerChange} /> },
-    { key: 'insuranceDetails', component: <InsuranceDetails insuranceData={insuranceData} onChange={handleInsuranceChange} serviceid={serviceId} /> },
+    { key: 'schedule', component: <Schedule insuranceData={insuranceData} onChange={handleInsuranceChange} serviceid={serviceId} /> },
     ...(serviceId === '673f16bd7a12ef01b200c941'
       ? [{ key: 'locationMap', component: <LocationMap label="Choose Location" onLocationSelect={handleLocationChange} locationData={location} /> }]
       : []),

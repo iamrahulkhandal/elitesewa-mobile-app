@@ -40,13 +40,7 @@ const OwnerDetails = ({ ownerData, onChange }) => {
         multiline
       />
       <InputField
-        label="Aadhar/PAN Number"
-        value={ownerData.aadharOrPan}
-        onChange={(text) => onChange('aadharOrPan', text)}
-        placeholder="Enter Aadhar or PAN"
-      />
-      <InputField
-        label="Parking Number"
+        label="Parking Number (optional)"
         value={ownerData.parkingNo}
         onChange={(text) => onChange('parkingNo', text)}
         placeholder="Enter parking number"
