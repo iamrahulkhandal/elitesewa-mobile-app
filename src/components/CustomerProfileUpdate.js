@@ -260,6 +260,23 @@ const CustomerProfileUpdate = ({ navigation }) => {
               {errors.locality && <Text style={styles.errorText}>{errors.locality}</Text>}
             </View>
 
+            {/* Pincode */}
+            <View style={styles.divider}>
+              <Text style={styles.label}>Pincode</Text>
+              <TextInput
+                label="Pincode"
+                onFocus={() => setIsFocused('pincode')}
+                onBlur={() => setIsFocused(null)}
+                value={profileData.pincode}
+                onChangeText={handlePincodeChange}
+                error={!!errors.pincode}
+                style={[styles.input, isFocused === 'pincode' && styles.isFocused]}
+                placeholder="Enter your pincode"
+                keyboardType="number-pad"
+              />
+              {errors.pincode && <Text style={styles.errorText}>{errors.pincode}</Text>}
+            </View>
+            
             {/* City */}
             <View style={styles.divider}>
               <Text style={styles.label}>City</Text>
@@ -272,7 +289,6 @@ const CustomerProfileUpdate = ({ navigation }) => {
                 error={!!errors.city}
                 style={[styles.input, isFocused === 'city' && styles.isFocused]}
                 placeholder="Enter your city"
-				editable={false}
               />
               {errors.city && <Text style={styles.errorText}>{errors.city}</Text>}
             </View>
@@ -325,23 +341,6 @@ const CustomerProfileUpdate = ({ navigation }) => {
                 placeholder="Enter your country"
                 editable={false}
               />
-            </View>
-
-            {/* Pincode */}
-            <View style={styles.divider}>
-              <Text style={styles.label}>Pincode</Text>
-              <TextInput
-                label="Pincode"
-                onFocus={() => setIsFocused('pincode')}
-                onBlur={() => setIsFocused(null)}
-                value={profileData.pincode}
-                onChangeText={handlePincodeChange}
-                error={!!errors.pincode}
-                style={[styles.input, isFocused === 'pincode' && styles.isFocused]}
-                placeholder="Enter your pincode"
-                keyboardType="number-pad"
-              />
-              {errors.pincode && <Text style={styles.errorText}>{errors.pincode}</Text>}
             </View>
 
             {/* Update Profile Button */}

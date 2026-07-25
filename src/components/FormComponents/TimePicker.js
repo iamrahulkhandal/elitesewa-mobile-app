@@ -2,20 +2,53 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Toast from 'react-native-toast-message';
 
-const TimePicker = ({ label, time, onChange }) => {
-  const initialTime = time instanceof Date ? time : new Date(time);
-  const [selectedTime, setSelectedTime] = useState(initialTime);
+// Returns a valid Date or null (empty string / undefined / unparseable input).
+const parseTime = (value) => {
+  if (!value) return null;
+  const parsed = value instanceof Date ? value : new Date(value);
+  return isNaN(parsed.getTime()) ? null : parsed;
+};
+
+// The Android time picker has no native min/max-time support, so when
+// `maximumDate`/`minimumDate` are set the limits are enforced after picking,
+// by time-of-day comparison.
+const isAfterTimeOfDay = (picked, max) =>
+  picked.getHours() > max.getHours() ||
+  (picked.getHours() === max.getHours() && picked.getMinutes() > max.getMinutes());
+
+const TimePicker = ({ label, time, onChange, maximumDate, minimumDate, minimumMessage }) => {
+  const [selectedTime, setSelectedTime] = useState(parseTime(time));
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    const newTime = time instanceof Date ? time : new Date(time);
-    setSelectedTime(newTime);
+    setSelectedTime(parseTime(time));
   }, [time]);
 
   const onChangeInternal = (event, pickedTime) => {
     setShow(false);
     if (pickedTime) {
+      if (maximumDate && isAfterTimeOfDay(pickedTime, maximumDate)) {
+        Toast.show({
+          type: 'error',
+          text1: 'Invalid Time',
+          text2: 'Time cannot be in the future',
+          position: 'bottom',
+          visibilityTime: 3000,
+        });
+        return;
+      }
+      if (minimumDate && isAfterTimeOfDay(minimumDate, pickedTime)) {
+        Toast.show({
+          type: 'error',
+          text1: 'Invalid Time',
+          text2: minimumMessage || 'Please choose a later time',
+          position: 'bottom',
+          visibilityTime: 3000,
+        });
+        return;
+      }
       setSelectedTime(pickedTime);
       onChange(pickedTime);
     }
@@ -35,14 +68,17 @@ const TimePicker = ({ label, time, onChange }) => {
       {label && <Text style={styles.label}>{label}</Text>}
       <TouchableOpacity onPress={() => setShow(true)} style={styles.timeButton}>
         <Icon name="clock-o" size={20} color="gray" style={styles.icon} />
-        <Text style={styles.timeText}>{formatTime(selectedTime)}</Text>
+        <Text style={selectedTime ? styles.timeText : styles.placeholderText}>
+          {selectedTime ? formatTime(selectedTime) : 'Select time'}
+        </Text>
       </TouchableOpacity>
       {show && (
         <DateTimePicker
-          value={selectedTime}
+          value={selectedTime || new Date()}
           mode="time"
           is24Hour={false}
           display="default"
+          maximumDate={maximumDate}
           onChange={onChangeInternal}
         />
       )}
@@ -75,6 +111,10 @@ const styles = StyleSheet.create({
   },
   timeText: {
     fontSize: 14,
+  },
+  placeholderText: {
+    fontSize: 14,
+    color: '#9ca3af',
   },
 });
 

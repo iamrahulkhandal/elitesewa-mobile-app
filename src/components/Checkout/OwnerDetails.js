@@ -9,41 +9,41 @@ const OwnerDetails = ({ ownerData, onChange }) => {
         label="Owner Name"
         value={ownerData.ownerName}
         onChange={(text) => onChange('ownerName', text)}
-        placeholder="Enter owner name"
+        placeholder="e.g. Rahul Sharma"
       />
       <InputField
         label="Owner Contact"
         value={ownerData.ownerContact}
         onChange={(text) => onChange('ownerContact', text)}
-        placeholder="Enter contact number"
+        placeholder="e.g. 9876543210"
         keyboardType="phone-pad"
       /> 
       <InputField
         label="Alternate Contact"
         value={ownerData.ownerAlternateContact}
         onChange={(text) => onChange('ownerAlternateContact', text)}
-        placeholder="Enter alternate contact"
+        placeholder="e.g. 9123456780"
         keyboardType="phone-pad"
       />
       <InputField
         label="Owner Email"
         value={ownerData.ownerEmail}
         onChange={(text) => onChange('ownerEmail', text)}
-        placeholder="Enter email address"
+        placeholder="e.g. rahul@gmail.com"
         keyboardType="email-address"
       />
       <InputField
         label="Owner Address"
         value={ownerData.ownerAddress}
         onChange={(text) => onChange('ownerAddress', text)}
-        placeholder="Enter address"
+        placeholder="e.g. 12, MG Road, Malviya Nagar, Jaipur"
         multiline
       />
       <InputField
         label="Parking Number (optional)"
         value={ownerData.parkingNo}
         onChange={(text) => onChange('parkingNo', text)}
-        placeholder="Enter parking number"
+        placeholder="e.g. B2-45"
       />
     </View>
   );

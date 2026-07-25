@@ -14,6 +14,15 @@ const Schedule = ({ insuranceData, onChange, serviceid }) => {
 
   if (!showPickFields && !showDropFields) return null;
 
+  // Bookings need at least 30 minutes of lead time. The time floor only
+  // applies when the chosen date is today — any time is fine on a later day.
+  const now = new Date();
+  const minTime = new Date(now.getTime() + 30 * 60 * 1000);
+  const isTodayOrUnset = (value) => {
+    const date = value ? new Date(value) : null;
+    return !date || isNaN(date.getTime()) || date.toDateString() === now.toDateString();
+  };
+
   return (
     <View>
       <Text style={styles.heading}>Schedule</Text>
@@ -24,10 +33,13 @@ const Schedule = ({ insuranceData, onChange, serviceid }) => {
             label={pickLabel}
             date={insuranceData.startDate}
             onChange={(date) => onChange('startDate', date)}
+            minimumDate={now}
           />
           <TimePicker
             time={insuranceData.startTime}
             onChange={(time) => onChange('startTime', time)}
+            minimumDate={isTodayOrUnset(insuranceData.startDate) ? minTime : undefined}
+            minimumMessage="Time must be at least 30 minutes from now"
           />
         </>
       )}
@@ -38,10 +50,13 @@ const Schedule = ({ insuranceData, onChange, serviceid }) => {
             label="Drop Date & Time"
             date={insuranceData.expiryDate}
             onChange={(date) => onChange('expiryDate', date)}
+            minimumDate={now}
           />
           <TimePicker
             time={insuranceData.expiryTime}
             onChange={(time) => onChange('expiryTime', time)}
+            minimumDate={isTodayOrUnset(insuranceData.expiryDate) ? minTime : undefined}
+            minimumMessage="Time must be at least 30 minutes from now"
           />
         </>
       )}

@@ -24,7 +24,7 @@ const PaymentFailedScreen = ({ route }) => {
           <Text style={styles.buttonText}>Retry Payment</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.linkButton} onPress={() => navigation.navigate('HomeTabs', { screen: 'Home' })}>
+        <TouchableOpacity style={styles.linkButton} onPress={() => navigation.navigate('Main', { screen: 'Home' })}>
           <Text style={styles.linkButtonText}>Return to Home Screen</Text>
         </TouchableOpacity>
       </View>

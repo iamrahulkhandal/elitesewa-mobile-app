@@ -6,19 +6,25 @@ import Dropdown from '../FormComponents/Dropdown';
 import TimePicker from '../FormComponents/TimePicker';
 
 const VehicleDetails = ({ vehicleData, onChange,active }) => {
+    // Registration can't be in the future. The time-of-day cap only applies
+    // when the registration date is today (or not yet chosen).
+    const now = new Date();
+    const regDate = vehicleData.registrationDate ? new Date(vehicleData.registrationDate) : null;
+    const regDateIsToday = !regDate || isNaN(regDate.getTime()) || regDate.toDateString() === now.toDateString();
+
     return (
         <View>
-            <InputField label="Vehicle Number" value={vehicleData.number} onChange={(text) => onChange('number', text)} placeholder="Enter vehicle number" editable={!active} />
+            <InputField label="Vehicle Number" value={vehicleData.number} onChange={(text) => onChange('number', text)} placeholder="e.g. RJ14 AB 1234" editable={!active} />
 
-            <InputField  label="Model" value={vehicleData.model} onChange={(text) => onChange('model', text)} placeholder="Enter vehicle model" />
+            <InputField  label="Model" value={vehicleData.model} onChange={(text) => onChange('model', text)} placeholder="e.g. Swift VXI" />
 
-            <InputField label="Manufacturer" value={vehicleData.manufacturer} onChange={(text) => onChange('manufacturer', text)} placeholder="Enter manufacturer" />
+            <InputField label="Manufacturer" value={vehicleData.manufacturer} onChange={(text) => onChange('manufacturer', text)} placeholder="e.g. Maruti Suzuki" />
 
-            <InputField label="Year" value={vehicleData.year} onChange={(text) => onChange('year', text)} placeholder="Enter vehicle year" keyboardType="numeric" />
+            <InputField label="Year" value={vehicleData.year} onChange={(text) => onChange('year', text)} placeholder="e.g. 2022" keyboardType="numeric" />
 
-            <DatePicker label="Registration Date" date={vehicleData.registrationDate} onChange={(date) => onChange('registrationDate', date)} />
+            <DatePicker label="Registration Date" date={vehicleData.registrationDate} onChange={(date) => onChange('registrationDate', date)} maximumDate={now} />
 
-            <TimePicker date={vehicleData.registrationTime} onChange={(time) => onChange('registrationTime', time)} />
+            <TimePicker label="Registration Time" time={vehicleData.registrationTime} onChange={(time) => onChange('registrationTime', time)} maximumDate={regDateIsToday ? now : undefined} />
 
             <Dropdown label="Fuel Type" selectedValue={vehicleData.fuelType} onValueChange={(value) => onChange('fuelType', value)} options={['Petrol', 'Diesel', 'Electric', 'CNG']} />
         </View>

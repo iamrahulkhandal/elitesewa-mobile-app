@@ -3,16 +3,20 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const DatePicker = ({ label, date, onChange }) => {
-  // Ensure that the provided date is a Date object.
-  const initialDate = date instanceof Date ? date : new Date(date);
-  const [selectedDate, setSelectedDate] = useState(initialDate);
+// Returns a valid Date or null (empty string / undefined / unparseable input).
+const parseDate = (value) => {
+  if (!value) return null;
+  const parsed = value instanceof Date ? value : new Date(value);
+  return isNaN(parsed.getTime()) ? null : parsed;
+};
+
+const DatePicker = ({ label, date, onChange, maximumDate, minimumDate }) => {
+  const [selectedDate, setSelectedDate] = useState(parseDate(date));
   const [show, setShow] = useState(false);
 
   // Update local state if the prop date changes.
   useEffect(() => {
-    const newDate = date instanceof Date ? date : new Date(date);
-    setSelectedDate(newDate);
+    setSelectedDate(parseDate(date));
   }, [date]);
 
   const onChangeInternal = (event, pickedDate) => {
@@ -20,7 +24,7 @@ const DatePicker = ({ label, date, onChange }) => {
     if (pickedDate) {
       setSelectedDate(pickedDate);
       onChange(pickedDate);
-    } 
+    }
   };
 
   return (
@@ -28,13 +32,17 @@ const DatePicker = ({ label, date, onChange }) => {
       {label && <Text style={styles.label}>{label}</Text>}
       <TouchableOpacity onPress={() => setShow(true)} style={styles.dateButton}>
       <Icon name="calendar" size={20} color="gray" style={styles.icon} />
-        <Text style={styles.dateText}>{selectedDate.toDateString()}</Text>
+        <Text style={selectedDate ? styles.dateText : styles.placeholderText}>
+          {selectedDate ? selectedDate.toDateString() : 'Select date'}
+        </Text>
       </TouchableOpacity>
       {show && (
         <DateTimePicker
-          value={selectedDate}
+          value={selectedDate || new Date()}
           mode="date"
           display="default"
+          maximumDate={maximumDate}
+          minimumDate={minimumDate}
           onChange={onChangeInternal}
         />
       )}
@@ -67,6 +75,10 @@ const styles = StyleSheet.create({
   },
   dateText: {
     fontSize: 14,
+  },
+  placeholderText: {
+    fontSize: 14,
+    color: '#9ca3af',
   },
 });
 

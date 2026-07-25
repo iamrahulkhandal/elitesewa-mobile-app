@@ -8,6 +8,7 @@ import axios from 'axios';
 import Toast from 'react-native-toast-message';
 import moment from 'moment';
 import VehicleDetails from './VehicleDetails';
+import SavedDetailsModal from './SavedDetailsModal';
 import OwnerDetails from './OwnerDetails';
 import Schedule from './Schedule';
 import PriceBreakout from './PriceBreakout';
@@ -55,21 +56,27 @@ const Index = (props) => {
   });
   const [membershipStatus] = useState('active');
 
+  // Default the schedule to just past the earliest allowed slot: the 30-minute
+  // minimum plus a 3-minute buffer, so the default still passes validation
+  // after the 2-3 minutes a user typically spends filling the form.
+  const defaultScheduleTime = new Date(Date.now() + 33 * 60 * 1000);
   const [insuranceData, setInsuranceData] = useState({
     policyNumber: '',
     providerName: '',
-    startDate: new Date(),
-    startTime: new Date(),
-    expiryDate: new Date(),
-    expiryTime: new Date(),
+    startDate: defaultScheduleTime,
+    startTime: defaultScheduleTime,
+    expiryDate: defaultScheduleTime,
+    expiryTime: defaultScheduleTime,
   });
 
   const userId = useSelector((state) => state.auth.userId);
   const userMobile = useSelector((state) => state.auth.user); // stored as the customer's mobile
   const [serviceData, setServiceData] = useState({ serviceType: '' });
 
-  const [routeData, setRouteData] = useState(null); 
+  const [routeData, setRouteData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [savedVehicles, setSavedVehicles] = useState([]);
+  const [showSavedModal, setShowSavedModal] = useState(false);
   const services = ['On Site Repairs', 'Battery Jumpstart', 'Fuel Delivery','Towing Service'];
   const fetchAllData = async () => {
     try {
@@ -194,13 +201,63 @@ const Index = (props) => {
     }
   };
 
+  // Vehicles from the customer's past successful bookings. When any exist, a
+  // modal offers to reuse those details instead of retyping everything.
+  const fetchSavedVehicles = async () => {
+    if (!userId) return;
+    try {
+      const response = await axios.get(`${API_URL}/api/payment/saved-vehicles/${userId}`);
+      const vehicles = response.data?.vehicles || [];
+      if (vehicles.length > 0) {
+        setSavedVehicles(vehicles);
+        setShowSavedModal(true);
+      }
+    } catch (error) {
+      // Reuse is a convenience only — ignore failures silently.
+      console.log('Saved vehicles skipped:', error.message);
+    }
+  };
+
+  const applySavedVehicle = (vehicle) => {
+    const vehicleDetails = vehicle.vehicleDetails || {};
+    const ownerDetails = vehicle.ownerDetails || {};
+    setVehicleData({
+      number: vehicleDetails.number || '',
+      model: vehicleDetails.model || '',
+      manufacturer: vehicleDetails.manufacturer || '',
+      year: vehicleDetails.year || '',
+      registrationDate: vehicleDetails.registrationDate || '',
+      registrationTime: vehicleDetails.registrationTime || '',
+      fuelType: vehicleDetails.fuelType || '',
+    });
+    setOwnerData({
+      ownerName: ownerDetails.ownerName || '',
+      ownerContact: ownerDetails.ownerContact || '',
+      ownerAlternateContact: ownerDetails.ownerAlternateContact || '',
+      ownerEmail: ownerDetails.ownerEmail || '',
+      ownerAddress: ownerDetails.ownerAddress || '',
+      aadharOrPan: ownerDetails.aadharOrPan || '',
+      parkingNo: ownerDetails.parkingNo || '',
+    });
+    if (vehicle.location?.latitude && vehicle.location?.longitude) {
+      setLocation({
+        latitude: vehicle.location.latitude,
+        longitude: vehicle.location.longitude,
+        address: vehicle.location.address || null,
+      });
+    }
+    setShowSavedModal(false);
+  };
+
   useEffect(() => {
     if (vehicleId) {
       // Existing vehicle: prefill from its saved record.
       fetchAllData();
     } else {
-      // New booking: prefill owner + vehicle number from the customer profile.
+      // New booking: prefill owner + vehicle number from the customer profile,
+      // and offer full details from past bookings when available.
       prefillFromProfile();
+      fetchSavedVehicles();
     }
   }, []);
   // Validation helper
@@ -226,6 +283,28 @@ const Index = (props) => {
     )
       return false;
 
+    // Registration date/time must not be in the future (also guards prefilled data).
+    const now = new Date();
+    const regDate = vehicleData.registrationDate ? new Date(vehicleData.registrationDate) : null;
+    const regTime = vehicleData.registrationTime ? new Date(vehicleData.registrationTime) : null;
+    const regDateInFuture =
+      regDate && !isNaN(regDate.getTime()) && regDate.toDateString() !== now.toDateString() && regDate > now;
+    const regTimeInFuture =
+      regTime && !isNaN(regTime.getTime()) &&
+      (!regDate || isNaN(regDate.getTime()) || regDate.toDateString() === now.toDateString()) &&
+      (regTime.getHours() > now.getHours() ||
+        (regTime.getHours() === now.getHours() && regTime.getMinutes() > now.getMinutes()));
+    if (regDateInFuture || regTimeInFuture) {
+      Toast.show({
+        type: 'error',
+        text1: 'Validation Error',
+        text2: 'Registration date/time cannot be in the future',
+        position: 'bottom',
+        visibilityTime: 3000,
+      });
+      return false;
+    }
+
     // Owner: Aadhaar/PAN and parking number are optional now.
     if (
       !validateField(ownerData.ownerName, 'Owner name is required') ||
@@ -237,6 +316,42 @@ const Index = (props) => {
 
     if (serviceId === '673f16bd7a12ef01b200c941') {
       if (!validateField(serviceData.serviceType, 'Service type is required')) return false;
+    }
+
+    // Scheduled services need at least 30 minutes of lead time. Merge the
+    // date field with the time-of-day field before comparing.
+    const combineDateTime = (dateValue, timeValue) => {
+      const date = dateValue ? new Date(dateValue) : null;
+      const time = timeValue ? new Date(timeValue) : null;
+      if (!date || isNaN(date.getTime()) || !time || isNaN(time.getTime())) return null;
+      const combined = new Date(date);
+      combined.setHours(time.getHours(), time.getMinutes(), 0, 0);
+      return combined;
+    };
+    // Zero the seconds so the comparison works in whole minutes, matching the
+    // minute-level precision of the pickers.
+    const minSchedule = new Date(Date.now() + 30 * 60 * 1000);
+    minSchedule.setSeconds(0, 0);
+    const scheduleChecks = [
+      ...(serviceId !== '673f16bd7a12ef01b200c941'
+        ? [{ date: insuranceData.startDate, time: insuranceData.startTime, label: 'Schedule' }]
+        : []),
+      ...(serviceId === '673f16c47a12ef01b200c943'
+        ? [{ date: insuranceData.expiryDate, time: insuranceData.expiryTime, label: 'Drop' }]
+        : []),
+    ];
+    for (const check of scheduleChecks) {
+      const scheduled = combineDateTime(check.date, check.time);
+      if (scheduled && scheduled < minSchedule) {
+        Toast.show({
+          type: 'error',
+          text1: 'Validation Error',
+          text2: `${check.label} time must be at least 30 minutes from now`,
+          position: 'bottom',
+          visibilityTime: 3000,
+        });
+        return false;
+      }
     }
 
     if (
@@ -557,6 +672,13 @@ const Index = (props) => {
               keyExtractor={(item) => item.key}
             />
           </View>
+
+          <SavedDetailsModal
+            visible={showSavedModal}
+            vehicles={savedVehicles}
+            onSelect={applySavedVehicle}
+            onNew={() => setShowSavedModal(false)}
+          />
 
           {/* Snackbar to show messages */}
           <Snackbar
