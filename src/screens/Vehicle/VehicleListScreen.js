@@ -21,8 +21,15 @@ const VehicleListScreen = () => {
         setVehicles(response.data.vehicles);
       } catch (error) {
         console.error(error);
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: 'Unable to load vehicles. Please try again.',
+          position: 'bottom',
+          visibilityTime: 3000,
+        });
       }
-    }; 
+    };
   
     useFocusEffect(
       React.useCallback(() => {
@@ -43,6 +50,13 @@ const VehicleListScreen = () => {
         fetchVehicles();
       } catch (error) {
         console.error(error);
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: 'Unable to delete vehicle. Please try again.',
+          position: 'bottom',
+          visibilityTime: 3000,
+        });
       }
     };
 

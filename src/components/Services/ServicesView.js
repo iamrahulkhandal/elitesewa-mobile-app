@@ -12,6 +12,7 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { useFocusEffect } from '@react-navigation/native';
 import { Button } from 'react-native-paper';
+import Toast from 'react-native-toast-message';
 // import RNPickerSelect from 'react-native-picker-select';
 
 const { width: screenWidth } = Dimensions.get('window');
@@ -101,8 +102,15 @@ const ServicesView = ({ route, navigation }) => {
       );
       setPayments(response.data.payments || []);
     } catch (error) {
-
-    } finally { 
+      console.error('Error fetching payments:', error.message);
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Unable to load your plan status. Pull to refresh to retry.',
+        position: 'bottom',
+        visibilityTime: 3000,
+      });
+    } finally {
       setLoading(false);
     }
   };

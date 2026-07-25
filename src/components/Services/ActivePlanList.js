@@ -1,62 +1,43 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, FlatList, ScrollView, ActivityIndicator, RefreshControl, TouchableOpacity, Alert, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator, RefreshControl, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { API_URL } from '@env';
-import Swiper from 'react-native-swiper';
-import Activeplan from '../../components/Services/Activeplan'
-// import RNPickerSelect from 'react-native-picker-select';
-
-const { width: screenWidth } = Dimensions.get('window');
+import Icon from 'react-native-vector-icons/Ionicons';
+import Activeplan from '../../components/Services/Activeplan';
 
 const ActivePlanList = ({ route, navigation }) => {
   const { role } = route.params;
-  const user = useSelector((state) => state.auth.user);
   const userId = useSelector((state) => state.auth.userId);
   const userRole = useSelector((state) => state.auth.role);
-  const [activePlan, setActivePlan] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedPlan, setSelectedPlan] = useState(null);
   const [payments, setPayments] = useState([]);
 
   useEffect(() => {
     fetchPayments();
-  }, []); 
-   
-  // Remove duplicates based on planId._id
-
-  // Prepare the plans for the picker
-  // const plans = service?.plans?.map(item => ({
-  //   label: item.name,
-  //   value: item._id,
-  // })) || [];
+  }, []);
 
   const fetchPayments = async () => {
     if (!userId || !userRole) return;
 
     setLoading(true);
+    setError(null);
 
-    try { 
-
+    try {
       const response = await axios.get(
-        `${API_URL}/api/payment/activeplan/${userRole}/${userId}` 
+        `${API_URL}/api/payment/activeplan/${userRole}/${userId}`
       );
-      setPayments(response.data.payments || []); 
-      console.log('view',response.data.payments); 
-    } catch (error) {  
-
-    } finally { 
-      setLoading(false); 
-    } 
+      setPayments(response.data.payments || []);
+    } catch (err) {
+      console.error('Error fetching active plans:', err.message);
+      setError('Unable to load your active plans. Please check your connection and try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
-
-  // Function to extract video ID from YouTube U
-
-  const handleActivePlanSelect = (plan,serviceId, vehicle, planActiveDate) => {
-    setSelectedPlan(plan); // Save the selected plan
-    // Navigate to VehicleAndOwnerDetails and pass the selected plan along with serviceId
+  const handleActivePlanSelect = (plan, serviceId, vehicle, planActiveDate) => {
     navigation.navigate('Checkout', {
       serviceId: serviceId._id,
       planId: plan._id,
@@ -69,10 +50,22 @@ const ActivePlanList = ({ route, navigation }) => {
     });
   };
 
+  const calculateEndDate = (planActiveDate, duration) => {
+    const startDate = new Date(planActiveDate);
+    const durationInDays = parseInt(duration, 10);
+    startDate.setUTCDate(startDate.getUTCDate() + durationInDays);
+    return startDate;
+  };
+
+  // Plans still inside their duration window, with the fields the card needs.
+  const activePayments = payments.filter((payment) => {
+    if (!payment?.planId || !payment?.vehicleId || !payment?.planActiveDate) return false;
+    return calculateEndDate(payment.planActiveDate, payment.planId.duration) > new Date();
+  });
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
+      <View style={styles.centerContainer}>
         <ActivityIndicator size="large" color="#007BFF" />
       </View>
     );
@@ -80,94 +73,105 @@ const ActivePlanList = ({ route, navigation }) => {
 
   if (error) {
     return (
-      <View style={styles.errorContainer}>
+      <View style={styles.centerContainer}>
+        <Icon name="cloud-offline-outline" size={48} color="#9ca3af" />
         <Text style={styles.errorText}>{error}</Text>
-        <TouchableOpacity onPress={fetchServiceDetails} style={styles.retryButton}>
+        <TouchableOpacity onPress={fetchPayments} style={styles.retryButton}>
           <Text style={styles.retryButtonText}>Retry</Text>
         </TouchableOpacity>
       </View>
     );
   }
 
-  const convertDuration = (duration) => {
-    const hours = Math.floor(duration / 60);
-    const minutes = duration % 60;
-    return `${hours}h ${minutes}m`;
-  };
-
+  if (role !== 'customer' || activePayments.length === 0) {
     return (
-    <>
-        {role === 'customer' && ( 
-          <>
-         {payments?.length > 0 && (
-        
-            <>
-      
-  <ScrollView
-    refreshControl={
-      <RefreshControl refreshing={loading} onRefresh={fetchPayments} />
-    }
-  style={styles.container}>
-            {payments?.map((payment, index) => {
-              const { planId, vehicleId, createdAt,serviceId, planActiveDate } = payment;
-              const vehicle = vehicleId; // Assuming vehicleId has vehicle details like { name, number }
-              console.log(vehicle.vehicleDetails.number);
-                const calculateEndDate = (planActiveDate, duration) => {
-                  const startDate = new Date(planActiveDate); // Parse the ISO string
-                  const durationInDays = parseInt(duration, 10); // Ensure duration is treated as a number
-                  startDate.setUTCDate(startDate.getUTCDate() + durationInDays); // Add duration (in days)
-                  return startDate; // Return the end date as a Date object
-                };
-
-                // Function to check if the plan is active or expired
-                const isPlanActive = (endDate) => {
-                  const currentDate = new Date();
-                  return endDate > currentDate;
-                };
-
-                const endDate = calculateEndDate(planActiveDate, planId.duration); // Calculate expiration date
-                const isActive = isPlanActive(endDate); 
-              return (
-                isActive && (
-
-                    <View key={index}>
-                      {/* Pass relevant props to Activeplan component */}
-                      <Activeplan
-                        plan={planId}
-                        service={serviceId}
-                        vehicle={vehicle} 
-                        createdAt={createdAt}
-                        planActiveDate={planActiveDate}
-                        onSelect={handleActivePlanSelect}
-                      />
-
-
-                    </View>
-                )
-              );
-            })}
-              </ScrollView>
-            </>
-          )}
-          </>
+      <ScrollView
+        contentContainerStyle={styles.centerContainer}
+        refreshControl={<RefreshControl refreshing={loading} onRefresh={fetchPayments} />}
+      >
+        <Icon name="document-text-outline" size={48} color="#9ca3af" />
+        <Text style={styles.emptyTitle}>No active plans yet</Text>
+        <Text style={styles.emptyText}>
+          When you purchase a service plan, it will appear here so you can book services under it.
+        </Text>
+        {role === 'customer' && (
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Main', { screen: 'Home' })}
+            style={styles.retryButton}
+          >
+            <Text style={styles.retryButtonText}>Browse Services</Text>
+          </TouchableOpacity>
         )}
-    </>
-  ); 
+      </ScrollView>
+    );
+  }
 
+  return (
+    <ScrollView
+      refreshControl={<RefreshControl refreshing={loading} onRefresh={fetchPayments} />}
+      style={styles.container}
+    >
+      {activePayments.map((payment, index) => {
+        const { planId, vehicleId, createdAt, serviceId, planActiveDate } = payment;
+        return (
+          <View key={payment._id || index}>
+            <Activeplan
+              plan={planId}
+              service={serviceId}
+              vehicle={vehicleId}
+              createdAt={createdAt}
+              planActiveDate={planActiveDate}
+              onSelect={handleActivePlanSelect}
+            />
+          </View>
+        );
+      })}
+    </ScrollView>
+  );
 };
 
-
-
 const styles = StyleSheet.create({
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginVertical: 20,
-  },
-   container: {
+  container: {
     padding: 10,
-    paddingBottom: 30,  // Add this to make sure the content is scrollable if there's a bottom element
+    paddingBottom: 30,
+  },
+  centerContainer: {
+    flexGrow: 1,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 30,
+  },
+  emptyTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#111',
+    marginTop: 14,
+  },
+  emptyText: {
+    fontSize: 14,
+    color: '#6b7280',
+    textAlign: 'center',
+    marginTop: 6,
+    marginBottom: 16,
+  },
+  errorText: {
+    fontSize: 14,
+    color: '#6b7280',
+    textAlign: 'center',
+    marginTop: 14,
+    marginBottom: 16,
+  },
+  retryButton: {
+    backgroundColor: '#09b5e1',
+    borderRadius: 6,
+    paddingVertical: 10,
+    paddingHorizontal: 24,
+  },
+  retryButtonText: {
+    color: '#fff',
+    fontSize: 15,
+    fontWeight: '700',
   },
 });
 

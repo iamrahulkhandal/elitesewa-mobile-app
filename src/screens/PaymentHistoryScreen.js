@@ -12,6 +12,7 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Toast from 'react-native-toast-message';
 import { API_URL } from '@env';
 
 const STATUS_COLORS = {
@@ -45,6 +46,13 @@ const PaymentHistoryScreen = ({ navigation }) => {
       setPayments(list);
     } catch (error) {
       console.error('Error fetching payment history:', error.message);
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Unable to load payment history. Pull to refresh to retry.',
+        position: 'bottom',
+        visibilityTime: 3000,
+      });
     } finally {
       setLoading(false);
       setRefreshing(false);

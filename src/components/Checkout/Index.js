@@ -275,6 +275,20 @@ const Index = (props) => {
     return true;
   }, []);
 
+  // Format helpers. Standard plates like "RJ14 CJ 5000" (spaces/dashes
+  // optional) plus the newer BH series like "22 BH 1234 AA".
+  const isValidVehicleNumber = (value) => {
+    const compact = value.trim().replace(/[\s-]/g, '').toUpperCase();
+    return /^[A-Z]{2}\d{1,2}[A-Z]{1,3}\d{1,4}$/.test(compact) || /^\d{2}BH\d{4}[A-Z]{1,2}$/.test(compact);
+  };
+  const isValidYear = (value) => {
+    if (!/^\d{4}$/.test(value.trim())) return false;
+    const year = Number(value.trim());
+    return year >= 1980 && year <= new Date().getFullYear();
+  };
+  const isValidMobile = (value) => /^[6-9]\d{9}$/.test(value.trim());
+  const isValidEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+
   const validateInputs = () => {
     // Vehicle: only number and model are required for a car wash booking.
     if (
@@ -282,6 +296,13 @@ const Index = (props) => {
       !validateField(vehicleData.model, 'Vehicle model is required')
     )
       return false;
+
+    if (!isValidVehicleNumber(vehicleData.number)) {
+      return validateField('', 'Vehicle number looks invalid (e.g. RJ14 CJ 5000)');
+    }
+    if (vehicleData.year && !isValidYear(vehicleData.year)) {
+      return validateField('', `Year must be between 1980 and ${new Date().getFullYear()}`);
+    }
 
     // Registration date/time must not be in the future (also guards prefilled data).
     const now = new Date();
@@ -313,6 +334,16 @@ const Index = (props) => {
       !validateField(ownerData.ownerAddress, 'Owner address is required')
     )
       return false;
+
+    if (!isValidMobile(ownerData.ownerContact)) {
+      return validateField('', 'Owner contact must be a valid 10-digit mobile number');
+    }
+    if (ownerData.ownerAlternateContact?.trim() && !isValidMobile(ownerData.ownerAlternateContact)) {
+      return validateField('', 'Alternate contact must be a valid 10-digit mobile number');
+    }
+    if (!isValidEmail(ownerData.ownerEmail)) {
+      return validateField('', 'Owner email looks invalid');
+    }
 
     if (serviceId === '673f16bd7a12ef01b200c941') {
       if (!validateField(serviceData.serviceType, 'Service type is required')) return false;
