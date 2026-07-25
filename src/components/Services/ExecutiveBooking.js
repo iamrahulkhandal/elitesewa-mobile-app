@@ -14,10 +14,15 @@ import { useSelector } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/native';
 import { API_URL } from '@env';
 
+// Daily-wash plans are subscriptions serviced day by day, so their cards get
+// the day-wise upload flow instead of the one-shot pending/complete buttons.
+const isDailyWash = (item) => /daily/i.test(item.serviceId?.name || '');
+
 const ExecutiveBooking = ({ navigation }) => {
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [washProgress, setWashProgress] = useState({}); // paymentId -> days logged
 
   // Access user and role from Redux store
   const userId = useSelector((state) => state.auth.userId);
@@ -28,7 +33,9 @@ const ExecutiveBooking = ({ navigation }) => {
     setLoading(true);
     try {
       const response = await axios.get(`${API_URL}/api/payment/${role}/${userId}`);
-      setPayments(response.data.payments || []);
+      const list = response.data.payments || [];
+      setPayments(list);
+      fetchWashProgress(list);
     } catch (error) {
       console.error('Error fetching payment listings:', error.message);
       Alert.alert('Error', 'Unable to fetch payment listings. Please try again.');
@@ -36,6 +43,23 @@ const ExecutiveBooking = ({ navigation }) => {
       setLoading(false);
       setRefreshing(false);
     }
+  };
+
+  // Days-logged count per daily-wash booking, for the progress line.
+  const fetchWashProgress = async (list) => {
+    const dailyBookings = list.filter(isDailyWash);
+    if (!dailyBookings.length) return;
+    const entries = await Promise.all(
+      dailyBookings.map(async (item) => {
+        try {
+          const res = await axios.get(`${API_URL}/api/dailywash/${item._id}`);
+          return [item._id, (res.data.logs || []).length];
+        } catch (error) {
+          return null;
+        }
+      })
+    );
+    setWashProgress(Object.fromEntries(entries.filter(Boolean)));
   };
 
   const handleRefresh = async () => {
@@ -61,37 +85,50 @@ const ExecutiveBooking = ({ navigation }) => {
     }
   };
 
-  const renderPaymentItem = ({ item }) => (
-    <View style={styles.card}>
-      <TouchableOpacity onPress={() => navigation.navigate('BookingDetails', { item_id: item._id })}>
-      <Text style={styles.title}>Plan: {item.planId?.name || 'N/A'}</Text>
-      <Text style={styles.text}>Service: {item.serviceId?.name || 'N/A'}</Text>
-      <Text style={styles.text}>User: {item.userId?.name || 'N/A'}</Text>
-      <Text style={styles.text}>Payment Status: {item.status}</Text>
-      <Text style={styles.text}>Service Status: {item.service}</Text>
-      </TouchableOpacity>
-      {item.service === 'PENDING' ? (
-        <TouchableOpacity
-          style={[styles.button, styles.pendingButton]}
-          onPress={() => navigation.navigate('ExecutiveServicesCreate', { item_id: item._id })}
-        >
-          <Text style={styles.buttonText}>Service Pending</Text>
-        </TouchableOpacity>
-      ) : (
-        <TouchableOpacity style={[styles.button, styles.completeButton]}>
-          <Text style={styles.buttonText}>Service Complete</Text>
-        </TouchableOpacity>
-      )}
+  const renderPaymentItem = ({ item }) => {
+    const daily = isDailyWash(item);
+    const daysLogged = washProgress[item._id];
+    const totalDays = parseInt(item.planId?.duration, 10);
 
-      {/* Executives upload date-wise daily wash photos for the booking. */}
-      <TouchableOpacity
-        style={[styles.button, styles.dailyButton]}
-        onPress={() => navigation.navigate('DailyWashUpload', { item_id: item._id })}
-      >
-        <Text style={styles.buttonText}>Daily Wash Update</Text>
-      </TouchableOpacity>
-    </View>
-  );
+    return (
+      <View style={styles.card}>
+        <TouchableOpacity onPress={() => navigation.navigate('BookingDetails', { item_id: item._id })}>
+          <Text style={styles.title}>Plan: {item.planId?.name || 'N/A'}</Text>
+          <Text style={styles.text}>Service: {item.serviceId?.name || 'N/A'}</Text>
+          <Text style={styles.text}>User: {item.userId?.name || 'N/A'}</Text>
+          <Text style={styles.text}>Payment Status: {item.status}</Text>
+          {daily ? (
+            <Text style={styles.progressText}>
+              Washes logged: {daysLogged ?? '…'}{Number.isFinite(totalDays) ? ` / ${totalDays} days` : ' days'}
+            </Text>
+          ) : (
+            <Text style={styles.text}>Service Status: {item.service}</Text>
+          )}
+        </TouchableOpacity>
+
+        {daily ? (
+          // Subscription: serviced day by day — no one-shot complete button.
+          <TouchableOpacity
+            style={[styles.button, styles.dailyButton]}
+            onPress={() => navigation.navigate('DailyWashUpload', { item_id: item._id })}
+          >
+            <Text style={styles.buttonText}>Upload Today's Wash Photos</Text>
+          </TouchableOpacity>
+        ) : item.service === 'PENDING' ? (
+          <TouchableOpacity
+            style={[styles.button, styles.pendingButton]}
+            onPress={() => navigation.navigate('ExecutiveServicesCreate', { item_id: item._id })}
+          >
+            <Text style={styles.buttonText}>Service Pending</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={[styles.button, styles.completeButton]}>
+            <Text style={styles.buttonText}>Service Complete</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+    );
+  };
 
   if (loading && !refreshing) {
     return <ActivityIndicator size="large" color="#F37254" style={styles.loading} />;
@@ -134,6 +171,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 5,
     color: '#555',
+  },
+  progressText: {
+    fontSize: 14,
+    marginBottom: 5,
+    color: '#09b5e1',
+    fontWeight: '700',
   },
   button: {
     marginTop: 10,
