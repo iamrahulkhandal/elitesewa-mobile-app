@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import axios from 'axios';
 import RNPickerSelect from 'react-native-picker-select';
-import { REACT_NATIVE_SERVER_URL } from '@env';
+import { API_URL } from '@env';
 
 const CreateCategory = () => {
   const [categories, setCategories] = useState([]); // All categories from API
@@ -17,7 +17,7 @@ const CreateCategory = () => {
 
   const fetchTopLevelCategories = useCallback(async () => {
     try {
-      const response = await axios.get(`${REACT_NATIVE_SERVER_URL}/api/categories`);
+      const response = await axios.get(`${API_URL}/api/categories`);
       setCategories(response.data);
       // Filter for top-level categories and initialize dropdown data
       const topLevelCategories = response.data.filter(cat => cat.parentId === null);
@@ -37,7 +37,7 @@ const CreateCategory = () => {
   // Fetch child categories from the API by parentId
   const fetchChildCategories = async (parentId) => {
     try {
-      const response = await axios.get(`${REACT_NATIVE_SERVER_URL}/api/categories/parent/${parentId}`);
+      const response = await axios.get(`${API_URL}/api/categories/parent/${parentId}`);
       return response.data;
     } catch (error) {
       console.error('Error fetching child categories:', error);
@@ -91,7 +91,7 @@ const CreateCategory = () => {
 const addCategory = async () => {
   const parentId = dropdownData[dropdownData.length - 1].selectedId; // Use last selected category as parent
   try {
-    const response = await axios.post(`${REACT_NATIVE_SERVER_URL}/api/categories`, { name, parentId });
+    const response = await axios.post(`${API_URL}/api/categories`, { name, parentId });
     setCategories([...categories, response.data]);
     setName(''); // Reset category name input
     setDropdownData([ 

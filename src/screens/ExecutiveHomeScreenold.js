@@ -10,7 +10,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutAndClear } from '../store/authSlice';
 import axios from 'axios';
-import { REACT_NATIVE_SERVER_URL } from '@env';
+import { API_URL } from '@env';
 import TopPlacesCarousel from '../components/TopPlacesCarousel';
 import Services from '../components/Shared/Services';
 import PopularServices from '../components/Shared/PopularServices';
@@ -29,7 +29,7 @@ const ExecutiveHomeScreen = ({ navigation }) => {
     if (user?.mobile) {
       try {
         const response = await axios.get(
-          `${REACT_NATIVE_SERVER_URL}/api/${role}/profile-status`,
+          `${API_URL}/api/${role}/profile-status`,
           { params: { mobile: user.mobile } }
         );
 

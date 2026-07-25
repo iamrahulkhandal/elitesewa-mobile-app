@@ -11,7 +11,7 @@ import {
   RefreshControl,
 } from 'react-native';
 import axios from 'axios';
-import { REACT_NATIVE_SERVER_URL } from '@env';
+import { API_URL } from '@env';
 import { useSelector } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/native';
 
@@ -33,7 +33,7 @@ const Booking = ({ navigation }) => {
       // console.log('Fetching payments for user ID:', userId);
 
       const response = await axios.get(
-        `${REACT_NATIVE_SERVER_URL}/api/payment/${userRole}/${userId}`
+        `${API_URL}/api/payment/${userRole}/${userId}`
       );
 
       // console.log('Payments:', response.data.payments);
@@ -63,7 +63,7 @@ const Booking = ({ navigation }) => {
 
   const handleCancelBooking = async (paymentId) => {
     try {
-      await axios.put(`${REACT_NATIVE_SERVER_URL}/api/payment/${paymentId}/cancel`);
+      await axios.put(`${API_URL}/api/payment/${paymentId}/cancel`);
       Alert.alert('Success', 'Booking has been cancelled successfully.');
       fetchPayments(); // Refresh the payments list
     } catch (error) {
@@ -74,7 +74,7 @@ const Booking = ({ navigation }) => {
 
   const serviceRating = async (paymentId) => {
     try {
-      const response = await axios.get(`${REACT_NATIVE_SERVER_URL}/api/executiveservices/${paymentId}`);
+      const response = await axios.get(`${API_URL}/api/executiveservices/${paymentId}`);
       setExecutiveservicesid(response.data);
 
       navigation.navigate('ExecutiveServicesUpdate', {

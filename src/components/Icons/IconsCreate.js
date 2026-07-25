@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import axios from 'axios';
-import { REACT_NATIVE_SERVER_URL } from '@env'; // Import the environment variable
+import { API_URL } from '@env'; // Import the environment variable
 import { Picker } from '@react-native-picker/picker'; // Import the Picker component
 
 const IconsCreate = () => {
@@ -34,7 +34,7 @@ const IconsCreate = () => {
     };
 
     try {
-      const response = await axios.post(`${REACT_NATIVE_SERVER_URL}/api/icons`, iconData, {
+      const response = await axios.post(`${API_URL}/api/icons`, iconData, {
         headers: {
           'Content-Type': 'application/json',
         },

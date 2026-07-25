@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, Button, TextInput, Modal, TouchableOpacity } from 'react-native';
 import axios from 'axios';
-import { REACT_NATIVE_SERVER_URL } from '@env';
+import { API_URL } from '@env';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const CategoryListing = () => {
@@ -16,7 +16,7 @@ const CategoryListing = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get(`${REACT_NATIVE_SERVER_URL}/api/categories`);
+      const response = await axios.get(`${API_URL}/api/categories`);
       // console.log('Fetched categories:', response.data);
       setCategories(response.data);
     } catch (error) {
@@ -26,7 +26,7 @@ const CategoryListing = () => {
 
   const fetchChildCategories = async (parentId) => {
     try {
-      const response = await axios.get(`${REACT_NATIVE_SERVER_URL}/api/categories/parent/${parentId}`);
+      const response = await axios.get(`${API_URL}/api/categories/parent/${parentId}`);
       return response.data;
     } catch (error) {
       console.error('Error fetching child categories:', error);
@@ -56,7 +56,7 @@ const CategoryListing = () => {
     if (!selectedCategory) return;
 
     try {
-      await axios.put(`${REACT_NATIVE_SERVER_URL}/api/categories/${selectedCategory._id}`, {
+      await axios.put(`${API_URL}/api/categories/${selectedCategory._id}`, {
         name: categoryName,
         parentId: selectedCategory.parentId,
       });
@@ -75,7 +75,7 @@ const CategoryListing = () => {
     }
   
     try {
-      await axios.delete(`${REACT_NATIVE_SERVER_URL}/api/categories/${id}`);
+      await axios.delete(`${API_URL}/api/categories/${id}`);
       fetchCategories(); // Refresh category list
     } catch (error) {
       console.error('Error deleting category:', error);

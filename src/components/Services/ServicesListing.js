@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import { PaperProvider, Card, Button } from 'react-native-paper';
 import axios from 'axios';
-import { REACT_NATIVE_SERVER_URL } from '@env';
+import { API_URL } from '@env';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 
@@ -32,7 +32,7 @@ const ServicesListing = ({ navigation }) => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `${REACT_NATIVE_SERVER_URL}/api/services`,
+        `${API_URL}/api/services`,
       );
       setServices(response.data);
       setError(null);
@@ -54,7 +54,7 @@ const ServicesListing = ({ navigation }) => {
           onPress: async () => {
             try {
               await axios.delete(
-                `${REACT_NATIVE_SERVER_URL}/api/services/${serviceId}`,
+                `${API_URL}/api/services/${serviceId}`,
               );
               Alert.alert('Success', 'Service deleted successfully');
               setServices(
@@ -115,7 +115,7 @@ const ServicesListing = ({ navigation }) => {
           navigation.navigate('ServicesView', { serviceId: item._id })
         }>
         <Card.Cover
-          source={{ uri: `${REACT_NATIVE_SERVER_URL}/${item.images[0]}` }}
+          source={{ uri: `${API_URL}/${item.images[0]}` }}
           style={{ margin: 10, borderRadius: 10, height: 150 }}
         />
       </TouchableOpacity>

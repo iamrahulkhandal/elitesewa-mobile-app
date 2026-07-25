@@ -8,7 +8,7 @@ import MainNavigator from './navigation/MainNavigator';
 import LoadingIndicator from './components/LoadingIndicator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { REACT_NATIVE_SERVER_URL } from '@env';
+import { API_URL } from '@env';
 import LandingPage from './components/LandingPage';
 import 'react-native-gesture-handler';
 import 'react-native-vector-icons/Fonts/Ionicons.ttf';
@@ -50,7 +50,7 @@ const App = () => {
         setProfileUpdateScreen(`${userRole.charAt(0).toUpperCase() + userRole.slice(1)}ProfileUpdate`);
 
         const response = await axios.get(
-          `${REACT_NATIVE_SERVER_URL}/api/${userRole}/profile-status`,
+          `${API_URL}/api/${userRole}/profile-status`,
           { params: { mobile: parsedUserData.user } },
         );
 

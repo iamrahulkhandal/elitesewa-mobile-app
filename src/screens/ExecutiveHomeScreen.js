@@ -12,7 +12,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutAndClear } from '../store/authSlice';
 import axios from 'axios';
-import { REACT_NATIVE_SERVER_URL } from '@env';
+import { API_URL } from '@env';
 import Swiper from 'react-native-swiper';
 import TopPlacesCarousel from '../components/TopPlacesCarousel';
 import HomeServices from '../components/Shared/HomeServices';
@@ -47,7 +47,7 @@ const ExecutiveHomeScreen = ({ navigation }) => {
   const fetchServices = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${REACT_NATIVE_SERVER_URL}/api/services`);
+      const response = await axios.get(`${API_URL}/api/services`);
       setServices(response.data);
       setError(null);
     } catch (err) {
@@ -73,7 +73,7 @@ const ExecutiveHomeScreen = ({ navigation }) => {
 
   const fetchTestimonials = async () => {
     try {
-      const response = await axios.get(`${REACT_NATIVE_SERVER_URL}/api/testimonials`);
+      const response = await axios.get(`${API_URL}/api/testimonials`);
       setTestimonials(response.data.slice(0, 5)); // Get the first 5 testimonials
     } catch (error) {
       console.error('Failed to fetch testimonials:', error);
@@ -85,7 +85,7 @@ const ExecutiveHomeScreen = ({ navigation }) => {
     if (user?.mobile) {
       try {
         const response = await axios.get(
-          `${REACT_NATIVE_SERVER_URL}/api/${role}/profile-status`,
+          `${API_URL}/api/${role}/profile-status`,
           { params: { mobile: user.mobile } }
         );
         if (response.data.isProfileComplete !== isProfileComplete) {
@@ -150,7 +150,7 @@ const ExecutiveHomeScreen = ({ navigation }) => {
           ) : item.iconLib === 'FontAwesome' ? (
             <FontAwesomeIcon name={item.icon} size={28} color="#007BFF" style={styles.icon} />
           ) : null} */}
-            <Image source={{ uri: `${REACT_NATIVE_SERVER_URL}/${item.images[0]}` }} style={styles.serviceSwiperImage} />
+            <Image source={{ uri: `${API_URL}/${item.images[0]}` }} style={styles.serviceSwiperImage} />
           </View>
            <View style={styles.nameprice}>
             <Text style={styles.serviceSwiperName}>Starting From</Text>
@@ -262,7 +262,7 @@ const ExecutiveHomeScreen = ({ navigation }) => {
                         <View key={index} style={styles.swiperTestimonialsItems}>
                           <View style={styles.testimonialContainer}>
                             <View style={styles.testimonialTop}>
-                              <Image source={{ uri: `${REACT_NATIVE_SERVER_URL}${testimonial.userProfilePicture}` }} style={styles.image} />
+                              <Image source={{ uri: `${API_URL}${testimonial.userProfilePicture}` }} style={styles.image} />
                               <Text style={styles.testimonialAuthor}>{testimonial.name}</Text>
                               <Icon name="quote-left" size={50} color="#FFD700" style={styles.testimonialQuoteIcon} />
                             </View>

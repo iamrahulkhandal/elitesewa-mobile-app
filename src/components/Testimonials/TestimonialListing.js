@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, FlatList, StyleSheet, Image, ActivityIndicator, Alert } from "react-native";
 import { useSelector } from "react-redux"; // Import to access Redux state
 import axios from "axios";
-import { REACT_NATIVE_SERVER_URL } from "@env";
+import { API_URL } from "@env";
 import Icon from 'react-native-vector-icons/FontAwesome'; // Import FontAwesome icons
 
 const TestimonialListing = () => {
@@ -18,7 +18,7 @@ const TestimonialListing = () => {
         return;
       }
 
-      const response = await axios.get(`${REACT_NATIVE_SERVER_URL}/api/testimonials`, {
+      const response = await axios.get(`${API_URL}/api/testimonials`, {
         params: {
           username: user, // Send the username as a query parameter
         },
@@ -38,7 +38,7 @@ const TestimonialListing = () => {
   // Render each testimonial item
   const renderTestimonialItem = ({ item }) => {
     const profilePicture = item.userProfilePicture
-      ? `${REACT_NATIVE_SERVER_URL}${item.userProfilePicture}` // If the userProfilePicture exists, use it
+      ? `${API_URL}${item.userProfilePicture}` // If the userProfilePicture exists, use it
       : "/uploads/noimage.png"; // Default image path if the userProfilePicture is null or not available
 
     // Render stars based on rating

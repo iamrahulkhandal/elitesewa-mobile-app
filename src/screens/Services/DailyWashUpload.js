@@ -15,7 +15,7 @@ import * as ImagePicker from 'react-native-image-picker';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { ensureCameraPermission } from '../../utils/cameraPermission';
-import { REACT_NATIVE_SERVER_URL } from '@env';
+import { API_URL } from '@env';
 
 const MAX_PHOTOS = 5;
 
@@ -76,7 +76,7 @@ const DailyWashUpload = ({ route, navigation }) => {
     });
 
     try {
-      await axios.post(`${REACT_NATIVE_SERVER_URL}/api/dailywash`, formData, {
+      await axios.post(`${API_URL}/api/dailywash`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       Alert.alert('Success', 'Daily photos uploaded successfully.', [

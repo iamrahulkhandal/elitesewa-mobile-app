@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 
-import { REACT_NATIVE_SERVER_URL } from '@env';
+import { API_URL } from '@env';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -32,7 +32,7 @@ const CustomHomeServices = () => {
   const fetchServices = async (categoryId) => {
     try {
       setLoading(true);
-      const response = await axios.get(`${REACT_NATIVE_SERVER_URL}/api/services/category/${categoryId}`);
+      const response = await axios.get(`${API_URL}/api/services/category/${categoryId}`);
       setServices(response.data);
       setError(null);
     } catch (err) {

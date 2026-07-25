@@ -15,7 +15,7 @@ import SubmitButton from '../FormComponents/SubmitButton';
 import LocationMap from '../FormComponents/LocationMap';
 import Dropdown from '../FormComponents/Dropdown';
 import RouteMap from '../FormComponents/RouteMap'; 
-import { REACT_NATIVE_SERVER_URL, RAZORPAY_KEY_ID } from "@env";
+import { API_URL, RAZORPAY_KEY_ID } from "@env";
 import { useNavigation } from '@react-navigation/native';
  
 const Index = (props) => {
@@ -73,7 +73,7 @@ const Index = (props) => {
   const services = ['On Site Repairs', 'Battery Jumpstart', 'Fuel Delivery','Towing Service'];
   const fetchAllData = async () => {
     try {
-      const response = await axios.get(`${REACT_NATIVE_SERVER_URL}/api/payment/vehicle/${vehicleId}`);
+      const response = await axios.get(`${API_URL}/api/payment/vehicle/${vehicleId}`);
       if (response.data && response.data.length > 0) {
         // Extract other data (unchanged)
         const vehicleDetailsData = response.data[0].vehicleDetails;
@@ -161,7 +161,7 @@ const Index = (props) => {
   const prefillFromProfile = async () => {
     if (!userMobile) return;
     try {
-      const response = await axios.get(`${REACT_NATIVE_SERVER_URL}/api/customer/profile`, {
+      const response = await axios.get(`${API_URL}/api/customer/profile`, {
         params: { mobile: userMobile },
       });
       const customer = response.data;
@@ -306,7 +306,7 @@ const Index = (props) => {
       setMembershipDetails(membership);
 
       const paymentRequestResponse = await axios.post(
-        `${REACT_NATIVE_SERVER_URL}/api/payment/save-request`,
+        `${API_URL}/api/payment/save-request`,
         {
           vehicleData,
           membershipDetails: membership,
@@ -335,7 +335,7 @@ const Index = (props) => {
         // --- New paid booking: create a server-side order, pay, then verify. ---
         // 1) Create the Razorpay order on the server so the payment can be
         //    cryptographically verified afterwards (never trust the client).
-        const orderResponse = await axios.post(`${REACT_NATIVE_SERVER_URL}/api/payment/create-order`, {
+        const orderResponse = await axios.post(`${API_URL}/api/payment/create-order`, {
           amount: planPrice,
           currency: 'INR',
           notes: { serviceId, planId, userId },
@@ -350,7 +350,7 @@ const Index = (props) => {
         // 2) Open Razorpay Checkout bound to that order.
         const options = {
           description: `Payment for plan ${membership.plan}`,
-          image: `${REACT_NATIVE_SERVER_URL}/uploads/noimage.png`,
+          image: `${API_URL}/uploads/noimage.png`,
           currency: 'INR',
           key: keyId || RAZORPAY_KEY_ID,
           order_id: orderId,
@@ -371,7 +371,7 @@ const Index = (props) => {
 
         // 3) Verify the signature server-side. The PaymentResponse is only
         //    persisted (status SUCCESS) when verification passes.
-        const verifyResponse = await axios.post(`${REACT_NATIVE_SERVER_URL}/api/payment/verify`, {
+        const verifyResponse = await axios.post(`${API_URL}/api/payment/verify`, {
           razorpay_order_id: paymentData.razorpay_order_id || orderId,
           razorpay_payment_id: paymentData.razorpay_payment_id,
           razorpay_signature: paymentData.razorpay_signature,
@@ -397,7 +397,7 @@ const Index = (props) => {
         });
       } else {
         // --- Re-service request on an already-paid active plan: no new charge. ---
-        const paymentResponse = await axios.post(`${REACT_NATIVE_SERVER_URL}/api/payment/save-response`, {
+        const paymentResponse = await axios.post(`${API_URL}/api/payment/save-response`, {
           userName: ownerData.ownerName,
           userId,
           serviceId,
@@ -444,7 +444,7 @@ const Index = (props) => {
   //   if (vehicleId) {
   //     const fetchAllData = async () => {
   //       try {
-  //         const response = await axios.get(`${REACT_NATIVE_SERVER_URL}/api/payment/vehicle/${vehicleId}`);
+  //         const response = await axios.get(`${API_URL}/api/payment/vehicle/${vehicleId}`);
   //         if (response.data && response.data.length > 0) {
   //           // Extract other data (unchanged)
   //           const vehicleDetailsData = response.data[0].vehicleDetails;

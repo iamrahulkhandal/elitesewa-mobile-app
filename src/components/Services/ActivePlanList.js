@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, FlatList, ScrollView, ActivityIndicator, RefreshControl, TouchableOpacity, Alert, Dimensions } from 'react-native';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
-import { REACT_NATIVE_SERVER_URL } from '@env';
+import { API_URL } from '@env';
 import Swiper from 'react-native-swiper';
 import Activeplan from '../../components/Services/Activeplan'
 // import RNPickerSelect from 'react-native-picker-select';
@@ -40,7 +40,7 @@ const ActivePlanList = ({ route, navigation }) => {
     try { 
 
       const response = await axios.get(
-        `${REACT_NATIVE_SERVER_URL}/api/payment/activeplan/${userRole}/${userId}` 
+        `${API_URL}/api/payment/activeplan/${userRole}/${userId}` 
       );
       setPayments(response.data.payments || []); 
       console.log('view',response.data.payments); 

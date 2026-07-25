@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
 import axios from 'axios';
-import { REACT_NATIVE_SERVER_URL } from '@env';
+import { API_URL } from '@env';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
@@ -13,7 +13,7 @@ const IconsListing = () => {
   useEffect(() => {
     const fetchIconsData = async () => {
       try {
-        const response = await axios.get(`${REACT_NATIVE_SERVER_URL}/api/icons`);
+        const response = await axios.get(`${API_URL}/api/icons`);
         setIconsData(response.data.icons || []); // Set fetched data to state
       } catch (error) {
         setError("Error fetching icons data. Please try again later.");

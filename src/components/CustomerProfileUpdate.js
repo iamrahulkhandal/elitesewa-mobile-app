@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { Button, Snackbar, Text } from 'react-native-paper';
 import axios from 'axios';
-import { REACT_NATIVE_SERVER_URL } from '@env';
+import { API_URL } from '@env';
 import { useSelector, useDispatch } from 'react-redux';
 import { setProfileCompletionStatus } from '../store/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -53,7 +53,7 @@ const CustomerProfileUpdate = ({ navigation }) => {
         if (!user || !role) throw new Error('No user data found');
 
         const response = await axios.get(
-          `${REACT_NATIVE_SERVER_URL}/api/${role}/profile`,
+          `${API_URL}/api/${role}/profile`,
           { params: { mobile: user } }
         );
 
@@ -108,7 +108,7 @@ const CustomerProfileUpdate = ({ navigation }) => {
     try {
       setIsLoading(true);
       const response = await axios.put(
-        `${REACT_NATIVE_SERVER_URL}/api/${role}/update-profile`,
+        `${API_URL}/api/${role}/update-profile`,
         {
           mobile: user,
           ...profileData,

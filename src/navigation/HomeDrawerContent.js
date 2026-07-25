@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
-import { REACT_NATIVE_SERVER_URL } from '@env';
+import { API_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 
@@ -28,7 +28,7 @@ const HomeDrawerContent = ({ navigation, role, handleLogout }) => {
       }
       setUserRole(role);
 
-      const response = await axios.get(`${REACT_NATIVE_SERVER_URL}/api/${role}/profile`, {
+      const response = await axios.get(`${API_URL}/api/${role}/profile`, {
         params: { mobile: user }, // Use the appropriate identifier
       });
 

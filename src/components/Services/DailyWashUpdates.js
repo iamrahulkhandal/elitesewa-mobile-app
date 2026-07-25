@@ -13,7 +13,7 @@ import {
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/native';
-import { REACT_NATIVE_SERVER_URL } from '@env';
+import { API_URL } from '@env';
 
 // Shows the date-wise daily wash photos for a booking. Customers can leave one
 // comment per day; executives (and others) see the photos and any comment.
@@ -26,7 +26,7 @@ const DailyWashUpdates = ({ paymentResponseId }) => {
 
   const fetchLogs = async () => {
     try {
-      const response = await axios.get(`${REACT_NATIVE_SERVER_URL}/api/dailywash/${paymentResponseId}`);
+      const response = await axios.get(`${API_URL}/api/dailywash/${paymentResponseId}`);
       setLogs(response.data.logs || []);
     } catch (error) {
       console.error('Error fetching daily wash logs:', error.message);
@@ -52,7 +52,7 @@ const DailyWashUpdates = ({ paymentResponseId }) => {
     }
     setSavingId(logId);
     try {
-      await axios.put(`${REACT_NATIVE_SERVER_URL}/api/dailywash/${logId}/comment`, {
+      await axios.put(`${API_URL}/api/dailywash/${logId}/comment`, {
         customerComment: comment,
       });
       setDrafts((prev) => {
@@ -88,7 +88,7 @@ const DailyWashUpdates = ({ paymentResponseId }) => {
               {log.images.map((img, index) => (
                 <Image
                   key={index}
-                  source={{ uri: `${REACT_NATIVE_SERVER_URL}/${img}` }}
+                  source={{ uri: `${API_URL}/${img}` }}
                   style={styles.photo}
                 />
               ))}

@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { useSelector } from "react-redux"; // Import to access Redux state
 import axios from "axios";
-import { REACT_NATIVE_SERVER_URL } from "@env";
+import { API_URL } from "@env";
 
 const TestimonialCreate = ({ onSuccess }) => {
   const { user } = useSelector((state) => state.auth); // Access user details from Redux
@@ -41,7 +41,7 @@ const TestimonialCreate = ({ onSuccess }) => {
     }
 
     try {
-      await axios.post(`${REACT_NATIVE_SERVER_URL}/api/testimonials`, formData, {
+      await axios.post(`${API_URL}/api/testimonials`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       Alert.alert("Success", "Testimonial submitted successfully!");

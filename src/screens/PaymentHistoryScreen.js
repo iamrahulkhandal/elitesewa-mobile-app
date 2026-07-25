@@ -12,7 +12,7 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { REACT_NATIVE_SERVER_URL } from '@env';
+import { API_URL } from '@env';
 
 const STATUS_COLORS = {
   SUCCESS: '#2ecc71',
@@ -36,8 +36,8 @@ const PaymentHistoryScreen = ({ navigation }) => {
       // Executives see the bookings assigned to them; customers see their own.
       const endpoint =
         role === 'executive'
-          ? `${REACT_NATIVE_SERVER_URL}/api/payment/executive/${userId}`
-          : `${REACT_NATIVE_SERVER_URL}/api/payment/customer/${userId}`;
+          ? `${API_URL}/api/payment/executive/${userId}`
+          : `${API_URL}/api/payment/customer/${userId}`;
       const response = await axios.get(endpoint);
       const list = response.data.payments || [];
       // Newest first.

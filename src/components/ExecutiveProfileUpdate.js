@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { Button, Snackbar, Text, Checkbox } from 'react-native-paper';
 import axios from 'axios';
-import { REACT_NATIVE_SERVER_URL } from '@env';
+import { API_URL } from '@env';
 import { useDispatch } from 'react-redux';
 import { setProfileCompletionStatus } from '../store/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -51,7 +51,7 @@ const ExecutiveProfileUpdate = ({ navigation }) => {
         const parsedUserData = JSON.parse(userDataString);
         const { role, user } = parsedUserData;
         const response = await axios.get(
-          `${REACT_NATIVE_SERVER_URL}/api/${role}/profile`,
+          `${API_URL}/api/${role}/profile`,
           { params: { mobile: user } }
         );
 
@@ -71,7 +71,7 @@ const ExecutiveProfileUpdate = ({ navigation }) => {
 
     const fetchServices = async () => {
       try {
-        const response = await axios.get(`${REACT_NATIVE_SERVER_URL}/api/services`);
+        const response = await axios.get(`${API_URL}/api/services`);
         // Ensure the response contains valid service data
         if (Array.isArray(response.data)) {
           //console.log(response.data);
@@ -133,7 +133,7 @@ const ExecutiveProfileUpdate = ({ navigation }) => {
 
     try {
       setIsLoading(true);
-      await axios.put(`${REACT_NATIVE_SERVER_URL}/api/${role}/update-profile`, {
+      await axios.put(`${API_URL}/api/${role}/update-profile`, {
         mobile: user,
         ...profileData,
       });

@@ -5,7 +5,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {CommonActions} from '@react-navigation/native';
 import {logoutAndClear} from '../store/authSlice'; // Updated import
 import axios from 'axios';
-import {REACT_NATIVE_SERVER_URL} from '@env';
+import {API_URL} from '@env';
 
 const Dashboard = ({navigation}) => {
   const dispatch = useDispatch();
@@ -17,7 +17,7 @@ const Dashboard = ({navigation}) => {
       if (user) {
         try {
           const response = await axios.get(
-            `${REACT_NATIVE_SERVER_URL}/api/${role}/profile-status`,
+            `${API_URL}/api/${role}/profile-status`,
             {params: {mobile: user}},
           );
           setIsProfileComplete(response.data.isProfileComplete);

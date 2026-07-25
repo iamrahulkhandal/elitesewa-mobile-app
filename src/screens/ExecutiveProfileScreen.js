@@ -11,7 +11,7 @@ import {
 import { Svg, Path } from 'react-native-svg';
 import { Avatar, Button, Snackbar, ActivityIndicator } from 'react-native-paper';
 import axios from 'axios';
-import { REACT_NATIVE_SERVER_URL } from '@env';
+import { API_URL } from '@env';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import defaultImage from '../assets/male.png';
@@ -44,7 +44,7 @@ function ExecutiveProfileScreen() {
       }
       setUserRole(role);
 
-      const response = await axios.get(`${REACT_NATIVE_SERVER_URL}/api/${role}/profile`, {
+      const response = await axios.get(`${API_URL}/api/${role}/profile`, {
         params: { mobile: user }, // Use the appropriate identifier
       });
 

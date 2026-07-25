@@ -19,7 +19,7 @@ import axios from 'axios';
 import * as ImagePicker from 'react-native-image-picker';
 import { ensureCameraPermission } from '../../utils/cameraPermission';
 import RNPickerSelect from 'react-native-picker-select';
-import { REACT_NATIVE_SERVER_URL } from '@env';
+import { API_URL } from '@env';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import YoutubeIframe from 'react-native-youtube-iframe';
@@ -65,7 +65,7 @@ const ServicesCreate = ({ navigation }) => {
   // Fetch available icons and categories
   const fetchAvailableIcons = useCallback(async () => {
     try {
-      const response = await axios.get(`${REACT_NATIVE_SERVER_URL}/api/icons`);
+      const response = await axios.get(`${API_URL}/api/icons`);
       setAvailableIcons(Array.isArray(response.data.icons) ? response.data.icons : []);
     } catch (error) {
       console.error('Error fetching icons:', error);
@@ -75,7 +75,7 @@ const ServicesCreate = ({ navigation }) => {
 
   const fetchTopLevelCategories = useCallback(async () => {
     try {
-      const response = await axios.get(`${REACT_NATIVE_SERVER_URL}/api/categories`);
+      const response = await axios.get(`${API_URL}/api/categories`);
       const topLevelCategories = response.data.filter(cat => cat.parentId === null);
       setDropdownData([{ parentId: null, items: formatPickerItems(topLevelCategories), selectedId: null }]);
     } catch (error) {
@@ -119,7 +119,7 @@ const ServicesCreate = ({ navigation }) => {
 
   const fetchChildCategories = async parentId => {
     try {
-      const response = await axios.get(`${REACT_NATIVE_SERVER_URL}/api/categories/parent/${parentId}`);
+      const response = await axios.get(`${API_URL}/api/categories/parent/${parentId}`);
       return response.data;
     } catch (error) {
       console.error('Error fetching child categories:', error);
@@ -296,7 +296,7 @@ const ServicesCreate = ({ navigation }) => {
       });
       // console.log(uploadData);
 
-      await axios.post(`${REACT_NATIVE_SERVER_URL}/api/services`, uploadData, {
+      await axios.post(`${API_URL}/api/services`, uploadData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       Alert.alert('Success', 'Service created successfully');

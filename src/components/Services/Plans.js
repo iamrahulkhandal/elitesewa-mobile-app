@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import RazorpayCheckout from 'react-native-razorpay';
 import axios from 'axios';
-import { REACT_NATIVE_SERVER_URL, RAZORPAY_KEY_ID } from '@env';
+import { API_URL, RAZORPAY_KEY_ID } from '@env';
 
 const Plans = ({ plan, serviceId, user }) => {
   const { name, price, duration, keyPoints } = plan;
@@ -15,7 +15,7 @@ const Plans = ({ plan, serviceId, user }) => {
 
     const options = {
       description: `Payment for ${name}`,
-      image: `${REACT_NATIVE_SERVER_URL}/uploads/noimage.png`,
+      image: `${API_URL}/uploads/noimage.png`,
       currency: 'INR',
       key: RAZORPAY_KEY_ID,
       amount: price * 100, // Convert to paise (Indian currency unit)
@@ -35,9 +35,9 @@ const Plans = ({ plan, serviceId, user }) => {
     try {
       // Save initial payment request
       // console.log('====================================');
-      // console.log(`${REACT_NATIVE_SERVER_URL}/api/payment/save-request`);
+      // console.log(`${API_URL}/api/payment/save-request`);
       // console.log('====================================');
-      await axios.post(`${REACT_NATIVE_SERVER_URL}/api/payment/save-request`, {
+      await axios.post(`${API_URL}/api/payment/save-request`, {
         userName: user,
         serviceId,
         planId,
@@ -53,10 +53,10 @@ const Plans = ({ plan, serviceId, user }) => {
       const data = await RazorpayCheckout.open(options);
 
       // console.log('====================================');
-      // console.log(`${REACT_NATIVE_SERVER_URL}/api/payment/save-response`);
+      // console.log(`${API_URL}/api/payment/save-response`);
       // console.log('====================================');
       // Save successful payment response
-      await axios.post(`${REACT_NATIVE_SERVER_URL}/api/payment/save-response`, {
+      await axios.post(`${API_URL}/api/payment/save-response`, {
         userName: user,
         serviceId,
         planId,
@@ -69,7 +69,7 @@ const Plans = ({ plan, serviceId, user }) => {
       Alert.alert('Success', `Payment ID: ${data.razorpay_payment_id}`);
     } catch (error) {
       // Save failed payment response
-      await axios.post(`${REACT_NATIVE_SERVER_URL}/api/payment/save-response`, {
+      await axios.post(`${API_URL}/api/payment/save-response`, {
         userName: user,
         serviceId,
         planId,

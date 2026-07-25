@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Button } from 'react-native';
 import axios from 'axios';
-import { REACT_NATIVE_SERVER_URL } from '@env';
+import { API_URL } from '@env';
 import { useNavigation } from '@react-navigation/native';
 
 const ServicesList = () => {
@@ -14,7 +14,7 @@ const ServicesList = () => {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const response = await axios.get(`${REACT_NATIVE_SERVER_URL}/api/services`);
+        const response = await axios.get(`${API_URL}/api/services`);
         setServices(response.data);
       } catch (error) {
         console.error(error);

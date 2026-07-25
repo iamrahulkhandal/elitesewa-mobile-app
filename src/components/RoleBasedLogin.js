@@ -4,7 +4,7 @@ import {View, StyleSheet,Keyboard,TouchableWithoutFeedback,TextInput,TouchableOp
 import { useRoute } from '@react-navigation/native';
 import {Button, Text, Snackbar} from 'react-native-paper';
 import axios from 'axios'; 
-import {REACT_NATIVE_SERVER_URL} from '@env';
+import {API_URL} from '@env';
 import {useDispatch} from 'react-redux';
 import {loginAndPersist, setProfileCompleted, setProfileCompletionStatus} from '../store/authSlice';
 import { CommonActions } from '@react-navigation/native';
@@ -26,10 +26,10 @@ const RoleBasedLogin = ({navigation}) => {
   useEffect(() => {
     const checkUserExists = async () => {
       if (mobile.length === 10) {
-        // console.log(`${REACT_NATIVE_SERVER_URL}/api/${role}/check-existence`);
+        // console.log(`${API_URL}/api/${role}/check-existence`);
 
         const response = await axios.get(
-          `${REACT_NATIVE_SERVER_URL}/api/${role}/check-existence`,
+          `${API_URL}/api/${role}/check-existence`,
           {params: {mobile}},
         );
         setUserExists(response.data.exists);
@@ -51,10 +51,9 @@ const RoleBasedLogin = ({navigation}) => {
 
     try {
       setIsLoading(true);
-       console.log(`${REACT_NATIVE_SERVER_URL}/api/${role}/send-otp`); 
 
       const otpresponse = await axios.post(
-        `${REACT_NATIVE_SERVER_URL}/api/${role}/send-otp`,
+        `${API_URL}/api/${role}/send-otp`,
         {mobile},
       );
       // console.log('====================================');
@@ -81,7 +80,7 @@ const RoleBasedLogin = ({navigation}) => {
     try {
       setIsLoading(true);
       const response = await axios.post(
-        `${REACT_NATIVE_SERVER_URL}/api/${role}/verify-otp`,
+        `${API_URL}/api/${role}/verify-otp`,
         {mobile, otp},
       );
 
@@ -96,7 +95,7 @@ const RoleBasedLogin = ({navigation}) => {
 
         // Check if profile is complete
         const profileResponse = await axios.get(
-          `${REACT_NATIVE_SERVER_URL}/api/${role}/profile-status`,
+          `${API_URL}/api/${role}/profile-status`,
           {params: {mobile}},
         );
         if (profileResponse.data.isProfileComplete === true) {

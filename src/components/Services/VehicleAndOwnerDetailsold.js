@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import RazorpayCheckout from 'react-native-razorpay';
 import { Button, Text } from 'react-native-paper';
 import axios from 'axios';
-import { REACT_NATIVE_SERVER_URL, RAZORPAY_KEY_ID } from '@env';
+import { API_URL, RAZORPAY_KEY_ID } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import moment from 'moment';
@@ -401,7 +401,7 @@ const VehicleAndOwnerDetails = (props) => {
 
       // Save payment request
       const paymentRequestResponse = await axios.post(
-        `${REACT_NATIVE_SERVER_URL}/api/payment/save-request`,
+        `${API_URL}/api/payment/save-request`,
         vehicleDetails
       );
       //console.log('paymentRequestResponse', paymentRequestResponse);
@@ -419,7 +419,7 @@ const VehicleAndOwnerDetails = (props) => {
         try {
           const options = {
             description: `Payment for ${vehicleDetails.membershipDetails.plan}`,
-            image: `${REACT_NATIVE_SERVER_URL}/uploads/noimage.png`,
+            image: `${API_URL}/uploads/noimage.png`,
             currency: 'INR',
             key: RAZORPAY_KEY_ID,
             amount: planPrice * 100,
@@ -447,7 +447,7 @@ const VehicleAndOwnerDetails = (props) => {
       }
 
       // Save payment response
-      await axios.post(`${REACT_NATIVE_SERVER_URL}/api/payment/save-response`, {
+      await axios.post(`${API_URL}/api/payment/save-response`, {
         userName: ownerName,
         userId,
         serviceId,
@@ -596,7 +596,7 @@ const VehicleAndOwnerDetails = (props) => {
 
   const retrieveFormData = async () => {
     try {
-      const response = await axios.get(`${REACT_NATIVE_SERVER_URL}/api/payment/vehicle/${vehicleId}`);
+      const response = await axios.get(`${API_URL}/api/payment/vehicle/${vehicleId}`);
       const data = response.data;
 
       // Log the response for debugging purposes

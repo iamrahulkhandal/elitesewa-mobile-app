@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Button, Alert,TouchableOpacity,StyleSheet,Text } from 'react-native';
 import RazorpayCheckout from 'react-native-razorpay';
-import { REACT_NATIVE_SERVER_URL } from '@env';
+import { API_URL } from '@env';
 
 
 const RazorpayIntegration = (props) => { 
@@ -39,7 +39,7 @@ const RazorpayIntegration = (props) => {
   };
 
   const savePaymentData = async (paymentData) => {
-    const response = await fetch(`${REACT_NATIVE_SERVER_URL}/api/razorPayPaymentRoutes`, {
+    const response = await fetch(`${API_URL}/api/razorPayPaymentRoutes`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(paymentData),

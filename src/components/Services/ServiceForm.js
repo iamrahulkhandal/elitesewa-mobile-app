@@ -14,7 +14,7 @@ import Availability from './Availability';
 import ServiceProviderDetails from './ServiceProviderDetails';
 import AddonsAndReview from './AddonsAndReview';
 import axios from 'axios';
-import { REACT_NATIVE_SERVER_URL } from '@env';
+import { API_URL } from '@env';
 import {
   updateField,
   setError,
@@ -213,9 +213,9 @@ const ServiceForm = () => {
     if (validateStep()) {
       try {
         // console.log('===============ffff=====================');
-        // console.log(`${REACT_NATIVE_SERVER_URL}/api/services`);
+        // console.log(`${API_URL}/api/services`);
         // console.log('====================================');
-        const response = await axios.post(`${REACT_NATIVE_SERVER_URL}/api/services`, formData);
+        const response = await axios.post(`${API_URL}/api/services`, formData);
         // console.log(response.data);
         Alert.alert('Success', 'Service submitted successfully!');
         dispatch(resetForm());

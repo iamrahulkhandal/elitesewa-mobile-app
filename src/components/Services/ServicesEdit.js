@@ -5,7 +5,7 @@ import axios from 'axios';
 import * as ImagePicker from 'react-native-image-picker';
 import { ensureCameraPermission } from '../../utils/cameraPermission';
 import RNPickerSelect from 'react-native-picker-select';
-import {REACT_NATIVE_SERVER_URL} from '@env';
+import {API_URL} from '@env';
 import YoutubeIframe from 'react-native-youtube-iframe';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -50,7 +50,7 @@ const ServicesEdit = ({navigation, route}) => {
   const getParentChildRelations = async categoryId => {
     try {
       const response = await axios.get(
-        `${REACT_NATIVE_SERVER_URL}/api/categories/parents/${categoryId}`,
+        `${API_URL}/api/categories/parents/${categoryId}`,
       );
       return response.data; // Assuming this returns an array of parent categories
     } catch (error) {
@@ -62,7 +62,7 @@ const ServicesEdit = ({navigation, route}) => {
   const fetchCategoriesByParentId = async parentId => {
     try {
       const response = await axios.get(
-        `${REACT_NATIVE_SERVER_URL}/api/categories/parent/${parentId}`,
+        `${API_URL}/api/categories/parent/${parentId}`,
       );
       return response.data;
     } catch (error) {
@@ -75,7 +75,7 @@ const ServicesEdit = ({navigation, route}) => {
     try {
       // Fetching main service data
       const {data} = await axios.get(
-        `${REACT_NATIVE_SERVER_URL}/api/services/${serviceId}`,
+        `${API_URL}/api/services/${serviceId}`,
       );
       // Destructure service data with default fallbacks
       const {
@@ -149,7 +149,7 @@ const ServicesEdit = ({navigation, route}) => {
 
   const fetchAvailableIcons = useCallback(async () => {
     try {
-      const response = await axios.get(`${REACT_NATIVE_SERVER_URL}/api/icons`);
+      const response = await axios.get(`${API_URL}/api/icons`);
       setAvailableIcons(response.data.icons || []);
     } catch (error) {
       console.error('Error fetching icons:', error);
@@ -295,7 +295,7 @@ const ServicesEdit = ({navigation, route}) => {
       });
   
       const response = await axios.put(
-        `${REACT_NATIVE_SERVER_URL}/api/services/${serviceId}`,
+        `${API_URL}/api/services/${serviceId}`,
         uploadData,
         {
           headers: {
@@ -351,7 +351,7 @@ const handleApiError = (error) => {
  
           const isUploaded = uri.startsWith("file:///");
           // Determine the source URI based on the isOnChange flag
-          const sourceUri = isUploaded ? uri : `${REACT_NATIVE_SERVER_URL}/${uri}`;
+          const sourceUri = isUploaded ? uri : `${API_URL}/${uri}`;
           //const sourceUri =  uri;
           return (
             <View key={`${isBanner ? 'banner' : 'image'}-${index}-${uri}`} style={styles.imageWrapper}>

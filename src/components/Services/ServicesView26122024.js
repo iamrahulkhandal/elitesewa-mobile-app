@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity, Alert, Dimensions } from 'react-native';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
-import { REACT_NATIVE_SERVER_URL } from '@env';
+import { API_URL } from '@env';
 import Swiper from 'react-native-swiper';
 import Plans from '../../components/Services/Plans'
 import ImageViewing from 'react-native-image-viewing';
@@ -32,7 +32,7 @@ const ServicesView = ({ route, navigation }) => {
   const fetchServiceDetails = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${REACT_NATIVE_SERVER_URL}/api/services/${serviceId}`);
+      const response = await axios.get(`${API_URL}/api/services/${serviceId}`);
         // Get the video ID from service.videoUrl
       setVideoId(extractVideoId(response?.data?.videoUrl));
       // console.log('====================================');
@@ -62,7 +62,7 @@ const ServicesView = ({ route, navigation }) => {
           text: 'Delete',
           onPress: async () => {
             try {
-              await axios.delete(`${REACT_NATIVE_SERVER_URL}/api/services/${serviceId}`);
+              await axios.delete(`${API_URL}/api/services/${serviceId}`);
               Alert.alert('Success', 'Service deleted successfully');
               navigation.goBack();
             } catch (error) {
@@ -82,8 +82,8 @@ const ServicesView = ({ route, navigation }) => {
   };
 
   const viewingImages = viewingType === 'banners'
-    ? service?.banners?.map(banner => ({ uri: `${REACT_NATIVE_SERVER_URL}/${banner}` }))
-    : service?.images?.map(image => ({ uri: `${REACT_NATIVE_SERVER_URL}/${image}` }));
+    ? service?.banners?.map(banner => ({ uri: `${API_URL}/${banner}` }))
+    : service?.images?.map(image => ({ uri: `${API_URL}/${image}` }));
 
   if (loading) {
     return (
@@ -129,7 +129,7 @@ const ServicesView = ({ route, navigation }) => {
           {service?.banners?.map((banner, index) => (
             <TouchableOpacity key={index} onPress={() => handleImagePress(index, 'banners')}>
               <Image
-                source={{ uri: `${REACT_NATIVE_SERVER_URL}/${banner}` }}
+                source={{ uri: `${API_URL}/${banner}` }}
                 style={styles.bannerImage}
               />
             </TouchableOpacity>
@@ -177,7 +177,7 @@ const ServicesView = ({ route, navigation }) => {
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {service?.images?.map((image, index) => (
             <TouchableOpacity key={index} onPress={() => handleImagePress(index, 'images')}>
-              <Image source={{ uri: `${REACT_NATIVE_SERVER_URL}/${image}` }} style={styles.galleryImage} />
+              <Image source={{ uri: `${API_URL}/${image}` }} style={styles.galleryImage} />
             </TouchableOpacity>
           ))}
         </ScrollView>

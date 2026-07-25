@@ -14,7 +14,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import * as ImagePicker from 'react-native-image-picker';
-import { REACT_NATIVE_SERVER_URL } from '@env';
+import { API_URL } from '@env';
 
 // Form Reducer for Managing State More Efficiently
 const formReducer = (state, action) => {
@@ -62,7 +62,7 @@ const ExecutiveServicesUpdate = ({route ,navigation}) =>{
     setLoading(true);
     // Send the request 
     try {
-      const response = await axios.put(`${REACT_NATIVE_SERVER_URL}/api/executiveservices/${item_id}`, {
+      const response = await axios.put(`${API_URL}/api/executiveservices/${item_id}`, {
         payment_id:payment_id,
         customerRating: formState.customerRating,
         customerReview: formState.customerReview}, {

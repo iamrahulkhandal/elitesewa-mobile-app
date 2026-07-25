@@ -14,7 +14,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Svg, Path } from 'react-native-svg';
 import { Avatar, Button, Snackbar, ActivityIndicator } from 'react-native-paper';
 import axios from 'axios';
-import { REACT_NATIVE_SERVER_URL } from '@env';
+import { API_URL } from '@env';
 import { useFocusEffect } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import defaultImage from '../assets/male.png';
@@ -48,7 +48,7 @@ function ProfileScreen() {
       }
       setUserRole(role);
 
-      const response = await axios.get(`${REACT_NATIVE_SERVER_URL}/api/${role}/profile`, {
+      const response = await axios.get(`${API_URL}/api/${role}/profile`, {
         params: { mobile: user }, // Use the appropriate identifier
       });
 
@@ -477,7 +477,7 @@ function ProfileScreen() {
                       if (userDataString) {
                         const parsedUserData = JSON.parse(userDataString);
                         const { role, user } = parsedUserData;
-                        await axios.delete(`${REACT_NATIVE_SERVER_URL}/api/${role}/delete-account`, {
+                        await axios.delete(`${API_URL}/api/${role}/delete-account`, {
                           params: { mobile: user },
                         });
                         // Clear local storage

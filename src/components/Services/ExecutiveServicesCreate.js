@@ -15,7 +15,7 @@ import {
 import axios from 'axios';
 import * as ImagePicker from 'react-native-image-picker';
 import { ensureCameraPermission } from '../../utils/cameraPermission';
-import { REACT_NATIVE_SERVER_URL } from '@env';
+import { API_URL } from '@env';
 
 // Form Reducer for Managing State More Efficiently
 const formReducer = (state, action) => {
@@ -139,7 +139,7 @@ const ExecutiveServicesCreate = ({route , navigation}) =>{
     });
 
     try {
-      const response = await axios.post(`${REACT_NATIVE_SERVER_URL}/api/executiveservices`, formData, {
+      const response = await axios.post(`${API_URL}/api/executiveservices`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       // console.log(response.data);

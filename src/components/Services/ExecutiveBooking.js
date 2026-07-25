@@ -12,7 +12,7 @@ import {
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/native';
-import { REACT_NATIVE_SERVER_URL } from '@env';
+import { API_URL } from '@env';
 
 const ExecutiveBooking = ({ navigation }) => {
   const [payments, setPayments] = useState([]);
@@ -27,7 +27,7 @@ const ExecutiveBooking = ({ navigation }) => {
     if (!userId || !role) return;
     setLoading(true);
     try {
-      const response = await axios.get(`${REACT_NATIVE_SERVER_URL}/api/payment/${role}/${userId}`);
+      const response = await axios.get(`${API_URL}/api/payment/${role}/${userId}`);
       setPayments(response.data.payments || []);
     } catch (error) {
       console.error('Error fetching payment listings:', error.message);
@@ -52,7 +52,7 @@ const ExecutiveBooking = ({ navigation }) => {
 
   const handleCancelBooking = async (paymentId) => {
     try {
-      await axios.put(`${REACT_NATIVE_SERVER_URL}/api/payment/${paymentId}/cancel`);
+      await axios.put(`${API_URL}/api/payment/${paymentId}/cancel`);
       Alert.alert('Success', 'Booking has been cancelled successfully.');
       fetchPayments(); // Refresh the list after cancellation
     } catch (error) {

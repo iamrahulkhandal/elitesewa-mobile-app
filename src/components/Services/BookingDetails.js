@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
 import Swiper from 'react-native-swiper';
-import { REACT_NATIVE_SERVER_URL } from '@env';
+import { API_URL } from '@env';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Import FontAwesome icons
 import DailyWashUpdates from './DailyWashUpdates';
 const { width: screenWidth } = Dimensions.get('window');
@@ -31,7 +31,7 @@ useFocusEffect(
          const promises = longImages.map((img) => {
            return new Promise((resolve) => {
              Image.getSize(
-               `${REACT_NATIVE_SERVER_URL}${img}`,
+               `${API_URL}${img}`,
                (width, height) => {
                  const scaledHeight = (height / width) * screenWidth * 0.85;
                  resolve({ width: screenWidth * 0.95, height: scaledHeight });
@@ -51,7 +51,7 @@ useFocusEffect(
  
 const fetchShortImages = async (id) => {
   try {
-    const response = await axios.get(`${REACT_NATIVE_SERVER_URL}/api/services/shorting/${id}`);
+    const response = await axios.get(`${API_URL}/api/services/shorting/${id}`);
     setShortImages(response.data.shortdescription || []);
     setLongImages(response.data.longdescription || []);
     console.log('Long description images:', response.data.longdescription);
@@ -69,7 +69,7 @@ const fetchShortImages = async (id) => {
 
 const fetchBookingDetails = async () => {
   try {
-    const response = await axios.get(`${REACT_NATIVE_SERVER_URL}/api/payment/payment-details/${item_id}`);
+    const response = await axios.get(`${API_URL}/api/payment/payment-details/${item_id}`);
     const bookingData = response.data.paymentResponse;
     setBookingDetails(bookingData);
     
@@ -172,7 +172,7 @@ const fetchBookingDetails = async () => {
                         <TouchableOpacity key={`banner-${index}`} onPress={() => handleImagePress(index, 'banners')}>
                     <Image
                     key={index}
-                    source={{ uri: `${REACT_NATIVE_SERVER_URL}${img}` }}
+                    source={{ uri: `${API_URL}${img}` }}
                     style={{
                       width: imageDimensions[index]?.width || screenWidth* 0.85,
                       height: imageDimensions[index]?.height || 200, 
@@ -218,7 +218,7 @@ const fetchBookingDetails = async () => {
         <View style={styles.servicesexeimage}>
             {executiveServiceId.images.map((img, index) => (
               <View key={index} style={{ marginBottom: 10 }}>
-                <Image source={{ uri: `${REACT_NATIVE_SERVER_URL}/${img}` }} style={styles.image} />
+                <Image source={{ uri: `${API_URL}/${img}` }} style={styles.image} />
               </View>
             ))}
         </View>
