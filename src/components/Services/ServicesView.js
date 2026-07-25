@@ -176,6 +176,7 @@ const ServicesView = ({ route, navigation }) => {
       planPrice: plan.price,
       planActive: false,
       planDuration: plan.duration,
+      billingType: plan.billingType || 'onetime',
     });
   };
   const handleActivePlanSelect = (plan, vehicle, planActiveDate) => {

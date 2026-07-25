@@ -1,6 +1,6 @@
 import "react-native-get-random-values";
 import React, { useEffect, useState, useCallback } from 'react';
-import { FlatList,StyleSheet, Alert, View ,Keyboard, ScrollView,TouchableWithoutFeedback} from 'react-native';
+import { FlatList,StyleSheet, Alert, View, Text, Keyboard, ScrollView,TouchableWithoutFeedback} from 'react-native';
 import { useSelector } from 'react-redux';
 import { Snackbar } from 'react-native-paper';
 import RazorpayCheckout from 'react-native-razorpay';
@@ -22,7 +22,8 @@ import { useNavigation } from '@react-navigation/native';
 const Index = (props) => {
   const { route: vehicleRoute } = props;
   const navigation = useNavigation();
-  const { serviceId, planPrice, planId, planDuration, vehicleId, planActive, planActiveDate } = vehicleRoute.params;
+  const { serviceId, planPrice, planId, planDuration, vehicleId, planActive, planActiveDate, billingType } = vehicleRoute.params;
+  const isMonthlyPlan = billingType === 'monthly';
     const [showSnackbar, setShowSnackbar] = useState(false);
   const [message, setMessage] = useState('');
   const [location, setLocation] = useState({ latitude: 28.6132, longitude: 77.2092, address:null});
@@ -477,7 +478,53 @@ const Index = (props) => {
       const paymentRequestId = paymentRequestResponse.data.paymentRequestId;
       const fetchedVehicleId = paymentRequestResponse.data.vehicleId;
 
-      if (!planActive) {
+      if (isMonthlyPlan && !planActive) {
+        // --- Monthly plan: Razorpay Autopay subscription (mandate + month 1). ---
+        const subResponse = await axios.post(`${API_URL}/api/subscription/create`, {
+          userId,
+          serviceId,
+          planId,
+          vehicleId: fetchedVehicleId,
+          paymentRequestId,
+        });
+        if (!subResponse.data?.success || !subResponse.data?.subscriptionId) {
+          throw new Error(subResponse.data?.message || 'Unable to start subscription.');
+        }
+
+        const subOptions = {
+          description: `Monthly subscription for plan ${membership.plan}`,
+          image: `${API_URL}/uploads/noimage.png`,
+          currency: 'INR',
+          key: subResponse.data.keyId || RAZORPAY_KEY_ID,
+          subscription_id: subResponse.data.subscriptionId,
+          name: 'EliteSewa',
+          prefill: {
+            email: ownerData.ownerEmail,
+            contact: ownerData.ownerContact,
+            name: ownerData.ownerName,
+          },
+          notes: { serviceId, planId },
+          theme: { color: '#F37254' },
+        };
+
+        const paymentData = await RazorpayCheckout.open(subOptions);
+
+        const verifyResponse = await axios.post(`${API_URL}/api/subscription/verify`, {
+          razorpay_payment_id: paymentData.razorpay_payment_id,
+          razorpay_subscription_id: paymentData.razorpay_subscription_id || subResponse.data.subscriptionId,
+          razorpay_signature: paymentData.razorpay_signature,
+        });
+        if (!verifyResponse.data?.success) {
+          throw new Error(verifyResponse.data?.message || 'Subscription verification failed.');
+        }
+
+        navigation.navigate('PaymentSuccess', {
+          paymentId: verifyResponse.data.paymentResponse?.paymentId,
+          vehicleNumber: vehicleData.number,
+          planActive,
+          planPrice,
+        });
+      } else if (!planActive) {
         // --- New paid booking: create a server-side order, pay, then verify. ---
         // 1) Create the Razorpay order on the server so the payment can be
         //    cryptographically verified afterwards (never trust the client).
@@ -687,6 +734,17 @@ const Index = (props) => {
     ...(serviceId === '673f16bd7a12ef01b200c941'
       ? [{ key: 'dropdown', component: <Dropdown label="Select Service Type" selectedValue={serviceData.serviceType} onValueChange={handlePlanChange} options={services}  /> }]
       : []),
+    ...(isMonthlyPlan && !planActive
+      ? [{
+          key: 'autopayNote',
+          component: (
+            <Text style={styles.autopayNote}>
+              This plan auto-renews every month for 12 months via Razorpay Autopay.
+              You can cancel anytime from Active Plans.
+            </Text>
+          ),
+        }]
+      : []),
     { key: 'submitButton', component: <SubmitButton onSubmit={handleSubmit} /> },
     ...(serviceId === '673f16c47a12ef01b200c943'
       ? [{ key: 'priceBreakout', component: <PriceBreakout serviceid={serviceId} locationData={routeData}  planPrice={planPrice} /> }]
@@ -725,6 +783,13 @@ const Index = (props) => {
 };
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'center', padding: 10 },
+  autopayNote: {
+    color: '#6b7280',
+    fontSize: 13,
+    marginTop: 10,
+    marginBottom: 4,
+    textAlign: 'center',
+  },
   updateform: { backgroundColor: '#fff', paddingHorizontal: 15, paddingVertical: 40, borderRadius: 10 },
   input: {
     backgroundColor: "#fff",

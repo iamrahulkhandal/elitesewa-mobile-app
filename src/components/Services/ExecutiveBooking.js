@@ -99,6 +99,7 @@ const ExecutiveBooking = ({ navigation }) => {
           <Text style={styles.text}>Payment Status: {item.status}</Text>
           {daily ? (
             <Text style={styles.progressText}>
+              {item.subscriptionId ? `Month ${item.monthNumber || 1} · ` : ''}
               Washes logged: {daysLogged ?? '…'}{Number.isFinite(totalDays) ? ` / ${totalDays} days` : ' days'}
             </Text>
           ) : (

@@ -17,6 +17,7 @@ import Swiper from 'react-native-swiper';
 import TopPlacesCarousel from '../components/TopPlacesCarousel';
 import HomeServices from '../components/Shared/HomeServices';
 import CustomHomeServices from '../components/Shared/CustomHomeServices';
+import SubscriptionBanner from '../components/Shared/SubscriptionBanner';
 import CleaningService from '../components/Shared/CleaningService';
 import Services from '../components/Shared/Services';
 import PopularServices from '../components/Shared/PopularServices';
@@ -197,6 +198,7 @@ const CustomerHomeScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <SubscriptionBanner />
       <FlatList
         data={[
           { id: '3', type: 'TopPlacesCarousel', list: TOP_PLACES },

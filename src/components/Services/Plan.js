@@ -7,7 +7,12 @@ const Plan = ({ plan, onSelect,serviceid}) => {
   return (
     <View style={styles.card}>
       <Text style={styles.title}>{name}</Text>
-      <Text style={styles.price}>Starting From @ Rs. {price}</Text>
+      <Text style={styles.price}>
+        {plan.billingType === 'monthly' ? `Rs. ${price} / month` : `Starting From @ Rs. ${price}`}
+      </Text>
+      {plan.billingType === 'monthly' && (
+        <Text style={styles.autopayBadge}>Auto-renews monthly · cancel anytime</Text>
+      )}
       <Text style={styles.duration}>Plan Duration: {duration} {serviceid === '673f16b97a12ef01b200c940' ? 'Minutes' : 'Days'}</Text>
       {keyPoints?.length > 0 && (
         <Text style={styles.keyPointsHeading}>Key Points:</Text>
@@ -59,6 +64,12 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     shadowOffset: { width: 0, height: 2 },
     elevation: 3,
+  },
+  autopayBadge: {
+    color: '#09b5e1',
+    fontWeight: '700',
+    fontSize: 13,
+    marginBottom: 4,
   },
   title: {
     fontSize: 18,

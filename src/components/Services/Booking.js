@@ -138,6 +138,7 @@ const Booking = ({ navigation }) => {
           {daily ? (
             <>
               <Text style={styles.progressText}>
+                {item.subscriptionId ? `Month ${item.monthNumber || 1} · ` : ''}
                 Washes done: {daysLogged ?? '…'}{Number.isFinite(totalDays) ? ` / ${totalDays} days` : ' days'}
               </Text>
               {endDate && (
