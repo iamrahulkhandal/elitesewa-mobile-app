@@ -13,11 +13,16 @@ const PaymentFailedScreen = ({ route }) => {
         <Icon name="times-circle" size={50} color="red" />
       </View>
       <Text style={styles.header}>Payment Failed</Text>
-      {/* Show what actually went wrong when we know it, so the user can fix
-          the problem instead of guessing. */}
-      <Text style={styles.subHeader}>
-        {reason || 'There was an issue with your transaction'}
-      </Text>
+      <Text style={styles.subHeader}>There was an issue with your transaction</Text>
+
+      {/* The actual reason, so the user can act on it instead of guessing.
+          A toast disappears; this stays on screen while they read it. */}
+      {!!reason && (
+        <View style={styles.reasonBox}>
+          <Text style={styles.reasonLabel}>Reason</Text>
+          <Text style={styles.reasonText}>{reason}</Text>
+        </View>
+      )}
 
       {planPrice !== undefined && (
         <View style={styles.transactionDetails}>
@@ -65,6 +70,29 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'center',
     paddingHorizontal: 10,
+  },
+  reasonBox: {
+    width: '100%',
+    backgroundColor: '#FDEDEC',
+    borderColor: '#F5C6CB',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    marginBottom: 24,
+  },
+  reasonLabel: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#B23B32',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    marginBottom: 4,
+  },
+  reasonText: {
+    fontSize: 15,
+    color: '#7A2B25',
+    lineHeight: 21,
   },
   transactionDetails: {
     marginBottom: 30,

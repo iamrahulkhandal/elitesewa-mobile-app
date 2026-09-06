@@ -30,33 +30,95 @@ export const RAZORPAY_ERROR = {
 
 const isObject = (value) => typeof value === 'object' && value !== null;
 
+/**
+ * Razorpay sometimes fills its own fields with the literal strings "undefined"
+ * or "null" — observed live as
+ * `{"error":{"description":"undefined","step":"payment_authentication"}}`.
+ * Rendering those verbatim is how "undefined" ended up on the failure screen,
+ * so they count as absent and the caller falls through to something useful.
+ */
+const PLACEHOLDERS = new Set(['undefined', 'null', 'nan', 'none']);
+
+const meaningful = (value) => {
+  if (typeof value !== 'string') return null;
+  const trimmed = value.trim();
+  if (!trimmed || PLACEHOLDERS.has(trimmed.toLowerCase())) return null;
+  return trimmed;
+};
+
+// When Razorpay gives no usable description it still reports where the payment
+// died, which is more informative than any generic line we could write.
+const STEP_MESSAGES = {
+  payment_authentication: 'Your bank did not approve the payment authentication.',
+  payment_authorization: 'Your bank did not authorise this payment.',
+  payment_initiation: 'The payment could not be started at your bank.',
+};
+
+const REASON_MESSAGES = {
+  payment_failed: 'The payment was declined.',
+  payment_error: 'The payment could not be completed.',
+  payment_cancelled: 'Payment was cancelled.',
+  invalid_vpa: 'That UPI ID looks invalid.',
+  insufficient_funds: 'The payment failed due to insufficient funds.',
+};
+
 /** A Razorpay rejection is the only shape carrying a numeric `code`. */
 const isRazorpayError = (error) => isObject(error) && typeof error.code === 'number';
 
 /**
  * The user backing out of the sheet is not a failure worth a red screen.
+ *
+ * The numeric `code` alone cannot decide this: a declined bank authentication
+ * was seen arriving as `code: 0` (Razorpay's NETWORK_ERROR constant) carrying a
+ * real gateway error underneath. So a gateway failure reason always wins over
+ * the code, and cancellation is confirmed from the reason or the text.
  */
-export const isPaymentCancelled = (error) =>
-  isRazorpayError(error) && error.code === RAZORPAY_ERROR.CANCELLED;
+export const isPaymentCancelled = (error) => {
+  if (!isRazorpayError(error)) return false;
+
+  const detail = readRazorpayDetail(error);
+  if (detail.reason) return detail.reason === 'payment_cancelled';
+
+  if (error.code === RAZORPAY_ERROR.CANCELLED) return true;
+  return /cancell?ed by (the )?user/i.test(String(error.description || ''));
+};
 
 /**
- * Razorpay nests the useful text inside `description`, which on Android is
- * often a JSON string wrapping the real gateway error.
+ * On Android `description` is usually a JSON envelope wrapping the real gateway
+ * error; some SDK paths attach that object directly instead.
  */
-const readRazorpayMessage = (error) => {
-  const { code, description } = error;
+const readRazorpayDetail = (error) => {
+  const { description } = error;
 
   if (typeof description === 'string' && description.trim().startsWith('{')) {
     try {
       const parsed = JSON.parse(description);
-      const inner = parsed && parsed.error;
-      if (inner && inner.description) return inner.description;
+      if (parsed && isObject(parsed.error)) return parsed.error;
     } catch (parseError) {
-      // Not JSON after all — fall through and use the raw string.
+      // Not JSON after all — the caller falls back to the raw string.
     }
   }
 
-  if (description) return String(description);
+  return isObject(error.error) ? error.error : {};
+};
+
+const readRazorpayMessage = (error) => {
+  const { code } = error;
+  const detail = readRazorpayDetail(error);
+
+  // A real description from either the envelope or the top level wins.
+  const described = meaningful(detail.description);
+  if (described) return described;
+
+  const raw = meaningful(error.description);
+  if (raw && !raw.startsWith('{')) return raw;
+
+  // No usable text, but the step/reason still says what happened.
+  const fromStep = STEP_MESSAGES[detail.step];
+  if (fromStep) return fromStep;
+
+  const fromReason = REASON_MESSAGES[detail.reason];
+  if (fromReason) return fromReason;
 
   switch (code) {
     case RAZORPAY_ERROR.NETWORK:
@@ -74,16 +136,16 @@ const readRazorpayMessage = (error) => {
 
 /** Pulls the message out of an API error body, preferring field-level detail. */
 const readApiPayload = (data) => {
-  if (!isObject(data)) return typeof data === 'string' && data.trim() ? data : null;
+  if (!isObject(data)) return meaningful(data);
 
   if (Array.isArray(data.errors) && data.errors.length > 0) {
-    return data.errors
-      .map((entry) => (isObject(entry) ? entry.message : entry))
-      .filter(Boolean)
-      .join('\n');
+    const messages = data.errors
+      .map((entry) => meaningful(isObject(entry) ? entry.message : entry))
+      .filter(Boolean);
+    if (messages.length > 0) return messages.join('\n');
   }
 
-  return data.message || data.error || null;
+  return meaningful(data.message) || meaningful(data.error) || null;
 };
 
 /**
@@ -105,7 +167,7 @@ export const getErrorMessage = (error, fallback = 'Something went wrong. Please 
     return 'Could not reach the server. Check your connection and try again.';
   }
 
-  return error.message || fallback;
+  return meaningful(error.message) || fallback;
 };
 
 /** Field-level errors, for highlighting inputs. `[]` when there are none. */

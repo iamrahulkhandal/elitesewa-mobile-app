@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { StatusBar } from 'react-native';
 import { Provider as ReduxProvider } from 'react-redux';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { NavigationContainer, CommonActions } from '@react-navigation/native';
@@ -74,14 +75,25 @@ const App = () => {
     AsyncStorage.setItem('userRole', selectedRole);
   };
 
+  // The native theme is Theme.AppCompat.DayNight, but the app itself is
+  // light-only. Without pinning the bar style the icons stay light on the light
+  // background and become invisible in the device's light mode.
+  const statusBar = <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />;
+
   if (isLoading) {
-    return <LoadingIndicator />;
+    return (
+      <>
+        {statusBar}
+        <LoadingIndicator />
+      </>
+    );
   }
 
   if (!role) {
     return (
       <ReduxProvider store={store}>
         <PaperProvider>
+          {statusBar}
           <NavigationContainer ref={setNavigationContainer}>
             <LandingPage onRoleSelect={handleRoleSelect} />
           </NavigationContainer>
@@ -95,6 +107,7 @@ const App = () => {
     <ReduxProvider store={store}>
       <PersistGate loading={null} persistor={persistor}>  
         <PaperProvider>
+          {statusBar}
           <NavigationContainer ref={setNavigationContainer}>
             {!role ? (
               <LandingPage onRoleSelect={handleRoleSelect} />

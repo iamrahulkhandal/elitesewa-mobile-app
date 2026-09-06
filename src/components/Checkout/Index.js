@@ -1,5 +1,5 @@
 import "react-native-get-random-values";
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { FlatList,StyleSheet, Alert, View, Text, Keyboard, ScrollView,TouchableWithoutFeedback} from 'react-native';
 import { useSelector } from 'react-redux';
 import { Snackbar } from 'react-native-paper';
@@ -82,6 +82,9 @@ const Index = (props) => {
 
   const [routeData, setRouteData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  // setIsLoading only disables the button on the next render, so a fast double
+  // tap can still get through. A ref flips synchronously and closes that gap.
+  const isSubmittingRef = useRef(false);
   const [savedVehicles, setSavedVehicles] = useState([]);
   const [showSavedModal, setShowSavedModal] = useState(false);
   const services = ['On Site Repairs', 'Battery Jumpstart', 'Fuel Delivery','Towing Service'];
@@ -442,8 +445,17 @@ const Index = (props) => {
     return { mStartDate, mExpireDate };
   };
 
+  // Razorpay's checkout page is served over HTTPS and blocks mixed content, so
+  // an http logo (the local dev API) is dropped rather than sent and rejected.
+  const checkoutLogo = () => {
+    const url = fileUrl(null);
+    return typeof url === 'string' && url.startsWith('https://') ? { image: url } : {};
+  };
+
   const handlePayment = async () => {
+    if (isSubmittingRef.current) return;
     if (!validateInputs()) return;
+    isSubmittingRef.current = true;
     setIsLoading(true);
     try {
       const { mStartDate, mExpireDate } = calculateMembershipDates(planDuration);
@@ -498,7 +510,7 @@ const Index = (props) => {
 
         const subOptions = {
           description: `Monthly subscription for plan ${membership.plan}`,
-          image: fileUrl(null),
+          ...checkoutLogo(),
           currency: 'INR',
           key: subResponse.data.keyId || RAZORPAY_KEY_ID,
           subscription_id: subResponse.data.subscriptionId,
@@ -547,7 +559,7 @@ const Index = (props) => {
         // 2) Open Razorpay Checkout bound to that order.
         const options = {
           description: `Payment for plan ${membership.plan}`,
-          image: fileUrl(null),
+          ...checkoutLogo(),
           currency: 'INR',
           key: keyId || RAZORPAY_KEY_ID,
           order_id: orderId,
@@ -640,6 +652,7 @@ const Index = (props) => {
       });
       navigation.navigate('PaymentFailed', { planPrice, reason });
     } finally {
+      isSubmittingRef.current = false;
       setIsLoading(false);
     }
   };
@@ -760,7 +773,10 @@ const Index = (props) => {
           ),
         }]
       : []),
-    { key: 'submitButton', component: <SubmitButton onSubmit={handleSubmit} /> },
+    {
+      key: 'submitButton',
+      component: <SubmitButton onSubmit={handleSubmit} disabled={isLoading} loading={isLoading} />,
+    },
     ...(serviceId === '673f16c47a12ef01b200c943'
       ? [{ key: 'priceBreakout', component: <PriceBreakout serviceid={serviceId} locationData={routeData}  planPrice={planPrice} /> }]
       : []),
