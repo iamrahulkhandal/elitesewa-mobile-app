@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text,Alert, FlatList, TouchableOpacity, StyleSheet,Image,Button,SafeAreaView} from 'react-native';
+import { View, Text,Alert, FlatList, TouchableOpacity, StyleSheet,Image,Button} from 'react-native';
+// react-native's SafeAreaView is iOS-only; this one applies insets on Android too.
+import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
 import {API_URL} from '@env';
 import {useFocusEffect} from '@react-navigation/native';

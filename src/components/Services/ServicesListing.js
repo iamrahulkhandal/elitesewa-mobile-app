@@ -7,11 +7,12 @@ import {
   TouchableOpacity,
   Alert,
   Image,
-  SafeAreaView,
   ScrollView,
   ActivityIndicator,
   RefreshControl,
 } from 'react-native';
+// react-native's SafeAreaView is iOS-only; this one applies insets on Android too.
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { PaperProvider, Card, Button } from 'react-native-paper';
 import axios from 'axios';
 import { API_URL } from '@env';

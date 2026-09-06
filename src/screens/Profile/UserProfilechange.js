@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Button, Image ,StyleSheet,TouchableOpacity,SafeAreaView,Text, Alert,ScrollView} from 'react-native';
+import { View, TextInput, Button, Image ,StyleSheet,TouchableOpacity,Text, Alert,ScrollView} from 'react-native';
+// react-native's SafeAreaView is iOS-only; this one applies insets on Android too.
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { createUser, updateUser } from '../apis/UserService';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import { launchCamera } from 'react-native-image-picker';

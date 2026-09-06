@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
-  SafeAreaView,
   ScrollView,
   View,
   Text,
   TouchableOpacity,
   Image
 } from 'react-native';
+// react-native's SafeAreaView is iOS-only; this one applies insets on Android too.
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useIsFocused } from '@react-navigation/native';
 
 import FeatherIcon from 'react-native-vector-icons/Feather';
