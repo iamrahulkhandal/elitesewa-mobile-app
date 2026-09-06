@@ -9,6 +9,7 @@ import {API_URL} from '@env';
 import YoutubeIframe from 'react-native-youtube-iframe';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { fileUrl, isLocalUri } from '../../utils/fileUrl';
 
 const ServicesEdit = ({navigation, route}) => {
   const {serviceId} = route.params;
@@ -266,31 +267,39 @@ const ServicesEdit = ({navigation, route}) => {
       });
       // Handle images
       images.forEach((uri, index) => {
-        if (uri.startsWith('file:///data')) {
+        if (isLocalUri(uri)) {
           const imageFile = {
             uri,
             type: uri.endsWith('.png') ? 'image/png' : 'image/jpeg',
             name: `image-${index}.jpg`,
           };
           uploadData.append('images', imageFile);
-          // console.log('Appended new image for upload:', imageFile);
-        } else if (uri.startsWith('Uploads\\')) {
-          uploadData.append(`oldImages[]`, uri); // Append each old image URI separately
+        } else {
+          // Anything that is not a freshly picked file is an existing server
+          // path, and has to be sent back or the API drops it. This used to
+          // test `startsWith('Uploads\\')`, which only matched the oldest
+          // Windows-era rows — so editing a service silently deleted every
+          // image stored in any newer format.
+          uploadData.append(`oldImages[]`, uri);
         }
       });
   
       // Handle banners
       banners.forEach((uri, index) => {
-        if (uri.startsWith('file:///data')) {
+        if (isLocalUri(uri)) {
           const bannerFile = {
             uri,
             type: uri.endsWith('.png') ? 'image/png' : 'image/jpeg',
             name: `banner-${index}.jpg`,
           };
           uploadData.append('banners', bannerFile);
-          // console.log('Appended new banner for upload:', bannerFile);
-        } else if (uri.startsWith('Uploads\\')) {
-          uploadData.append(`oldBanners[]`, uri); // Append each old banner URI separately
+        } else {
+          // Anything that is not a freshly picked file is an existing server
+          // path, and has to be sent back or the API drops it. This used to
+          // test `startsWith('Uploads\\')`, which only matched the oldest
+          // Windows-era rows — so editing a service silently deleted every
+          // image stored in any newer format.
+          uploadData.append(`oldBanners[]`, uri);
         }
       });
   
@@ -349,10 +358,8 @@ const handleApiError = (error) => {
       <View style={styles.imagePreviewContainer}>
         {imageList.map((uri, index) => {
  
-          const isUploaded = uri.startsWith("file:///");
-          // Determine the source URI based on the isOnChange flag
-          const sourceUri = isUploaded ? uri : `${API_URL}/${uri}`;
-          //const sourceUri =  uri;
+          // Handles both a freshly picked local URI and every stored path format.
+          const sourceUri = fileUrl(uri);
           return (
             <View key={`${isBanner ? 'banner' : 'image'}-${index}-${uri}`} style={styles.imageWrapper}>
             <Image

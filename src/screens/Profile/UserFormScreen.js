@@ -5,6 +5,7 @@ import FeatherIcon from 'react-native-vector-icons/Feather';
 import { launchCamera } from 'react-native-image-picker';
 import { ensureCameraPermission } from '../../utils/cameraPermission';
 import BackTitleHeader from '../../src/components/Shared/BackTitleHeader';
+import { fileUrl } from '../../utils/fileUrl';
 
 export default function UserFormScreen({ route, navigation }) {
   const [name, setName] = useState('');
@@ -56,7 +57,7 @@ const validateForm = () => {
       setName(user.name);
       setEmail(user.email);
       setPhone(user.phone);
-      setImage({ uri: `http://elitesewa-api.indiasellers.com/${user.image}` });
+      setImage({ uri: fileUrl(user.image) });
     }
   }, [user]);
 

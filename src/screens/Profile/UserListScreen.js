@@ -12,6 +12,7 @@ import { useIsFocused } from '@react-navigation/native';
 
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import { getUser } from '../apis/UserService';
+import { fileUrl } from '../../utils/fileUrl';
 
 const UserListScreen = ({navigation}) => {
   const isFocused = useIsFocused();
@@ -73,7 +74,7 @@ const UserListScreen = ({navigation}) => {
           <View style={styles.profilecenter} >
           <Image
                 alt="" 
-                source={{ uri: `http://elitesewa-api.indiasellers.com/${users.image}` }}
+                source={{ uri: fileUrl(users.image) }}
                 style={styles.profileAvatar} />
 
 

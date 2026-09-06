@@ -7,6 +7,7 @@ import Swiper from 'react-native-swiper';
 import { API_URL } from '@env';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Import FontAwesome icons
 import DailyWashUpdates from './DailyWashUpdates';
+import { fileUrl } from '../../utils/fileUrl';
 const { width: screenWidth } = Dimensions.get('window');
 const BookingDetails = ({ route }) => {
   const { item_id } = route.params;
@@ -31,7 +32,7 @@ useFocusEffect(
          const promises = longImages.map((img) => {
            return new Promise((resolve) => {
              Image.getSize(
-               `${API_URL}${img}`,
+               fileUrl(img),
                (width, height) => {
                  const scaledHeight = (height / width) * screenWidth * 0.85;
                  resolve({ width: screenWidth * 0.95, height: scaledHeight });
@@ -172,7 +173,7 @@ const fetchBookingDetails = async () => {
                         <TouchableOpacity key={`banner-${index}`} onPress={() => handleImagePress(index, 'banners')}>
                     <Image
                     key={index}
-                    source={{ uri: `${API_URL}${img}` }}
+                    source={{ uri: fileUrl(img) }}
                     style={{
                       width: imageDimensions[index]?.width || screenWidth* 0.85,
                       height: imageDimensions[index]?.height || 200, 
@@ -218,7 +219,7 @@ const fetchBookingDetails = async () => {
         <View style={styles.servicesexeimage}>
             {executiveServiceId.images.map((img, index) => (
               <View key={index} style={{ marginBottom: 10 }}>
-                <Image source={{ uri: `${API_URL}/${img}` }} style={styles.image} />
+                <Image source={{ uri: fileUrl(img) }} style={styles.image} />
               </View>
             ))}
         </View>

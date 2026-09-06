@@ -13,6 +13,7 @@ import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { useFocusEffect } from '@react-navigation/native';
 import { Button } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
+import { fileUrl } from '../../utils/fileUrl';
 // import RNPickerSelect from 'react-native-picker-select';
 
 const { width: screenWidth } = Dimensions.get('window');
@@ -49,7 +50,7 @@ const ServicesView = ({ route, navigation }) => {
       const promises = longImages.map((img) => {
         return new Promise((resolve) => {
           Image.getSize(
-            `${API_URL}${img}`,
+            fileUrl(img),
             (width, height) => {
               const scaledHeight = (height / width) * screenWidth * 0.95;
               resolve({ width: screenWidth * 0.95, height: scaledHeight });
@@ -195,8 +196,8 @@ const ServicesView = ({ route, navigation }) => {
   };
 
   const viewingImages = viewingType === 'banners'
-    ? service?.banners?.map(banner => ({ uri: `${API_URL}/${banner}` }))
-    : service?.images?.map(image => ({ uri: `${API_URL}/${image}` }));
+    ? service?.banners?.map(banner => ({ uri: fileUrl(banner) }))
+    : service?.images?.map(image => ({ uri: fileUrl(image) }));
 
   if (loading) {
     return (
@@ -266,7 +267,7 @@ const ServicesView = ({ route, navigation }) => {
             {service?.banners?.map((banner, index) => (
               <TouchableOpacity key={`banner-${index}`} onPress={() => handleImagePress(index, 'banners')}>
                 <Image
-                  source={{ uri: `${API_URL}/${banner}` }}
+                  source={{ uri: fileUrl(banner) }}
                   style={styles.bannerImage}
                 />
               </TouchableOpacity>
@@ -300,7 +301,7 @@ const ServicesView = ({ route, navigation }) => {
             shortImages.map((img, index) => (
               <Image 
                 key={index} 
-                source={{ uri: `${API_URL}${img}` }} 
+                source={{ uri: fileUrl(img) }} 
                 style={styles.contentImage} 
                 resizeMode="cover" 
               />
@@ -331,8 +332,7 @@ const ServicesView = ({ route, navigation }) => {
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             {service?.images?.map((image, index) => (
               <TouchableOpacity key={`gallery-${index}`} onPress={() => handleImagePress(index, 'images')}>
-                <Image source={{ uri: `${API_URL}/${image}` }} style={styles.galleryImage} />
-                {console.log(`${API_URL}/${image}`)}
+                <Image source={{ uri: fileUrl(image) }} style={styles.galleryImage} />
               </TouchableOpacity>
             ))}
           </ScrollView>
@@ -343,7 +343,7 @@ const ServicesView = ({ route, navigation }) => {
                     longImages.map((img, index) => (
                   <Image
                   key={index}
-                  source={{ uri: `${API_URL}${img}` }}
+                  source={{ uri: fileUrl(img) }}
                   style={{
                     width: imageDimensions[index]?.width || screenWidth* 0.95,
                     height: imageDimensions[index]?.height || 200,
@@ -374,7 +374,7 @@ const ServicesView = ({ route, navigation }) => {
             {longImages?.map((banner, index) => (
               <TouchableOpacity key={`longdesImage-${index}`}>
                 <Image
-                  source={{ uri: `${API_URL}${banner}` }}
+                  source={{ uri: fileUrl(banner) }}
                   style={{
                     width: imageDimensions[index]?.width || screenWidth* 0.95,
                     height: imageDimensions[index]?.height || 200,

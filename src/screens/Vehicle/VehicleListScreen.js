@@ -6,6 +6,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Toast from 'react-native-toast-message';
 import {useNavigation} from '@react-navigation/native';
+import { fileUrl } from '../../utils/fileUrl';
 
 
 const VehicleListScreen = () => {
@@ -77,7 +78,7 @@ const VehicleListScreen = () => {
   const renderItem = ({ item }) => (
     <View style={styles.vehicleItem} key={item.id}>
 
-      <Image source={{ uri: `${API_URL}/uploads/${item.images[0]}` }} style={styles.vehicleImage} />
+      <Image source={{ uri: fileUrl(item.images?.[0]) }} style={styles.vehicleImage} />
       <View style={styles.vehicleInfo}>
         <Text style={styles.vehicleName}>{item.name}</Text>
         <Text style={styles.vehicleNumber}>{item.model}</Text>

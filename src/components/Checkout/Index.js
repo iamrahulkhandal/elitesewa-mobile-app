@@ -18,6 +18,12 @@ import Dropdown from '../FormComponents/Dropdown';
 import RouteMap from '../FormComponents/RouteMap'; 
 import { API_URL, RAZORPAY_KEY_ID } from "@env";
 import { useNavigation } from '@react-navigation/native';
+import { fileUrl } from '../../utils/fileUrl';
+import {
+  assertApiSuccess,
+  getErrorMessage,
+  isPaymentCancelled,
+} from '../../utils/apiError';
  
 const Index = (props) => {
   const { route: vehicleRoute } = props;
@@ -471,9 +477,7 @@ const Index = (props) => {
         }
       );
 
-      if (!paymentRequestResponse.data.success) {
-        throw new Error('Failed to save payment request');
-      }
+      assertApiSuccess(paymentRequestResponse, 'Could not save your booking details.');
       console.log('paymentRequest', paymentRequestResponse.data);
       const paymentRequestId = paymentRequestResponse.data.paymentRequestId;
       const fetchedVehicleId = paymentRequestResponse.data.vehicleId;
@@ -487,13 +491,14 @@ const Index = (props) => {
           vehicleId: fetchedVehicleId,
           paymentRequestId,
         });
-        if (!subResponse.data?.success || !subResponse.data?.subscriptionId) {
-          throw new Error(subResponse.data?.message || 'Unable to start subscription.');
+        assertApiSuccess(subResponse, 'Unable to start the subscription.');
+        if (!subResponse.data?.subscriptionId) {
+          throw new Error('The subscription could not be created. Please try again.');
         }
 
         const subOptions = {
           description: `Monthly subscription for plan ${membership.plan}`,
-          image: `${API_URL}/uploads/noimage.png`,
+          image: fileUrl(null),
           currency: 'INR',
           key: subResponse.data.keyId || RAZORPAY_KEY_ID,
           subscription_id: subResponse.data.subscriptionId,
@@ -514,9 +519,7 @@ const Index = (props) => {
           razorpay_subscription_id: paymentData.razorpay_subscription_id || subResponse.data.subscriptionId,
           razorpay_signature: paymentData.razorpay_signature,
         });
-        if (!verifyResponse.data?.success) {
-          throw new Error(verifyResponse.data?.message || 'Subscription verification failed.');
-        }
+        assertApiSuccess(verifyResponse, 'We could not confirm your subscription.');
 
         navigation.navigate('PaymentSuccess', {
           paymentId: verifyResponse.data.paymentResponse?.paymentId,
@@ -534,8 +537,9 @@ const Index = (props) => {
           notes: { serviceId, planId, userId },
         });
 
-        if (!orderResponse.data?.success || !orderResponse.data?.orderId) {
-          throw new Error(orderResponse.data?.message || 'Unable to create payment order.');
+        assertApiSuccess(orderResponse, 'Unable to start the payment.');
+        if (!orderResponse.data?.orderId) {
+          throw new Error('The payment order could not be created. Please try again.');
         }
 
         const { orderId, keyId } = orderResponse.data;
@@ -543,7 +547,7 @@ const Index = (props) => {
         // 2) Open Razorpay Checkout bound to that order.
         const options = {
           description: `Payment for plan ${membership.plan}`,
-          image: `${API_URL}/uploads/noimage.png`,
+          image: fileUrl(null),
           currency: 'INR',
           key: keyId || RAZORPAY_KEY_ID,
           order_id: orderId,
@@ -578,9 +582,7 @@ const Index = (props) => {
           vehicleId: fetchedVehicleId,
         });
 
-        if (!verifyResponse.data?.success) {
-          throw new Error(verifyResponse.data?.message || 'Payment verification failed.');
-        }
+        assertApiSuccess(verifyResponse, 'We could not confirm your payment.');
 
         navigation.navigate('PaymentSuccess', {
           paymentId: verifyResponse.data.paymentResponse?.paymentId,
@@ -614,16 +616,29 @@ const Index = (props) => {
         });
       }
     } catch (error) {
+      // Backing out of the Razorpay sheet is a deliberate choice, not a
+      // failure — leave the user on checkout with their details intact.
+      if (isPaymentCancelled(error)) {
+        Toast.show({
+          type: 'info',
+          text1: 'Payment cancelled',
+          text2: 'Your booking has not been placed.',
+          position: 'bottom',
+          visibilityTime: 3000,
+        });
+        return;
+      }
+
+      const reason = getErrorMessage(error, 'An error occurred during payment.');
+      console.error('Checkout failed:', reason, error);
       Toast.show({
         type: 'error',
         text1: 'Payment Failed',
-        text2: error.message || 'An error occurred during payment',
+        text2: reason,
         position: 'bottom',
-        visibilityTime: 3000,
+        visibilityTime: 4000,
       });
-      navigation.navigate('PaymentFailed', {
-        planPrice: planActive ? planPrice : planPrice,
-      });
+      navigation.navigate('PaymentFailed', { planPrice, reason });
     } finally {
       setIsLoading(false);
     }

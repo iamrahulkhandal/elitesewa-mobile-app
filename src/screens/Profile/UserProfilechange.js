@@ -5,6 +5,7 @@ import FeatherIcon from 'react-native-vector-icons/Feather';
 import { launchCamera } from 'react-native-image-picker';
 import { ensureCameraPermission } from '../../utils/cameraPermission';
 import BackTitleHeader from '../../src/components/Shared/BackTitleHeader';
+import { fileUrl } from '../../utils/fileUrl';
 
 export default function UserProfilechange({ route, navigation }) {
   const [image, setImage] = useState('');
@@ -27,7 +28,7 @@ const validateForm = () => {
 
   useEffect(() => {
     if (user) {
-      setImage({ uri: `http://elitesewa-api.indiasellers.com/${user.image}` });
+      setImage({ uri: fileUrl(user.image) });
     }
   }, [user]);
 

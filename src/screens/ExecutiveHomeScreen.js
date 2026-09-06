@@ -27,6 +27,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Import FontAwesome icons
+import { fileUrl } from '../utils/fileUrl';
 
 const ExecutiveHomeScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -150,7 +151,7 @@ const ExecutiveHomeScreen = ({ navigation }) => {
           ) : item.iconLib === 'FontAwesome' ? (
             <FontAwesomeIcon name={item.icon} size={28} color="#007BFF" style={styles.icon} />
           ) : null} */}
-            <Image source={{ uri: `${API_URL}/${item.images[0]}` }} style={styles.serviceSwiperImage} />
+            <Image source={{ uri: fileUrl(item.images?.[0]) }} style={styles.serviceSwiperImage} />
           </View>
            <View style={styles.nameprice}>
             <Text style={styles.serviceSwiperName}>Starting From</Text>
@@ -262,7 +263,7 @@ const ExecutiveHomeScreen = ({ navigation }) => {
                         <View key={index} style={styles.swiperTestimonialsItems}>
                           <View style={styles.testimonialContainer}>
                             <View style={styles.testimonialTop}>
-                              <Image source={{ uri: `${API_URL}${testimonial.userProfilePicture}` }} style={styles.image} />
+                              <Image source={{ uri: fileUrl(testimonial.userProfilePicture) }} style={styles.image} />
                               <Text style={styles.testimonialAuthor}>{testimonial.name}</Text>
                               <Icon name="quote-left" size={50} color="#FFD700" style={styles.testimonialQuoteIcon} />
                             </View>

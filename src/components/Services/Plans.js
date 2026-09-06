@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import RazorpayCheckout from 'react-native-razorpay';
 import axios from 'axios';
 import { API_URL, RAZORPAY_KEY_ID } from '@env';
+import { fileUrl } from '../../utils/fileUrl';
 
 const Plans = ({ plan, serviceId, user }) => {
   const { name, price, duration, keyPoints } = plan;
@@ -15,7 +16,7 @@ const Plans = ({ plan, serviceId, user }) => {
 
     const options = {
       description: `Payment for ${name}`,
-      image: `${API_URL}/uploads/noimage.png`,
+      image: fileUrl(null),
       currency: 'INR',
       key: RAZORPAY_KEY_ID,
       amount: price * 100, // Convert to paise (Indian currency unit)

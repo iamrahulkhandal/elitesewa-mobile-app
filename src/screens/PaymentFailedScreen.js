@@ -5,19 +5,26 @@ import { useNavigation } from '@react-navigation/native';
 
 const PaymentFailedScreen = ({ route }) => {
     const navigation = useNavigation();
-    const { planPrice } = route.params;
+    // Params are optional so a stray navigation here cannot crash the screen.
+    const { planPrice, reason } = route.params || {};
   return (
     <View style={styles.container}>
       <View style={styles.iconContainer}>
         <Icon name="times-circle" size={50} color="red" />
       </View>
       <Text style={styles.header}>Payment Failed</Text>
-      <Text style={styles.subHeader}>There was an issue with your transaction</Text>
+      {/* Show what actually went wrong when we know it, so the user can fix
+          the problem instead of guessing. */}
+      <Text style={styles.subHeader}>
+        {reason || 'There was an issue with your transaction'}
+      </Text>
 
-      <View style={styles.transactionDetails}>
-        <Text style={styles.amountText}>Amount</Text>
-        <Text style={styles.amount}>{planPrice}.00</Text>
-      </View>
+      {planPrice !== undefined && (
+        <View style={styles.transactionDetails}>
+          <Text style={styles.amountText}>Amount</Text>
+          <Text style={styles.amount}>{planPrice}.00</Text>
+        </View>
+      )}
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
@@ -56,6 +63,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666',
     marginBottom: 20,
+    textAlign: 'center',
+    paddingHorizontal: 10,
   },
   transactionDetails: {
     marginBottom: 30,

@@ -17,6 +17,7 @@ import axios from 'axios';
 import { API_URL } from '@env';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import { fileUrl } from '../../utils/fileUrl';
 
 const ServicesListing = ({ navigation }) => {
   const [services, setServices] = useState([]);
@@ -115,7 +116,7 @@ const ServicesListing = ({ navigation }) => {
           navigation.navigate('ServicesView', { serviceId: item._id })
         }>
         <Card.Cover
-          source={{ uri: `${API_URL}/${item.images[0]}` }}
+          source={{ uri: fileUrl(item.images?.[0]) }}
           style={{ margin: 10, borderRadius: 10, height: 150 }}
         />
       </TouchableOpacity>

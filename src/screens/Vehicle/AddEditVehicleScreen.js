@@ -8,6 +8,7 @@ import {API_URL} from '@env';
 import { useSelector, useDispatch } from 'react-redux';
 import Toast from 'react-native-toast-message';
 import { fetchActiveUserDetails } from '../../../features/userActiveSlice';
+import { fileUrl } from '../../utils/fileUrl';
 
 const AddEditVehicleScreen = ({ route, navigation }) => {
   const dispatch = useDispatch();
@@ -49,7 +50,7 @@ const AddEditVehicleScreen = ({ route, navigation }) => {
     setName(vehicle.name);
     setModel(vehicle.model);
     setSelectedImages(vehicle.images.map((img) => ({
-      uri: `${API_URL}/uploads/${img}`,
+      uri: fileUrl(img),
       type: 'image/jpeg',
       name: img,
     })));
@@ -140,7 +141,7 @@ const AddEditVehicleScreen = ({ route, navigation }) => {
   //   setName(vehicle.name);
   //   setModel(vehicle.model);
   //   setSelectedImages(vehicle.images.map((img) => ({
-  //     uri: `${API_URL}/uploads/${img}`,
+  //     uri: fileUrl(img),
   //     type: 'image/jpeg',
   //     name: img,
   //   })));

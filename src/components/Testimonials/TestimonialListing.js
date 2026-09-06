@@ -4,6 +4,7 @@ import { useSelector } from "react-redux"; // Import to access Redux state
 import axios from "axios";
 import { API_URL } from "@env";
 import Icon from 'react-native-vector-icons/FontAwesome'; // Import FontAwesome icons
+import { fileUrl } from '../../utils/fileUrl';
 
 const TestimonialListing = () => {
   const { user } = useSelector((state) => state.auth); // Access user details from Redux
@@ -37,9 +38,9 @@ const TestimonialListing = () => {
 
   // Render each testimonial item
   const renderTestimonialItem = ({ item }) => {
-    const profilePicture = item.userProfilePicture
-      ? `${API_URL}${item.userProfilePicture}` // If the userProfilePicture exists, use it
-      : "/uploads/noimage.png"; // Default image path if the userProfilePicture is null or not available
+    // fileUrl falls back to the shared noimage.png placeholder on its own. The
+    // old fallback here was a bare relative path, which never rendered.
+    const profilePicture = fileUrl(item.userProfilePicture);
 
     // Render stars based on rating
     const renderStars = (rating) => {

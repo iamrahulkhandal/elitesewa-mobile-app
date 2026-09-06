@@ -14,6 +14,7 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/native';
 import { API_URL } from '@env';
+import { fileUrl } from '../../utils/fileUrl';
 
 // Shows the date-wise daily wash photos for a booking. Customers can leave one
 // comment per day; executives (and others) see the photos and any comment.
@@ -88,7 +89,7 @@ const DailyWashUpdates = ({ paymentResponseId }) => {
               {log.images.map((img, index) => (
                 <Image
                   key={index}
-                  source={{ uri: `${API_URL}/${img}` }}
+                  source={{ uri: fileUrl(img) }}
                   style={styles.photo}
                 />
               ))}
