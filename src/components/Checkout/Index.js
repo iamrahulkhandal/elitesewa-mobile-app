@@ -296,6 +296,15 @@ const Index = (props) => {
     const year = Number(value.trim());
     return year >= 1980 && year <= new Date().getFullYear();
   };
+  // Manufacturers are names; models may carry digits but a model with no letter
+  // (or a long digit run) is typed-in noise. Both mirror the server's rules.
+  const isValidManufacturer = (value) => /^[A-Za-z][A-Za-z .&'-]{1,29}$/.test(value.trim());
+  const isValidVehicleModel = (value) => {
+    const raw = value.trim();
+    if (raw.length < 2 || raw.length > 40) return false;
+    if (!/^[A-Za-z0-9][A-Za-z0-9 .\/+-]*$/.test(raw)) return false;
+    return /[A-Za-z]/.test(raw) && !/\d{5}/.test(raw);
+  };
   const isValidMobile = (value) => /^[6-9]\d{9}$/.test(value.trim());
   const isValidEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 
@@ -309,6 +318,12 @@ const Index = (props) => {
 
     if (!isValidVehicleNumber(vehicleData.number)) {
       return validateField('', 'Vehicle number looks invalid (e.g. RJ14 CJ 5000)');
+    }
+    if (!isValidVehicleModel(vehicleData.model)) {
+      return validateField('', 'Vehicle model looks invalid (e.g. Swift VXI)');
+    }
+    if (vehicleData.manufacturer?.trim() && !isValidManufacturer(vehicleData.manufacturer)) {
+      return validateField('', 'Manufacturer looks invalid (e.g. Maruti Suzuki)');
     }
     if (vehicleData.year && !isValidYear(vehicleData.year)) {
       return validateField('', `Year must be between 1980 and ${new Date().getFullYear()}`);
