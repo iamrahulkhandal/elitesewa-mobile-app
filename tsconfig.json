@@ -7,7 +7,6 @@
     // `strict` is on via the React Native base config. These two are the last
     // holdouts and are being cleared one at a time; delete each line as its
     // errors reach zero.
-    "noImplicitAny": false,
     "strictNullChecks": false
   },
   "include": ["src", "__tests__", "index.ts", "*.config.js", ".eslintrc.js"],

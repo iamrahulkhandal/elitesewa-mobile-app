@@ -4,7 +4,9 @@ import {Text, View, StyleSheet} from 'react-native';
 import Icon from './Icon';
 import {sizes, spacing} from '../../constants/theme';
 
-const DrawerTitleHeader = ({title}) => {
+type DrawerTitleHeaderProps = { title: string };
+
+const DrawerTitleHeader = ({title}: DrawerTitleHeaderProps) => {
   //const insets = useSafeAreaInsets();
   return (
     <View style={[styles.container, {marginTop: 10}]}>

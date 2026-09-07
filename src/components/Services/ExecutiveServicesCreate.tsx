@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useReducer, useRef } from 'react';
+import type { AppNavigation, AppRoute } from '../../types/navigation';
 import {
   View,
   Text,
@@ -56,7 +57,9 @@ const formReducer = (state: ExecutiveServiceForm, action: FormAction): Executive
   }
 };
 
-const ExecutiveServicesCreate = ({route , navigation}) =>{
+type ExecutiveServicesCreateProps = { route: AppRoute; navigation: AppNavigation };
+
+const ExecutiveServicesCreate = ({route , navigation}: ExecutiveServicesCreateProps) =>{
 
   const { item_id } = route.params; 
 

@@ -1,7 +1,10 @@
 import React from 'react';
+import type { FieldErrors } from '../../types/models';
 import {View, Text, TextInput, Switch, StyleSheet} from 'react-native';
 
-const AddonsAndReview = ({formData, onChange, errors}) => {
+type AddonsAndReviewProps = { formData: any; onChange: (...args: any[]) => void; errors: FieldErrors };
+
+const AddonsAndReview = ({formData, onChange, errors}: AddonsAndReviewProps) => {
   return (
     <View>
       <TextInput

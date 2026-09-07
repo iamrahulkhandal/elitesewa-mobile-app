@@ -3,7 +3,7 @@ import { API_URL as BASE_URL } from '@env';
 const API_URL = `${BASE_URL}/user`;
 const API_URL2 = `${BASE_URL}/api/images`;
 
-export const getUser = async (phone) => {
+export const getUser = async (phone: string) => {
   return axios.get(`${API_URL}/${phone}`); 
 };
 export const getClientList = async () => {
@@ -29,7 +29,7 @@ export const getClientList = async () => {
 //   });
 // };
 
-export const updateUser = async (id, user) => {
+export const updateUser = async (id: string, user: any) => {
   const formData = new FormData();
   formData.append('name', user.name);
   formData.append('email', user.email);

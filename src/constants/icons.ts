@@ -7,7 +7,7 @@ const Notification = require('../../assets/icons/Notification.png');
 const ArrowLeft = require('../../assets/icons/Arrow_Left.png');
 const Location = require('../../assets/icons/Location.png');
 
-export default {
+const icons: Record<string, any> = {
   Home,
   FavoriteFilled,
   Favorite,
@@ -17,3 +17,5 @@ export default {
   ArrowLeft,
   Location,
 };
+
+export default icons;

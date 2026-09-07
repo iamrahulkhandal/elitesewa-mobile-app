@@ -4,7 +4,9 @@ import {colors, sizes, spacing} from '../../constants/theme';
 import Rating from '../Shared/Rating/Rating';
 import Divider from '../Shared/Divider';
 
-const Review = ({review}) => {
+type ReviewProps = { review: any };
+
+const Review = ({review}: ReviewProps) => {
   return (
     <>
       <Divider enabledSpacing={false} />

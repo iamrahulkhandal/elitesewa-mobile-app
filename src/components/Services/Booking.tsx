@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import type { AppNavigation } from '../../types/navigation';
 import {
   View,
   Text,
@@ -18,14 +19,16 @@ import { useFocusEffect } from '@react-navigation/native';
 // Daily-wash plans are subscriptions serviced day by day: their cards show
 // wash progress and link to the day-wise updates instead of the one-shot
 // service status / rating flow.
-const isDailyWash = (item) => /daily/i.test(item.serviceId?.name || '');
+const isDailyWash = (item: any) => /daily/i.test(item.serviceId?.name || '');
 
-const Booking = ({ navigation }) => {
+type BookingProps = { navigation: AppNavigation };
+
+const Booking = ({ navigation }: BookingProps) => {
   const [payments, setPayments] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [executiveservicesid, setExecutiveservicesid] = useState(null);
-  const [washProgress, setWashProgress] = useState({}); // paymentId -> days logged
+  const [washProgress, setWashProgress] = useState<Record<string, number>>({}); // paymentId -> days logged
 
   // Access user and role from Redux store
   const userId = useAppSelector((state) => state.auth.userId);
@@ -58,11 +61,11 @@ const Booking = ({ navigation }) => {
   };
 
   // Days-logged count per daily-wash booking, for the progress line.
-  const fetchWashProgress = async (list) => {
+  const fetchWashProgress = async (list: any) => {
     const dailyBookings = list.filter(isDailyWash);
     if (!dailyBookings.length) return;
     const entries = await Promise.all(
-      dailyBookings.map(async (item) => {
+      dailyBookings.map(async (item: any) => {
         try {
           const res = await axios.get(`${API_URL}/api/dailywash/${item._id}`);
           return [item._id, (res.data.logs || []).length];
@@ -85,7 +88,7 @@ const Booking = ({ navigation }) => {
     }, [userId, userRole])
   );
 
-  const handleCancelBooking = async (paymentId) => {
+  const handleCancelBooking = async (paymentId: any) => {
     try {
       await axios.put(`${API_URL}/api/payment/${paymentId}/cancel`);
       Alert.alert('Success', 'Booking has been cancelled successfully.');
@@ -96,7 +99,7 @@ const Booking = ({ navigation }) => {
     }
   }; 
 
-  const serviceRating = async (paymentId) => {
+  const serviceRating = async (paymentId: any) => {
     try {
       const response = await axios.get(`${API_URL}/api/executiveservices/${paymentId}`);
       setExecutiveservicesid(response.data);
@@ -112,7 +115,7 @@ const Booking = ({ navigation }) => {
   };
 
   // Plan window: planActiveDate + duration days.
-  const planEndDate = (item) => {
+  const planEndDate = (item: any) => {
     const days = parseInt(item.planId?.duration, 10);
     if (!item.planActiveDate || !Number.isFinite(days)) return null;
     const end = new Date(item.planActiveDate);
@@ -120,7 +123,7 @@ const Booking = ({ navigation }) => {
     return end;
   };
 
-  const renderPaymentItem = ({ item }) => {
+  const renderPaymentItem = ({ item }: { item: any }) => {
     const daily = isDailyWash(item);
     const daysLogged = washProgress[item._id];
     const totalDays = parseInt(item.planId?.duration, 10);

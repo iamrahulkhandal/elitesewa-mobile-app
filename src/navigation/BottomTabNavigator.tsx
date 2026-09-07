@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import type { AppRoute } from '../types/navigation';
 import { TouchableOpacity, Alert, type GestureResponderEvent } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -13,7 +14,9 @@ import { useHeaderTitle } from './HeaderTitleContext';
 
 const Tab = createBottomTabNavigator();
 
-const BottomTabNavigator = ({ route }) => {
+type BottomTabNavigatorProps = { route: AppRoute };
+
+const BottomTabNavigator = ({ route }: BottomTabNavigatorProps) => {
     const { activeTab, role } = route.params || { activeTab: 'Home' };
     const { updateHeaderTitle } = useHeaderTitle();  // Use context for updating header title
 // console.log(activeTab, role, 'sdjkfhadajhlf');
@@ -26,7 +29,7 @@ const BottomTabNavigator = ({ route }) => {
     }, [activeTab, updateHeaderTitle]);
 
     // Function to show an alert when a tab is clicked
-    const showAlert = (tabName) => {
+    const showAlert = (tabName: any) => {
         updateHeaderTitle(tabName);  // Update the header title when a tab is clicked
         //Alert.alert('Tab Clicked', `You clicked the ${tabName} tab!`);
     };

@@ -45,7 +45,7 @@ const insurancePlans = [
 ];
 
 const VehicleInsuranceScreen = () => {
-    const renderInsurancePlanItem = ({ item }) => (
+    const renderInsurancePlanItem = ({ item }: { item: any }) => (
         <View style={styles.planCard}>
             <Image source={{ uri: item.image }} style={styles.planImage} />
             <View style={styles.planInfo}>

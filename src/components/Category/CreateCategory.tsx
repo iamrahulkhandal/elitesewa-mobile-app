@@ -20,22 +20,22 @@ const CreateCategory = () => {
       const response = await axios.get(`${API_URL}/api/categories`);
       setCategories(response.data);
       // Filter for top-level categories and initialize dropdown data
-      const topLevelCategories = response.data.filter(cat => cat.parentId === null);
+      const topLevelCategories = response.data.filter((cat: any) => cat.parentId === null);
       setDropdownData([{ parentId: null, items: formatPickerItems(topLevelCategories), selectedId: null }]);
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
   }, []);
 
-  const formatPickerItems = useCallback(categories => {
-    return categories.map(category => ({
+  const formatPickerItems = useCallback((categories: any) => {
+    return categories.map((category: any) => ({
       label: category.name,
       value: category._id,
     }));
   }, []);
 
   // Fetch child categories from the API by parentId
-  const fetchChildCategories = async (parentId) => {
+  const fetchChildCategories = async (parentId: string) => {
     try {
       const response = await axios.get(`${API_URL}/api/categories/parent/${parentId}`);
       return response.data;
@@ -45,7 +45,7 @@ const CreateCategory = () => {
     }
   };
 
-  const handleCategorySelect = useCallback(async (selectedId, level) => {
+  const handleCategorySelect = useCallback(async (selectedId: any, level: any) => {
     // console.log('Selected ID:', selectedId, 'Level:', level);
   
     setDropdownData(prevData => {

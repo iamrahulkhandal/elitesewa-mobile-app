@@ -27,11 +27,11 @@ const IconsListing = () => {
 
 
   // Render each individual icon
-  const renderIcon = ({ item }) => {
+  const renderIcon = ({ item }: { item: any }) => {
     const { name, library, label, unicode } = item;
 
     let IconComponent;
-    let iconName;
+    let iconName: string;
 
     if (library === 'Font Awesome') {
       IconComponent = FontAwesome;
@@ -69,7 +69,7 @@ const IconsListing = () => {
   
 
   // Render each icon type and its associated icons
-  const renderIconType = ({ item }) => (
+  const renderIconType = ({ item }: { item: any }) => (
     <View style={styles.iconTypeContainer}>
       <Text style={styles.iconType}>{item.type}</Text>
       <FlatList

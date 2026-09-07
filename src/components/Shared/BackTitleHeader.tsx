@@ -4,7 +4,9 @@ import {Text, View, StyleSheet} from 'react-native';
 import Icon2 from './Icon2';
 import {sizes} from '../../constants/theme';
 
-const BackTitleHeader = ({title,IconLeft,IconRight,EventLeft,EventRight,IconColorRight,IconColorLeft}) => {
+type BackTitleHeaderProps = { title: string; IconLeft: any; IconRight: any; EventLeft: any; EventRight: any; IconColorRight: any; IconColorLeft: any };
+
+const BackTitleHeader = ({title,IconLeft,IconRight,EventLeft,EventRight,IconColorRight,IconColorLeft}: BackTitleHeaderProps) => {
   //const insets = useSafeAreaInsets();
   return (
     <View style={[styles.container, {marginTop: 10}]}>

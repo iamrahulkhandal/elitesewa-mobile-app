@@ -6,7 +6,9 @@ import Animated, {
 } from 'react-native-reanimated';
 import {colors, sizes} from '../../constants/theme';
 
-const CustomBackground = ({animatedIndex, style}) => {
+type CustomBackgroundProps = { animatedIndex: any; style: any };
+
+const CustomBackground = ({animatedIndex, style}: CustomBackgroundProps) => {
   const containerStyle = useAnimatedStyle(() => ({
     ...style,
     backgroundColor: colors.white,

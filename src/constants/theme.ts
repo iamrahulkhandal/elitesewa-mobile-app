@@ -11,7 +11,7 @@ export const colors = {
   black: '#000',
 };
 
-export const shadow = {
+export const shadow: Record<string, any> = {
   light: {
     shadowColor: colors.black,
     shadowRadius: 4,

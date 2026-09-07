@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import type { AppNavigation } from '../../types/navigation';
 import type { UserProfile } from '../../types/models';
 import {
   StyleSheet,
@@ -16,7 +17,9 @@ import FeatherIcon from 'react-native-vector-icons/Feather';
 import { getUser, getClientList } from '../apis/UserService';
 import { fileUrl } from '../../utils/fileUrl';
 
-const UserListScreen = ({navigation}) => {
+type UserListScreenProps = { navigation: AppNavigation };
+
+const UserListScreen = ({navigation}: UserListScreenProps) => {
   const isFocused = useIsFocused();
 
   const [users, setUsers] = useState<UserProfile>({});
@@ -28,7 +31,7 @@ const UserListScreen = ({navigation}) => {
     // console.log(users)
   }, [isFocused]);
 
-  const loadUsers = async (phone) => { 
+  const loadUsers = async (phone: string) => { 
     
     const response = await getUser(phone);
     setUsers(response.data);

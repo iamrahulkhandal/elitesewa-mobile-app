@@ -11,12 +11,14 @@ import CardFavoriteIcon from './Shared/Card/CardFavoriteIcon';
 
 const CARD_HEIGHT = 130;
 
-const TopPlacesCarousel = ({list}) => {
+type TopPlacesCarouselProps = { list: any };
+
+const TopPlacesCarousel = ({list}: TopPlacesCarouselProps) => {
   const navigation = useNavigation<AppNavigation>();
   return (
     <Carousel
       items={list}
-      renderItem={({item, style}) => {
+      renderItem={({item, style}: { item: any; style: any }) => {
         return (
           <Card
             style={[styles.card, style]}

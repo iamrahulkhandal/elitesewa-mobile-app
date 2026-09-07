@@ -2,7 +2,9 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 
-const Dropdown = ({ label, selectedValue, onValueChange, options = [] }) => {
+type DropdownProps = { label: string; selectedValue: any; onValueChange: (...args: any[]) => void; options?: any[] };
+
+const Dropdown = ({ label, selectedValue, onValueChange, options = [] }: DropdownProps) => {
   return (
     <View style={styles.container}>
       <Text style={styles.label}>{label}</Text>
@@ -13,7 +15,7 @@ const Dropdown = ({ label, selectedValue, onValueChange, options = [] }) => {
       >
         <Picker.Item label="Select an option" value="" />
         {options.length > 0 &&
-          options.map((option, index) => (
+          options.map((option: any, index: number) => (
             <Picker.Item key={index} label={option} value={option} />
           ))}
       </Picker>

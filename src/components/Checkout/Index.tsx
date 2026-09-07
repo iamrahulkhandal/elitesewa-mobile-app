@@ -26,7 +26,7 @@ import {
   isPaymentCancelled,
 } from '../../utils/apiError';
  
-const Index = (props) => {
+const Index = (props: any) => {
   const { route: vehicleRoute } = props;
   const navigation = useNavigation<AppNavigation>();
   const { serviceId, planPrice, planId, planDuration, vehicleId, planActive, planActiveDate, billingType } = vehicleRoute.params;
@@ -229,7 +229,7 @@ const Index = (props) => {
     }
   };
 
-  const applySavedVehicle = (vehicle) => {
+  const applySavedVehicle = (vehicle: any) => {
     const vehicleDetails = vehicle.vehicleDetails || {};
     const ownerDetails = vehicle.ownerDetails || {};
     setVehicleData({
@@ -272,7 +272,7 @@ const Index = (props) => {
     }
   }, []);
   // Validation helper
-  const validateField = useCallback((value, message) => {
+  const validateField = useCallback((value: any, message: string) => {
     if (!value || value.toString().trim() === '') {
       Toast.show({
         type: 'error',
@@ -288,26 +288,26 @@ const Index = (props) => {
 
   // Format helpers. Standard plates like "RJ14 CJ 5000" (spaces/dashes
   // optional) plus the newer BH series like "22 BH 1234 AA".
-  const isValidVehicleNumber = (value) => {
+  const isValidVehicleNumber = (value: any) => {
     const compact = value.trim().replace(/[\s-]/g, '').toUpperCase();
     return /^[A-Z]{2}\d{1,2}[A-Z]{1,3}\d{1,4}$/.test(compact) || /^\d{2}BH\d{4}[A-Z]{1,2}$/.test(compact);
   };
-  const isValidYear = (value) => {
+  const isValidYear = (value: any) => {
     if (!/^\d{4}$/.test(value.trim())) return false;
     const year = Number(value.trim());
     return year >= 1980 && year <= new Date().getFullYear();
   };
   // Manufacturers are names; models may carry digits but a model with no letter
   // (or a long digit run) is typed-in noise. Both mirror the server's rules.
-  const isValidManufacturer = (value) => /^[A-Za-z][A-Za-z .&'-]{1,29}$/.test(value.trim());
-  const isValidVehicleModel = (value) => {
+  const isValidManufacturer = (value: any) => /^[A-Za-z][A-Za-z .&'-]{1,29}$/.test(value.trim());
+  const isValidVehicleModel = (value: any) => {
     const raw = value.trim();
     if (raw.length < 2 || raw.length > 40) return false;
     if (!/^[A-Za-z0-9][A-Za-z0-9 .\/+-]*$/.test(raw)) return false;
     return /[A-Za-z]/.test(raw) && !/\d{5}/.test(raw);
   };
-  const isValidMobile = (value) => /^[6-9]\d{9}$/.test(value.trim());
-  const isValidEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+  const isValidMobile = (value: any) => /^[6-9]\d{9}$/.test(value.trim());
+  const isValidEmail = (value: any) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 
   const validateInputs = () => {
     // Vehicle: only number and model are required for a car wash booking.
@@ -377,7 +377,7 @@ const Index = (props) => {
 
     // Scheduled services need at least 30 minutes of lead time. Merge the
     // date field with the time-of-day field before comparing.
-    const combineDateTime = (dateValue, timeValue) => {
+    const combineDateTime = (dateValue: any, timeValue: any) => {
       const date = dateValue ? new Date(dateValue) : null;
       const time = timeValue ? new Date(timeValue) : null;
       if (!date || isNaN(date.getTime()) || !time || isNaN(time.getTime())) return null;
@@ -430,31 +430,31 @@ const Index = (props) => {
     return true;
   };
 
-  const handlePlanChange = (value) => {
+  const handlePlanChange = (value: any) => {
     setServiceData({ serviceType: value });
   };
 
-  const handleVehicleChange = (field, value) => {
+  const handleVehicleChange = (field: string, value: any) => {
     setVehicleData((prevData) => ({ ...prevData, [field]: value }));
   };
 
-  const handleOwnerChange = (field, value) => {
+  const handleOwnerChange = (field: string, value: any) => {
     setOwnerData((prevData) => ({ ...prevData, [field]: value }));
   };
-  const handleInsuranceChange = (field, value) => {
+  const handleInsuranceChange = (field: string, value: any) => {
     setInsuranceData((prevData) => ({ ...prevData, [field]: value }));
   };
 
-  const handleLocationChange = (region) => {
+  const handleLocationChange = (region: any) => {
     setLocation(region);
   };
 
-  const handleRouteSelect = useCallback((data) => {
+  const handleRouteSelect = useCallback((data: any) => {
     setRouteData(data);
   }, []);
 
   // Use cloned moment to avoid mutating the original date.
-  const calculateMembershipDates = (duration) => {
+  const calculateMembershipDates = (duration: string) => {
     const start = moment();
     const mStartDate = start.format('DD/MM/YYYY');
     const mExpireDate = start.clone().add(duration, 'months').format('DD/MM/YYYY');

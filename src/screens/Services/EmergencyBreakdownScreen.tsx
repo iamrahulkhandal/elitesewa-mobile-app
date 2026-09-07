@@ -35,7 +35,7 @@ const emergencyServices = [
 ];
 
 const EmergencyBreakdownScreen = () => {
-    const renderEmergencyServiceItem = ({ item }) => (
+    const renderEmergencyServiceItem = ({ item }: { item: any }) => (
         <View style={styles.serviceCard}>
             <Image source={{ uri: item.image }} style={styles.serviceImage} />
             <View style={styles.serviceInfo}>

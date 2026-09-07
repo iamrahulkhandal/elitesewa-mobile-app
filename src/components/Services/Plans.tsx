@@ -1,11 +1,14 @@
 import React from 'react';
+import type { PlanSummary, UserProfile } from '../../types/models';
 import { View, Text, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import RazorpayCheckout from 'react-native-razorpay';
 import axios from 'axios';
 import { API_URL, RAZORPAY_KEY_ID } from '@env';
 import { fileUrl } from '../../utils/fileUrl';
 
-const Plans = ({ plan, serviceId, user }) => {
+type PlansProps = { plan: PlanSummary; serviceId: string; user: UserProfile };
+
+const Plans = ({ plan, serviceId, user }: PlansProps) => {
   const { name, price, duration, keyPoints } = plan;
   const planId = plan._id;
   const handlePayment = async () => {

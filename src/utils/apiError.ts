@@ -28,7 +28,7 @@ export const RAZORPAY_ERROR = {
   UNKNOWN: 5,
 };
 
-const isObject = (value) => typeof value === 'object' && value !== null;
+const isObject = (value: any) => typeof value === 'object' && value !== null;
 
 /**
  * Razorpay sometimes fills its own fields with the literal strings "undefined"
@@ -39,7 +39,7 @@ const isObject = (value) => typeof value === 'object' && value !== null;
  */
 const PLACEHOLDERS = new Set(['undefined', 'null', 'nan', 'none']);
 
-const meaningful = (value) => {
+const meaningful = (value: any) => {
   if (typeof value !== 'string') return null;
   const trimmed = value.trim();
   if (!trimmed || PLACEHOLDERS.has(trimmed.toLowerCase())) return null;
@@ -48,13 +48,13 @@ const meaningful = (value) => {
 
 // When Razorpay gives no usable description it still reports where the payment
 // died, which is more informative than any generic line we could write.
-const STEP_MESSAGES = {
+const STEP_MESSAGES: Record<string, string> = {
   payment_authentication: 'Your bank did not approve the payment authentication.',
   payment_authorization: 'Your bank did not authorise this payment.',
   payment_initiation: 'The payment could not be started at your bank.',
 };
 
-const REASON_MESSAGES = {
+const REASON_MESSAGES: Record<string, string> = {
   payment_failed: 'The payment was declined.',
   payment_error: 'The payment could not be completed.',
   payment_cancelled: 'Payment was cancelled.',
@@ -63,7 +63,7 @@ const REASON_MESSAGES = {
 };
 
 /** A Razorpay rejection is the only shape carrying a numeric `code`. */
-const isRazorpayError = (error) => isObject(error) && typeof error.code === 'number';
+const isRazorpayError = (error: any) => isObject(error) && typeof error.code === 'number';
 
 /**
  * The user backing out of the sheet is not a failure worth a red screen.
@@ -73,7 +73,7 @@ const isRazorpayError = (error) => isObject(error) && typeof error.code === 'num
  * real gateway error underneath. So a gateway failure reason always wins over
  * the code, and cancellation is confirmed from the reason or the text.
  */
-export const isPaymentCancelled = (error) => {
+export const isPaymentCancelled = (error: any) => {
   if (!isRazorpayError(error)) return false;
 
   const detail = readRazorpayDetail(error);
@@ -87,7 +87,7 @@ export const isPaymentCancelled = (error) => {
  * On Android `description` is usually a JSON envelope wrapping the real gateway
  * error; some SDK paths attach that object directly instead.
  */
-const readRazorpayDetail = (error) => {
+const readRazorpayDetail = (error: any) => {
   const { description } = error;
 
   if (typeof description === 'string' && description.trim().startsWith('{')) {
@@ -102,7 +102,7 @@ const readRazorpayDetail = (error) => {
   return isObject(error.error) ? error.error : {};
 };
 
-const readRazorpayMessage = (error) => {
+const readRazorpayMessage = (error: any) => {
   const { code } = error;
   const detail = readRazorpayDetail(error);
 
@@ -135,12 +135,12 @@ const readRazorpayMessage = (error) => {
 };
 
 /** Pulls the message out of an API error body, preferring field-level detail. */
-const readApiPayload = (data) => {
+const readApiPayload = (data: any) => {
   if (!isObject(data)) return meaningful(data);
 
   if (Array.isArray(data.errors) && data.errors.length > 0) {
     const messages = data.errors
-      .map((entry) => meaningful(isObject(entry) ? entry.message : entry))
+      .map((entry: any) => meaningful(isObject(entry) ? entry.message : entry))
       .filter(Boolean);
     if (messages.length > 0) return messages.join('\n');
   }
@@ -152,7 +152,7 @@ const readApiPayload = (data) => {
  * Best available explanation for `error`, falling back to `fallback` only when
  * nothing more specific exists.
  */
-export const getErrorMessage = (error, fallback = 'Something went wrong. Please try again.') => {
+export const getErrorMessage = (error: any, fallback = 'Something went wrong. Please try again.') => {
   if (!error) return fallback;
 
   if (isRazorpayError(error)) return readRazorpayMessage(error);
@@ -171,7 +171,7 @@ export const getErrorMessage = (error, fallback = 'Something went wrong. Please 
 };
 
 /** Field-level errors, for highlighting inputs. `[]` when there are none. */
-export const getFieldErrors = (error) => {
+export const getFieldErrors = (error: any) => {
   const data = isObject(error) && isObject(error.response) ? error.response.data : null;
   return data && Array.isArray(data.errors) ? data.errors : [];
 };
@@ -190,7 +190,7 @@ export interface ApiError extends Error {
  * Endpoints that report failures with HTTP 200 resolve normally, so without
  * this the caller would treat a rejected booking as a successful one.
  */
-export const assertApiSuccess = (response, fallback) => {
+export const assertApiSuccess = (response: any, fallback: any) => {
   const data = response && response.data;
   if (isObject(data) && data.success === false) {
     const error: ApiError = new Error(readApiPayload(data) || fallback);

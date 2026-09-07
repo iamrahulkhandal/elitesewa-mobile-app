@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import type { AppNavigation, AppRoute } from '../types/navigation';
 import { TouchableOpacity, View, Text,Image, StyleSheet } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -8,7 +9,9 @@ import { useHeaderTitle } from './HeaderTitleContext';
 
 const Drawer = createDrawerNavigator();
 
-const DrawerNavigator = ({ role, handleLogout, navigation, route }) => {
+type DrawerNavigatorProps = { role: any; handleLogout: (...args: any[]) => void; navigation: AppNavigation; route: AppRoute };
+
+const DrawerNavigator = ({ role, handleLogout, navigation, route }: DrawerNavigatorProps) => {
   const { headerTitle, updateHeaderTitle } = useHeaderTitle(); // Destructure from context
   
   // Local state for role if needed

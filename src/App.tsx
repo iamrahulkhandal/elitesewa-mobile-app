@@ -71,7 +71,7 @@ const App = () => {
     checkLoginStatus();
   }, []);
 
-  const handleRoleSelect = selectedRole => {
+  const handleRoleSelect = (selectedRole: string) => {
     setRole(selectedRole);
     AsyncStorage.setItem('userRole', selectedRole);
   };

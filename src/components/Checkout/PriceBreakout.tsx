@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 
-const PriceBreakout = ({ serviceid,locationData,planPrice}) => {
+type PriceBreakoutProps = { serviceid: string; locationData: any; planPrice: number };
+
+const PriceBreakout = ({ serviceid,locationData,planPrice}: PriceBreakoutProps) => {
   const ratePerKm = 10;
   const fixedCharge = planPrice;
 

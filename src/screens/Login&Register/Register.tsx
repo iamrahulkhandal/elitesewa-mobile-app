@@ -21,7 +21,9 @@ import Toast from 'react-native-toast-message';
 import {RadioButton} from 'react-native-paper';
 import {API_URL} from '@env';
 
-function RegisterPage({props}) {
+type RegisterPageProps = { props: any };
+
+function RegisterPage({props}: RegisterPageProps) {
   const [name, setName] = useState('');
   const [nameVerify, setNameVerify] = useState(false);
   // const [email, setEmail] = useState('');
@@ -86,7 +88,7 @@ function RegisterPage({props}) {
     }
   }
 
-  function handleName(e) {
+  function handleName(e: any) {
     const nameVar = e.nativeEvent.text;
     setName(nameVar);
     setNameVerify(false);
@@ -104,7 +106,7 @@ function RegisterPage({props}) {
   //     setEmailVerify(true);
   //   }
   // }
-  function handleMobile(e) {
+  function handleMobile(e: any) {
     const mobileVar = e.nativeEvent.text;
     setMobile(mobileVar);
     setMobileVerify(false);
@@ -151,7 +153,7 @@ function RegisterPage({props}) {
   //   }
   // };
 
-  function handleOtp(e) {
+  function handleOtp(e: any) {
     const otpVar = e.nativeEvent.text;
     setOtp(otpVar);
     setOtpVerify(false);
@@ -162,7 +164,7 @@ function RegisterPage({props}) {
   };
     // Effect to handle the countdown timer
     useEffect(() => {
-      let countdown;
+      let countdown: ReturnType<typeof setInterval>;
       if (isResendDisabled) {
         countdown = setInterval(() => {
           setTimer(prevTimer => {
@@ -229,7 +231,7 @@ function RegisterPage({props}) {
               <TextInput
                 placeholder="Secret Text"
                 style={styles.textInput}
-                onChange={e => setSecretText(e.nativeEvent.text)}
+                onChange={(e: any) => setSecretText(e.nativeEvent.text)}
               />
             </View>
           ) : (
@@ -245,7 +247,7 @@ function RegisterPage({props}) {
             <TextInput
               placeholder="Name"
               style={styles.textInput}
-              onChange={e => handleName(e)}
+              onChange={(e: any) => handleName(e)}
             />
             {name.length < 1 ? null : nameVerify ? (
               <Feather name="check-circle" color="green" size={20} />
@@ -299,7 +301,7 @@ function RegisterPage({props}) {
             <TextInput
               placeholder="Mobile"
               style={styles.textInput}
-              onChange={e => handleMobile(e)}
+              onChange={(e: any) => handleMobile(e)}
               maxLength={10}
             />
             
@@ -327,7 +329,7 @@ function RegisterPage({props}) {
               <TextInput
                 placeholder="OTP"
                 style={styles.textInput}
-                onChange={e => handleOtp(e)}
+                onChange={(e: any) => handleOtp(e)}
               />
             {otp.length < 1 ? null : otpVerify ? (
               <Feather name="check-circle" color="green" size={20} />

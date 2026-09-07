@@ -13,7 +13,7 @@ type LandingPageProps = {
 };
 
 const LandingPage = ({ onRoleSelect }: LandingPageProps) => {
-  const handleRoleSelection = async (role) => {
+  const handleRoleSelection = async (role: string) => {
     try {
       await AsyncStorage.setItem('userRole', role);  
       onRoleSelect?.(role);

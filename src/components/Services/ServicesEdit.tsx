@@ -1,4 +1,5 @@
 import React, {useState, useEffect, useCallback} from 'react';
+import type { AppNavigation, AppRoute } from '../../types/navigation';
 import { View, Text, TextInput,Switch, Button, StyleSheet, TouchableOpacity, Alert, Modal, FlatList, ActivityIndicator, KeyboardAvoidingView, Platform, Image, ScrollView, Keyboard,
 } from 'react-native';
 import axios from 'axios';
@@ -11,7 +12,9 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { fileUrl, isLocalUri } from '../../utils/fileUrl';
 
-const ServicesEdit = ({navigation, route}) => {
+type ServicesEditProps = { navigation: AppNavigation; route: AppRoute };
+
+const ServicesEdit = ({navigation, route}: ServicesEditProps) => {
   const {serviceId} = route.params;
   const [formData, setFormData] = useState({
     name: '',
@@ -49,7 +52,7 @@ const ServicesEdit = ({navigation, route}) => {
     fetchData();
   }, []);
 
-  const getParentChildRelations = async categoryId => {
+  const getParentChildRelations = async (categoryId: any) => {
     try {
       const response = await axios.get(
         `${API_URL}/api/categories/parents/${categoryId}`,
@@ -61,7 +64,7 @@ const ServicesEdit = ({navigation, route}) => {
     }
   };
 
-  const fetchCategoriesByParentId = async parentId => {
+  const fetchCategoriesByParentId = async (parentId: string) => {
     try {
       const response = await axios.get(
         `${API_URL}/api/categories/parent/${parentId}`,
@@ -121,7 +124,7 @@ const ServicesEdit = ({navigation, route}) => {
 
       // Map parent-child relationships and fetch child categories in parallel
       const newDropdownData = await Promise.all(
-        (parentChildRelationData || []).map(async cat => {
+        (parentChildRelationData || []).map(async (cat: any) => {
           try {
             const dropdownCategories = await fetchCategoriesByParentId(
               cat.parentId,
@@ -158,8 +161,8 @@ const ServicesEdit = ({navigation, route}) => {
       Alert.alert('Error', 'Failed to fetch icons. Please try again later.');
     }
   }, []);
-  const formatPickerItems = useCallback(categories => {
-    return categories.map(category => ({
+  const formatPickerItems = useCallback((categories: any) => {
+    return categories.map((category: any) => ({
       label: category.name,
       value: category._id,
     }));
@@ -176,7 +179,7 @@ const ServicesEdit = ({navigation, route}) => {
     }
   }, [formData.videoUrl]);
 
-  const extractVideoId = url => {
+  const extractVideoId = (url: string) => {
     const regex = /(?:youtube\.com.*(?:\/|v=)|youtu\.be\/)([a-zA-Z0-9_-]+)/;
     const match = url.match(regex);
     return match ? match[1] : null;
@@ -252,7 +255,7 @@ const ServicesEdit = ({navigation, route}) => {
   
       // Append all regular form fields
       Object.keys(updatedFormData).forEach(key => {
-        uploadData.append(key, updatedFormData[key]);
+        uploadData.append(key, (updatedFormData as Record<string, any>)[key]);
       });
 
       plans.forEach((plan, index) => {
@@ -325,7 +328,7 @@ const ServicesEdit = ({navigation, route}) => {
   };
   
 // Helper function for handling errors
-const handleApiError = (error) => {
+const handleApiError = (error: any) => {
   if (error.response) {
     console.error('Response error data:', error.response.data);
     Alert.alert(
@@ -344,7 +347,7 @@ const handleApiError = (error) => {
   }
 };
 
-  const onDeleteImage = (index, isBanner = false) => {
+  const onDeleteImage = (index: number, isBanner = false) => {
     if (isBanner) {
       setBanners((prevList) => prevList.filter((_, i) => i !== index));
     } else {
@@ -352,12 +355,12 @@ const handleApiError = (error) => {
     }
   };
   
-  const renderImagePreviews = (imageList, isBanner = false, isOnChange = true) => {
+  const renderImagePreviews = (imageList: any, isBanner = false, isOnChange = true) => {
     if (imageList.length === 0) return null;
   
     return (
       <View style={styles.imagePreviewContainer}>
-        {imageList.map((uri, index) => {
+        {imageList.map((uri: string, index: number) => {
  
           // Handles both a freshly picked local URI and every stored path format.
           const sourceUri = fileUrl(uri);
@@ -394,7 +397,7 @@ const handleApiError = (error) => {
   };
 
   const handleCategorySelect = useCallback(
-    async (selectedId, level) => {
+    async (selectedId: any, level: any) => {
       setDropdownData(prevData => {
         const updatedDropdownData = [...prevData.slice(0, level + 1)];
         updatedDropdownData[level] = {
@@ -423,7 +426,7 @@ const handleApiError = (error) => {
           });
         }
         const selectedCat = dropdownData[level].items.find(
-          item => item.value === selectedId,
+          (item: any) => item.value === selectedId,
         );
         setSelectedCategory(selectedCat ? selectedCat.label : '');
       } catch (error) {
@@ -445,14 +448,14 @@ const handleApiError = (error) => {
       />
     ));
   };
-  const handleIconSelect = (iconName, library) => {
+  const handleIconSelect = (iconName: string, library: string) => {
     const cleanedIconName = getCleanedIconName(iconName, library);
     setSelectedIcon(cleanedIconName);
     setSelectedIconLib(library);
     setIsIconModalVisible(false);
     setFormData({...formData, icon: cleanedIconName, iconLib: library});
   };
-  const getCleanedIconName = (iconName, library) => {
+  const getCleanedIconName = (iconName: string, library: string) => {
     return library === 'Material Icons'
       ? iconName.replace('material-', '')
       : library === 'Font Awesome'
@@ -460,10 +463,10 @@ const handleApiError = (error) => {
       : iconName;
   };
 
-  const renderIcon = ({item}) => {
+  const renderIcon = ({item}: { item: any }) => {
     return (
       <View style={styles.iconContainer}>
-        {item.icons.map(icon => {
+        {item.icons.map((icon: any) => {
           const IconComponent =
             icon.library === 'Font Awesome' ? FontAwesome : MaterialIcons;
           const iconName = getCleanedIconName(icon.name, icon.library);
@@ -482,31 +485,31 @@ const handleApiError = (error) => {
     );
   };
 
-  const handlePlanChange = (index, field, value) => {
+  const handlePlanChange = (index: number, field: string, value: any) => {
     const updatedPlans = [...plans];
-    updatedPlans[index][field] = value;
+    (updatedPlans[index] as Record<string, any>)[field] = value;
     setPlans(updatedPlans);
   };
 
-  const addKeyPoint = (planIndex) => {
+  const addKeyPoint = (planIndex: number) => {
     const updatedPlans = [...plans];
     updatedPlans[planIndex].keyPoints.push('');
     setPlans(updatedPlans);
   };
 
-  const handleKeyPointChange = (planIndex, keyPointIndex, value) => {
+  const handleKeyPointChange = (planIndex: number, keyPointIndex: number, value: any) => {
     const updatedPlans = [...plans];
     updatedPlans[planIndex].keyPoints[keyPointIndex] = value;
     setPlans(updatedPlans);
   };
 
-  const removeKeyPoint = (planIndex, keyPointIndex) => {
+  const removeKeyPoint = (planIndex: number, keyPointIndex: number) => {
     const updatedPlans = [...plans];
     updatedPlans[planIndex].keyPoints.splice(keyPointIndex, 1);
     setPlans(updatedPlans);
   };
 
-  const removePlan = (index) => {
+  const removePlan = (index: number) => {
     const updatedPlans = [...plans];
     updatedPlans.splice(index, 1);
     setPlans(updatedPlans);

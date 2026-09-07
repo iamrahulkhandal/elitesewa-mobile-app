@@ -30,7 +30,7 @@ const CustomHomeServices = () => {
     fetchServices(categoryId);
   }, []);
 
-  const fetchServices = async (categoryId) => {
+  const fetchServices = async (categoryId: any) => {
     try {
       setLoading(true);
       const response = await axios.get(`${API_URL}/api/services/category/${categoryId}`);
@@ -50,9 +50,9 @@ const CustomHomeServices = () => {
     setRefreshing(false);
   };
 
-  const keyExtractor = (item, index) => item.id || item._id || index.toString();
+  const keyExtractor = (item: any, index: number) => item.id || item._id || index.toString();
 
-  const getIconComponent = (lib, name, size, color) => {
+  const getIconComponent = (lib: any, name: string, size: number, color: any) => {
     switch (lib) {
       case 'Material Icons':
         return <MaterialIcon name={name} size={size} color={color} />;

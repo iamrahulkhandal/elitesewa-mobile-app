@@ -4,7 +4,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 // Returns a valid Date or null (empty string / undefined / unparseable input).
-const parseDate = (value) => {
+const parseDate = (value: any) => {
   if (!value) return null;
   const parsed = value instanceof Date ? value : new Date(value);
   return isNaN(parsed.getTime()) ? null : parsed;
@@ -27,7 +27,7 @@ const DatePicker = ({ label, date, onChange, maximumDate, minimumDate }: DatePic
     setSelectedDate(parseDate(date));
   }, [date]);
 
-  const onChangeInternal = (event, pickedDate) => {
+  const onChangeInternal = (event: any, pickedDate: any) => {
     setShow(false);
     if (pickedDate) {
       setSelectedDate(pickedDate);

@@ -38,7 +38,7 @@ const authSlice = createSlice({
 });
 
 // Async function to load auth data
-export const loadAuthData = () => async (dispatch) => {
+export const loadAuthData = () => async (dispatch: any) => {
     try {
         const userData = await AsyncStorage.getItem('userData');
         if (userData) {
@@ -51,7 +51,7 @@ export const loadAuthData = () => async (dispatch) => {
 };
 
 // Async function to save user data to AsyncStorage
-const saveUserData = async (userData) => {
+const saveUserData = async (userData: any) => {
     try {
         await AsyncStorage.setItem('userData', JSON.stringify(userData));
     } catch (error) {
@@ -60,19 +60,19 @@ const saveUserData = async (userData) => {
 };
 
 // Redux action for login that also saves data to AsyncStorage
-export const loginAndPersist = (user) => async (dispatch) => {
+export const loginAndPersist = (user: any) => async (dispatch: any) => {
     dispatch(login(user));
     await saveUserData(user); // Save user data
 };
 
 // Redux action for logout that also removes data from AsyncStorage
-export const logoutAndClear = () => async (dispatch) => {
+export const logoutAndClear = () => async (dispatch: any) => {
     dispatch(logout());
     await AsyncStorage.removeItem('userData'); // Clear user data
 };
 
 // Action to update profile completion status
-export const setProfileCompletionStatus = (status) => async (dispatch) => {
+export const setProfileCompletionStatus = (status: boolean) => async (dispatch: any) => {
     dispatch(setProfileCompleted(status));
     const userData = await AsyncStorage.getItem('userData');
     if (userData) {

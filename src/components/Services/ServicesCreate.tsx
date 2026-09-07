@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import type { AppNavigation } from '../../types/navigation';
 import {
   View,
   Text,
@@ -25,7 +26,9 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import YoutubeIframe from 'react-native-youtube-iframe';
 
-const ServicesCreate = ({ navigation }) => {
+type ServicesCreateProps = { navigation: AppNavigation };
+
+const ServicesCreate = ({ navigation }: ServicesCreateProps) => {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -77,21 +80,21 @@ const ServicesCreate = ({ navigation }) => {
   const fetchTopLevelCategories = useCallback(async () => {
     try {
       const response = await axios.get(`${API_URL}/api/categories`);
-      const topLevelCategories = response.data.filter(cat => cat.parentId === null);
+      const topLevelCategories = response.data.filter((cat: any) => cat.parentId === null);
       setDropdownData([{ parentId: null, items: formatPickerItems(topLevelCategories), selectedId: null }]);
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
   }, []);
 
-  const formatPickerItems = useCallback(categories => {
-    return categories.map(category => ({
+  const formatPickerItems = useCallback((categories: any) => {
+    return categories.map((category: any) => ({
       label: category.name,
       value: category._id,
     }));
   }, []);
 
-  const fetchChildCategories = async parentId => {
+  const fetchChildCategories = async (parentId: string) => {
     try {
       const response = await axios.get(`${API_URL}/api/categories/parent/${parentId}`);
       return response.data;
@@ -101,7 +104,7 @@ const ServicesCreate = ({ navigation }) => {
     }
   };
 
-  const handleCategorySelect = useCallback(async (selectedId, level) => {
+  const handleCategorySelect = useCallback(async (selectedId: any, level: any) => {
     setDropdownData(prevData => {
       const updatedDropdownData = [...prevData.slice(0, level + 1)];
       updatedDropdownData[level] = { ...updatedDropdownData[level], selectedId };
@@ -140,7 +143,7 @@ const ServicesCreate = ({ navigation }) => {
     }
   }, [formData.videoUrl]);
 
-  const extractVideoId = url => {
+  const extractVideoId = (url: string) => {
     const regex = /(?:youtube\.com.*(?:\/|v=)|youtu\.be\/)([a-zA-Z0-9_-]+)/;
     const match = url.match(regex);
     return match ? match[1] : null;
@@ -175,31 +178,31 @@ const ServicesCreate = ({ navigation }) => {
     setPlans([...plans, { name: '', price: '', duration: '', keyPoints: [''] }]);
   };
 
-  const removePlan = index => {
+  const removePlan = (index: number) => {
     const newPlans = [...plans];
     newPlans.splice(index, 1);
     setPlans(newPlans);
   };
 
-  const handlePlanChange = (index, field, value) => {
+  const handlePlanChange = (index: number, field: string, value: any) => {
     const newPlans = [...plans];
-    newPlans[index][field] = value;
+    (newPlans[index] as Record<string, any>)[field] = value;
     setPlans(newPlans);
   };
 
-  const addKeyPoint = (planIndex) => {
+  const addKeyPoint = (planIndex: number) => {
     const newPlans = [...plans];
     newPlans[planIndex].keyPoints.push('');
     setPlans(newPlans);
   };
 
-  const removeKeyPoint = (planIndex, keyPointIndex) => {
+  const removeKeyPoint = (planIndex: number, keyPointIndex: number) => {
     const newPlans = [...plans];
     newPlans[planIndex].keyPoints.splice(keyPointIndex, 1);
     setPlans(newPlans);
   };
 
-  const handleKeyPointChange = (planIndex, keyPointIndex, value) => {
+  const handleKeyPointChange = (planIndex: number, keyPointIndex: number, value: any) => {
     const newPlans = [...plans];
     newPlans[planIndex].keyPoints[keyPointIndex] = value;
     setPlans(newPlans);
@@ -263,7 +266,7 @@ const ServicesCreate = ({ navigation }) => {
       Object.keys(updatedFormData).forEach(key => {
         // console.log(key);
 
-        uploadData.append(key, updatedFormData[key]);
+        uploadData.append(key, (updatedFormData as Record<string, any>)[key]);
       });
 
       // Append plans data to the uploadData
@@ -310,7 +313,7 @@ const ServicesCreate = ({ navigation }) => {
   };
 
 
-  const getCleanedIconName = (iconName, library) => {
+  const getCleanedIconName = (iconName: string, library: string) => {
     return library === 'Material Icons'
       ? iconName.replace('material-', '')
       : library === 'Font Awesome'
@@ -318,10 +321,10 @@ const ServicesCreate = ({ navigation }) => {
         : iconName;
   };
 
-  const renderIcon = ({ item }) => {
+  const renderIcon = ({ item }: { item: any }) => {
     return (
       <View style={styles.iconContainer}>
-        {item.icons.map(icon => {
+        {item.icons.map((icon: any) => {
           const IconComponent =
             icon.library === 'Font Awesome' ? FontAwesome : MaterialIcons;
           const iconName = getCleanedIconName(icon.name, icon.library);
@@ -340,7 +343,7 @@ const ServicesCreate = ({ navigation }) => {
     );
   };
 
-  const handleIconSelect = (iconName, library) => {
+  const handleIconSelect = (iconName: string, library: string) => {
     const cleanedIconName = getCleanedIconName(iconName, library);
     setSelectedIcon(cleanedIconName);
     setIsIconModalVisible(false);
@@ -360,12 +363,12 @@ const ServicesCreate = ({ navigation }) => {
     );
   };
 
-  const renderImagePreviews = (imageList, isBanner = false) => {
+  const renderImagePreviews = (imageList: any, isBanner = false) => {
     if (imageList.length === 0) return null;
 
     return (
       <View style={styles.imagePreviewContainer}>
-        {imageList.map((uri, index) => (
+        {imageList.map((uri: string, index: number) => (
           <Image
             key={`${isBanner ? 'banner' : 'image'}-${index}-${uri}`}
             source={{uri}}

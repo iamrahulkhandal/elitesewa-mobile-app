@@ -20,7 +20,9 @@ const ASPECT_RATIO = width / height;
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
-const RouteMap = ({ onRouteSelect, routeData = { origin: null, destination: null }}) => {
+type RouteMapProps = { onRouteSelect: (...args: any[]) => void; routeData?: any };
+
+const RouteMap = ({ onRouteSelect, routeData = { origin: null, destination: null }}: RouteMapProps) => {
 
   // State for "From" (origin)
   const [originQuery, setOriginQuery] = useState('');
@@ -54,7 +56,7 @@ const RouteMap = ({ onRouteSelect, routeData = { origin: null, destination: null
     }
   }, [routeData]);
   // Fetch suggestions using Google Places Autocomplete API
-  const fetchSuggestions = async (input, setSuggestions, setLoading) => {
+  const fetchSuggestions = async (input: any, setSuggestions: any, setLoading: any) => {
     if (!input) {
       setSuggestions([]);
       return;
@@ -109,7 +111,7 @@ const RouteMap = ({ onRouteSelect, routeData = { origin: null, destination: null
 
 
   // Helper to get place details
-  const getPlaceDetails = async (placeId) => {
+  const getPlaceDetails = async (placeId: any) => {
     try {
       const response = await axios.get(
         'https://maps.googleapis.com/maps/api/place/details/json',
@@ -134,7 +136,7 @@ const RouteMap = ({ onRouteSelect, routeData = { origin: null, destination: null
   };
 
   // When an origin suggestion is selected
-  const handleSelectOrigin = async (item) => {
+  const handleSelectOrigin = async (item: any) => {
     setOriginQuery(item.description);
     setOriginSuggestions([]);
     Keyboard.dismiss();
@@ -149,7 +151,7 @@ const RouteMap = ({ onRouteSelect, routeData = { origin: null, destination: null
   };
 
   // When a destination suggestion is selected
-  const handleSelectDestination = async (item) => {
+  const handleSelectDestination = async (item: any) => {
     setDestinationQuery(item.description);
     setDestinationSuggestions([]);
     Keyboard.dismiss();

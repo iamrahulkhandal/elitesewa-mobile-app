@@ -18,11 +18,13 @@ import { fileUrl } from '../../utils/fileUrl';
 
 // Shows the date-wise daily wash photos for a booking. Customers can leave one
 // comment per day; executives (and others) see the photos and any comment.
-const DailyWashUpdates = ({ paymentResponseId }) => {
+type DailyWashUpdatesProps = { paymentResponseId: string };
+
+const DailyWashUpdates = ({ paymentResponseId }: DailyWashUpdatesProps) => {
   const role = useAppSelector((state) => state.auth.role);
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [drafts, setDrafts] = useState({}); // logId -> comment text being edited
+  const [drafts, setDrafts] = useState<Record<string, string>>({}); // logId -> comment text being edited
   const [savingId, setSavingId] = useState(null);
 
   const fetchLogs = async () => {
@@ -42,10 +44,10 @@ const DailyWashUpdates = ({ paymentResponseId }) => {
     }, [paymentResponseId])
   );
 
-  const formatDate = (value) =>
+  const formatDate = (value: any) =>
     new Date(value).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 
-  const saveComment = async (logId) => {
+  const saveComment = async (logId: any) => {
     const comment = (drafts[logId] ?? '').trim();
     if (!comment) {
       Alert.alert('Empty comment', 'Please write something before saving.');
@@ -86,7 +88,7 @@ const DailyWashUpdates = ({ paymentResponseId }) => {
             <Text style={styles.dayDate}>{formatDate(log.date)}</Text>
 
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.photoRow}>
-              {log.images.map((img, index) => (
+              {log.images.map((img: any, index: number) => (
                 <Image
                   key={index}
                   source={{ uri: fileUrl(img) }}

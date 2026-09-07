@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import type { FieldErrors } from '../../types/models';
 import {
   View,
   Text,
@@ -9,7 +10,9 @@ import {
   StyleSheet,
 } from 'react-native';
 
-const ServiceProviderDetails = ({ formData, onChange, errors }) => {
+type ServiceProviderDetailsProps = { formData: any; onChange: (...args: any[]) => void; errors: FieldErrors };
+
+const ServiceProviderDetails = ({ formData, onChange, errors }: ServiceProviderDetailsProps) => {
   const [certification, setCertification] = useState('');
 
   const handleAddCertification = () => {
@@ -22,8 +25,8 @@ const ServiceProviderDetails = ({ formData, onChange, errors }) => {
     }
   };
 
-  const handleRemoveCertification = (index) => {
-    const updatedCertifications = formData.serviceProvider.certifications.filter((_, i) => i !== index);
+  const handleRemoveCertification = (index: number) => {
+    const updatedCertifications = formData.serviceProvider.certifications.filter((_: any, i: number) => i !== index);
     onChange('serviceProvider.certifications', updatedCertifications);
   };
 
@@ -50,7 +53,7 @@ const ServiceProviderDetails = ({ formData, onChange, errors }) => {
 
       <Text style={styles.label}>Certifications</Text>
       <View style={styles.certificationsContainer}>
-        {formData.serviceProvider.certifications.map((cert, index) => (
+        {formData.serviceProvider.certifications.map((cert: any, index: number) => (
           <View key={index} style={styles.certificationItem}>
             <Text style={styles.certificationText}>{cert}</Text>
             <TouchableOpacity onPress={() => handleRemoveCertification(index)}>

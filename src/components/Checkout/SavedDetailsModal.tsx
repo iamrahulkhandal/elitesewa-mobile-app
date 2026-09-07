@@ -1,11 +1,14 @@
 import React from 'react';
+import type { Vehicle } from '../../types/models';
 import { Modal, View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 // Offered on a fresh checkout when the customer has booked before: pick a
 // previously used vehicle to autofill the form, or start with a blank form.
-const SavedDetailsModal = ({ visible, vehicles, onSelect, onNew }) => {
-  const renderVehicle = ({ item }) => {
+type SavedDetailsModalProps = { visible: boolean; vehicles: Vehicle[]; onSelect: (...args: any[]) => void; onNew: (...args: any[]) => void };
+
+const SavedDetailsModal = ({ visible, vehicles, onSelect, onNew }: SavedDetailsModalProps) => {
+  const renderVehicle = ({ item }: { item: any }) => {
     const vehicle = item.vehicleDetails || {};
     const owner = item.ownerDetails || {};
     const subtitle = [vehicle.manufacturer, vehicle.model, vehicle.fuelType]

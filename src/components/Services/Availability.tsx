@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import type { FieldErrors } from '../../types/models';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from 'moment';
@@ -13,14 +14,16 @@ const daysOfWeek = [
   { id: 'Sunday', name: 'Sunday' },
 ];
 
-const Availability = ({ formData, onChange, errors }) => {
+type AvailabilityProps = { formData: any; onChange: (...args: any[]) => void; errors: FieldErrors };
+
+const Availability = ({ formData, onChange, errors }: AvailabilityProps) => {
   const [isStartTimePickerVisible, setStartTimePickerVisibility] = useState(false);
   const [isEndTimePickerVisible, setEndTimePickerVisibility] = useState(false);
   const [selectedDays, setSelectedDays] = useState(formData.availability.days || []);
 
-  const handleDaySelect = (day) => {
+  const handleDaySelect = (day: any) => {
     if (selectedDays.includes(day)) {
-      setSelectedDays(selectedDays.filter(d => d !== day));
+      setSelectedDays(selectedDays.filter((d: any) => d !== day));
     } else {
       setSelectedDays([...selectedDays, day]);
     }
@@ -35,7 +38,7 @@ const Availability = ({ formData, onChange, errors }) => {
     setStartTimePickerVisibility(false);
   };
 
-  const handleStartTimeConfirm = (date) => {
+  const handleStartTimeConfirm = (date: Date) => {
     onChange('availability', { ...formData.availability, startTime: moment(date).format('hh:mm A') });
     hideStartTimePicker();
   };
@@ -48,7 +51,7 @@ const Availability = ({ formData, onChange, errors }) => {
     setEndTimePickerVisibility(false);
   };
 
-  const handleEndTimeConfirm = (date) => {
+  const handleEndTimeConfirm = (date: Date) => {
     onChange('availability', { ...formData.availability, endTime: moment(date).format('hh:mm A') });
     hideEndTimePicker();
   };

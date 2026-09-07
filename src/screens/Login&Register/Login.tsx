@@ -21,9 +21,9 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '@env';
 
-function LoginPage({props}) {
+function LoginPage({props}: {props?: any}) {
   const navigation = useNavigation<AppNavigation>();
-  const [mobile, setMobile] = useState([]);
+  const [mobile, setMobile] = useState('');
   const [mobileVerify, setMobileVerify] = useState(false);
   const [mobileExist, setMobileExist] = useState(false);
   const [otp, setOtp] = useState([]);
@@ -33,7 +33,7 @@ function LoginPage({props}) {
   const [mobileOtpVerify, setmobileOtpVerify] = useState(false);
   const [userData, setUserData] = useState([]);
 
-  const handleMobile = text => {
+  const handleMobile = (text: string) => {
     // console.log(text);
 
     setMobileVerify(false);
@@ -51,7 +51,7 @@ function LoginPage({props}) {
         }
       });
     } else {
-      setMobile([]);
+      setMobile('');
     }
   };
 
@@ -146,7 +146,7 @@ function LoginPage({props}) {
     }
   };
 
-  function handleOtp(e) {
+  function handleOtp(e: any) {
     const otpVar = e.nativeEvent.text;
     setOtp(otpVar);
     setOtpVerify(false);
@@ -159,7 +159,7 @@ function LoginPage({props}) {
   }
   // Effect to handle the countdown timer
   useEffect(() => {
-    let countdown;
+    let countdown: ReturnType<typeof setInterval>;
     if (isResendDisabled) {
       countdown = setInterval(() => {
         setTimer(prevTimer => {
@@ -259,7 +259,7 @@ function LoginPage({props}) {
                 <TextInput
                   placeholder="OTP"
                   style={styles.textInput}
-                  onChange={e => handleOtp(e)}
+                  onChange={(e: any) => handleOtp(e)}
                 />
                 {otp.length < 1 ? null : otpVerify ? (
                   <Feather name="check-circle" color="green" size={20} />

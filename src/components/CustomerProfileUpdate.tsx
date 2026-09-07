@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import type { AppNavigation } from '../types/navigation';
 import type { FieldErrors } from '../types/models';
 import {
   View,
@@ -16,7 +17,7 @@ import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { setProfileCompletionStatus } from '../store/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const CustomerProfileUpdate = ({ navigation }) => {
+const CustomerProfileUpdate = ({ navigation }: { navigation: AppNavigation }) => {
   const dispatch = useAppDispatch();
 
   // Access user and role from Redux store
@@ -127,7 +128,7 @@ const CustomerProfileUpdate = ({ navigation }) => {
     }
   };
 
-  const handlePincodeChange = async (pincode) => {
+  const handlePincodeChange = async (pincode: string) => {
     if (pincode.length <= 6) {
       setProfileData({ ...profileData, pincode });
     }
@@ -156,7 +157,7 @@ const CustomerProfileUpdate = ({ navigation }) => {
     }
   };
 
-  const handleFocus = (field) => {
+  const handleFocus = (field: string) => {
     setErrors((prevErrors) => ({ ...prevErrors, [field]: null }));
   };
 

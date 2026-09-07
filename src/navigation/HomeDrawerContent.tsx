@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import type { AppNavigation } from '../types/navigation';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
@@ -8,7 +9,16 @@ import { useFocusEffect } from '@react-navigation/native';
 import type { UserProfile } from '../types/models';
 import Toast from 'react-native-toast-message';
 
-const HomeDrawerContent = ({ navigation, role, handleLogout }) => {
+type HomeDrawerContentProps = {
+  role?: string;
+  handleLogout: (navigation: any) => void;
+  /** Supplied by Drawer.Navigator's drawerContent render prop. */
+  navigation: any;
+  state?: unknown;
+  descriptors?: unknown;
+};
+
+const HomeDrawerContent = ({ navigation, role, handleLogout }: HomeDrawerContentProps) => {
   const [activeRoute, setActiveRoute] = useState('Home'); // Set default active route
   const [userData, setUserData] = useState<UserProfile>({});
   const [userRole, setUserRole] = useState('');
@@ -56,11 +66,11 @@ const HomeDrawerContent = ({ navigation, role, handleLogout }) => {
   );
 
   // Function to handle navigation and set active route
-  const handleNavigation = (route) => {
+  const handleNavigation = (route: string) => {
     setActiveRoute(route);
     navigation.navigate(route);
   };
-  const handleTabNavigation = (route) => {
+  const handleTabNavigation = (route: string) => {
     setActiveRoute(route);
     //navigation.navigate('Main', { screen: route });
     navigation.navigate('HomeTabs', { screen: route });

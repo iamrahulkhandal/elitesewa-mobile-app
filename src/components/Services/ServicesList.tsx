@@ -28,7 +28,7 @@ const ServicesList = () => {
     fetchServices();
   }, []);
 
-  const renderServiceItem = ({ item }) => (
+  const renderServiceItem = ({ item }: { item: any }) => (
     <TouchableOpacity
       style={styles.serviceItem}
       onPress={() => navigation.navigate('ServiceDetails', { serviceId: item._id })}

@@ -4,7 +4,9 @@ import {colors, sizes, spacing} from '../../../constants/theme';
 import Rating from './Rating';
 import {getFractionDigitsRating} from './utils';
 
-const RatingOverall = ({rating, containerStyle}) => {
+type RatingOverallProps = { rating: any; containerStyle: any };
+
+const RatingOverall = ({rating, containerStyle}: RatingOverallProps) => {
   return (
     <View style={[styles.container, containerStyle]}>
       <Text style={styles.rating}>{getFractionDigitsRating(rating)}</Text>

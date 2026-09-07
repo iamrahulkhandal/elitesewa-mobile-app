@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import type { AppNavigation } from '../types/navigation';
 import type { FieldErrors } from '../types/models';
 import {
   View,
@@ -16,7 +17,7 @@ import { useAppDispatch } from '../store/hooks';
 import { setProfileCompletionStatus } from '../store/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ExecutiveProfileUpdate = ({ navigation }) => {
+const ExecutiveProfileUpdate = ({ navigation }: { navigation: AppNavigation }) => {
   const dispatch = useAppDispatch();
   const [user, setUser] = useState('');
     const [isDisabled, setIsDisabled] = useState(false);
@@ -150,7 +151,7 @@ const ExecutiveProfileUpdate = ({ navigation }) => {
     }
   };
 
-  const handlePincodeChange = async (pincode) => {
+  const handlePincodeChange = async (pincode: string) => {
     if (pincode.length <= 6) {
       setProfileData({ ...profileData, pincode });
     }

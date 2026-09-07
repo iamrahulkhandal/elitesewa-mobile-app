@@ -11,11 +11,13 @@ import CardFavoriteIcon from '../Shared/Card/CardFavoriteIcon';
 
 const CARD_HEIGHT = 200;
 
-const HotelsCarousel = ({hotels}) => {
+type HotelsCarouselProps = { hotels: any };
+
+const HotelsCarousel = ({hotels}: HotelsCarouselProps) => {
   return (
     <Carousel
       items={hotels}
-      renderItem={({item, style}) => {
+      renderItem={({item, style}: { item: any; style: any }) => {
         return (
           <Card style={[styles.card, style]}>
             <CardFavoriteIcon active={false} onPress={() => {}} />

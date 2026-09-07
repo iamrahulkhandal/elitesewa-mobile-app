@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import type { AppNavigation } from '../types/navigation';
 import {
   View,
   Text,
@@ -29,7 +30,9 @@ import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Import FontAwesome icons
 import { fileUrl } from '../utils/fileUrl';
 
-const ExecutiveHomeScreen = ({ navigation }) => {
+type ExecutiveHomeScreenProps = { navigation: AppNavigation };
+
+const ExecutiveHomeScreen = ({ navigation }: ExecutiveHomeScreenProps) => {
   const dispatch = useAppDispatch();
   const { user, role } = useAppSelector(state => state.auth);
   const [isProfileComplete, setIsProfileComplete] = useState(true);
@@ -59,7 +62,7 @@ const ExecutiveHomeScreen = ({ navigation }) => {
   };
 
   
-  const renderStars = (rating) => {
+  const renderStars = (rating: number) => {
     let stars = [];
     for (let i = 0; i < 5; i++) {
       if (i < rating) {
@@ -134,7 +137,7 @@ const ExecutiveHomeScreen = ({ navigation }) => {
   };
 
 
-  const renderServiceItem = ({ item }) => {
+  const renderServiceItem = ({ item }: { item: any }) => {
     if (!item || !item.iconLib || !item.icon || !item.name || !item.images) {
       return null; // Return nothing if item is invalid
     }

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import type { AppNavigation } from '../../types/navigation';
 import {
   View,
   Text,
@@ -20,7 +21,9 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { fileUrl } from '../../utils/fileUrl';
 
-const ServicesListing = ({ navigation }) => {
+type ServicesListingProps = { navigation: AppNavigation };
+
+const ServicesListing = ({ navigation }: ServicesListingProps) => {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -45,7 +48,7 @@ const ServicesListing = ({ navigation }) => {
     }
   };
 
-  const handleDeleteService = serviceId => {
+  const handleDeleteService = (serviceId: string) => {
     Alert.alert(
       'Delete Service',
       'Are you sure you want to delete this service?',
@@ -80,7 +83,7 @@ const ServicesListing = ({ navigation }) => {
 
 
   // Updated renderServiceItem with horizontal alignment
-  const renderServiceItem = ({ item }) => {
+  const renderServiceItem = ({ item }: { item: any }) => {
     const firstPlan = item.plans?.[0];
     const firstKeyPoint = firstPlan?.keyPoints?.[0];
     return (

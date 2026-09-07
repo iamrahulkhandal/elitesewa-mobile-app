@@ -5,7 +5,9 @@ import DatePicker from '../FormComponents/DatePicker';
 import Dropdown from '../FormComponents/Dropdown';
 import TimePicker from '../FormComponents/TimePicker';
 
-const VehicleDetails = ({ vehicleData, onChange,active }) => {
+type VehicleDetailsProps = { vehicleData: any; onChange: (...args: any[]) => void; active: boolean };
+
+const VehicleDetails = ({ vehicleData, onChange,active }: VehicleDetailsProps) => {
     // Registration can't be in the future. The time-of-day cap only applies
     // when the registration date is today (or not yet chosen).
     const now = new Date();

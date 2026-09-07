@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import type { AppNavigation, AppRoute } from '../../types/navigation';
 import { View, Text, StyleSheet, ScrollView, ActivityIndicator, RefreshControl, TouchableOpacity, Alert } from 'react-native';
 import axios from 'axios';
 import { useAppSelector } from '../../store/hooks';
@@ -6,7 +7,7 @@ import { API_URL } from '@env';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Activeplan from '../../components/Services/Activeplan';
 
-const SUBSCRIPTION_STATUS_LABELS = {
+const SUBSCRIPTION_STATUS_LABELS: Record<string, string> = {
   created: 'Awaiting first payment',
   active: 'Active · auto-renews',
   halted: 'Payment failed · paused',
@@ -16,7 +17,9 @@ const SUBSCRIPTION_STATUS_LABELS = {
   completed: 'Completed',
 };
 
-const ActivePlanList = ({ route, navigation }) => {
+type ActivePlanListProps = { route: AppRoute; navigation: AppNavigation };
+
+const ActivePlanList = ({ route, navigation }: ActivePlanListProps) => {
   const { role } = route.params;
   const userId = useAppSelector((state) => state.auth.userId);
   const userRole = useAppSelector((state) => state.auth.role);
@@ -56,7 +59,7 @@ const ActivePlanList = ({ route, navigation }) => {
     }
   };
 
-  const handleCancelAutoRenew = (subscription) => {
+  const handleCancelAutoRenew = (subscription: any) => {
     Alert.alert(
       'Cancel auto-renew?',
       'Your current month stays active until it ends. No further charges will be made.',
@@ -83,7 +86,7 @@ const ActivePlanList = ({ route, navigation }) => {
     (s) => !['cancelled', 'completed', 'created'].includes(s.status)
   );
 
-  const renderSubscriptionCard = (subscription) => {
+  const renderSubscriptionCard = (subscription: any) => {
     const plan = subscription.planId || {};
     const vehicle = subscription.vehicleId?.vehicleDetails || {};
     const halted = subscription.status === 'halted';
@@ -119,7 +122,7 @@ const ActivePlanList = ({ route, navigation }) => {
     );
   };
 
-  const handleActivePlanSelect = (plan, serviceId, vehicle, planActiveDate) => {
+  const handleActivePlanSelect = (plan: any, serviceId: any, vehicle: any, planActiveDate: string) => {
     navigation.navigate('Checkout', {
       serviceId: serviceId._id,
       planId: plan._id,
@@ -132,7 +135,7 @@ const ActivePlanList = ({ route, navigation }) => {
     });
   };
 
-  const calculateEndDate = (planActiveDate, duration) => {
+  const calculateEndDate = (planActiveDate: string, duration: string) => {
     const startDate = new Date(planActiveDate);
     const durationInDays = parseInt(duration, 10);
     startDate.setUTCDate(startDate.getUTCDate() + durationInDays);

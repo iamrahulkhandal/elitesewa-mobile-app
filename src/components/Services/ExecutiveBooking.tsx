@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import type { AppNavigation } from '../../types/navigation';
 import {
   View,
   Text,
@@ -16,13 +17,15 @@ import { API_URL } from '@env';
 
 // Daily-wash plans are subscriptions serviced day by day, so their cards get
 // the day-wise upload flow instead of the one-shot pending/complete buttons.
-const isDailyWash = (item) => /daily/i.test(item.serviceId?.name || '');
+const isDailyWash = (item: any) => /daily/i.test(item.serviceId?.name || '');
 
-const ExecutiveBooking = ({ navigation }) => {
+type ExecutiveBookingProps = { navigation: AppNavigation };
+
+const ExecutiveBooking = ({ navigation }: ExecutiveBookingProps) => {
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const [washProgress, setWashProgress] = useState({}); // paymentId -> days logged
+  const [washProgress, setWashProgress] = useState<Record<string, number>>({}); // paymentId -> days logged
 
   // Access user and role from Redux store
   const userId = useAppSelector((state) => state.auth.userId);
@@ -46,11 +49,11 @@ const ExecutiveBooking = ({ navigation }) => {
   };
 
   // Days-logged count per daily-wash booking, for the progress line.
-  const fetchWashProgress = async (list) => {
+  const fetchWashProgress = async (list: any) => {
     const dailyBookings = list.filter(isDailyWash);
     if (!dailyBookings.length) return;
     const entries = await Promise.all(
-      dailyBookings.map(async (item) => {
+      dailyBookings.map(async (item: any) => {
         try {
           const res = await axios.get(`${API_URL}/api/dailywash/${item._id}`);
           return [item._id, (res.data.logs || []).length];
@@ -74,7 +77,7 @@ const ExecutiveBooking = ({ navigation }) => {
     }, [userId, role])
   );
 
-  const handleCancelBooking = async (paymentId) => {
+  const handleCancelBooking = async (paymentId: any) => {
     try {
       await axios.put(`${API_URL}/api/payment/${paymentId}/cancel`);
       Alert.alert('Success', 'Booking has been cancelled successfully.');
@@ -85,7 +88,7 @@ const ExecutiveBooking = ({ navigation }) => {
     }
   };
 
-  const renderPaymentItem = ({ item }) => {
+  const renderPaymentItem = ({ item }: { item: any }) => {
     const daily = isDailyWash(item);
     const daysLogged = washProgress[item._id];
     const totalDays = parseInt(item.planId?.duration, 10);

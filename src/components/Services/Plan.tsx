@@ -1,7 +1,10 @@
 import React from 'react';
+import type { PlanSummary } from '../../types/models';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-const Plan = ({ plan, onSelect,serviceid}) => {
+type PlanProps = { plan: PlanSummary; onSelect: (...args: any[]) => void; serviceid: string };
+
+const Plan = ({ plan, onSelect,serviceid}: PlanProps) => {
   const { name, price, duration, keyPoints } = plan;
 
   return (
@@ -31,7 +34,9 @@ const Plan = ({ plan, onSelect,serviceid}) => {
   );
 };
 
-const PlanPick = ({ plan, onSelect }) => {
+type PlanPickProps = { plan: PlanSummary; onSelect: (...args: any[]) => void };
+
+const PlanPick = ({ plan, onSelect }: PlanPickProps) => {
   const { name, price, duration, keyPoints } = plan;
 
   return (
@@ -42,7 +47,9 @@ const PlanPick = ({ plan, onSelect }) => {
     </View>
   );
 };
-const PlanBreak = ({ plan, onSelect }) => {
+type PlanBreakProps = { plan: PlanSummary; onSelect: (...args: any[]) => void };
+
+const PlanBreak = ({ plan, onSelect }: PlanBreakProps) => {
   const { name, price, duration, keyPoints } = plan;
 
   return (

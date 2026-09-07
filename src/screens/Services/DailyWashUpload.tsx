@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import type { AppNavigation, AppRoute } from '../../types/navigation';
 import {
   View,
   Text,
@@ -19,7 +20,9 @@ import { API_URL } from '@env';
 
 const MAX_PHOTOS = 5;
 
-const DailyWashUpload = ({ route, navigation }) => {
+type DailyWashUploadProps = { route: AppRoute; navigation: AppNavigation };
+
+const DailyWashUpload = ({ route, navigation }: DailyWashUploadProps) => {
   const { item_id } = route.params;
   const executiveId = useAppSelector((state) => state.auth.userId);
 
@@ -28,7 +31,7 @@ const DailyWashUpload = ({ route, navigation }) => {
   const [images, setImages] = useState([]);
   const [uploading, setUploading] = useState(false);
 
-  const formatDate = (d) =>
+  const formatDate = (d: any) =>
     d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 
   const handleCapture = async () => {
@@ -51,7 +54,7 @@ const DailyWashUpload = ({ route, navigation }) => {
     setImages((prev) => [...prev, result.assets[0].uri]);
   };
 
-  const removeImage = (index) => {
+  const removeImage = (index: number) => {
     setImages((prev) => prev.filter((_, i) => i !== index));
   };
 

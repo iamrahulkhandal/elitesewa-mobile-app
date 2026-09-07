@@ -2,13 +2,21 @@ import React, {useMemo, useRef} from 'react';
 import {View, StyleSheet, Animated} from 'react-native';
 import {colors, sizes} from '../../constants/theme';
 
+type CarouselIndicatorsProps = {
+  slidesCount: number;
+  dotSize: number;
+  dotSpacing: number;
+  slideWidth: number;
+  scrollAnimated: any;
+};
+
 const CarouselIndicators = ({
   slidesCount,
   dotSize,
   dotSpacing,
   slideWidth,
   scrollAnimated,
-}) => {
+}: CarouselIndicatorsProps) => {
   const slides = useRef(Array.from(Array(slidesCount).keys())).current;
 
   const {inputRange, translateOutputRange, widthOutputRange} = useMemo(

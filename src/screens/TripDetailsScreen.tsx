@@ -1,4 +1,5 @@
 import React from 'react';
+import type { AppNavigation, AppRoute } from '../types/navigation';
 import {View, StyleSheet} from 'react-native';
 import {colors, sizes, spacing} from '../constants/theme';
 import Icon from '../components/Shared/Icon';
@@ -8,7 +9,9 @@ import * as Animatable from 'react-native-animatable';
 import TripDetailsCarousel from '../components/TripDetailsCarousel';
 import FavoriteButton from '../components/Shared/FavoriteButton';
 
-const TripDetailsScreen = ({navigation, route}) => {
+type TripDetailsScreenProps = { navigation: AppNavigation; route: AppRoute };
+
+const TripDetailsScreen = ({navigation, route}: TripDetailsScreenProps) => {
   //const insets = useSafeAreaInsets();
   const {trip} = route.params;
   const slides = [trip.image, ...trip.gallery];
@@ -40,7 +43,7 @@ const TripDetailsScreen = ({navigation, route}) => {
   );
 };
 
-TripDetailsScreen.sharedElements = route => {
+TripDetailsScreen.sharedElements = (route: any) => {
   const {trip} = route.params;
   return [
     {

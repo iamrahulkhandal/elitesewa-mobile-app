@@ -35,7 +35,7 @@ const repairServices = [
 ];
 
 const GeneralRepairServicesScreen = () => {
-    const renderRepairServiceItem = ({ item }) => (
+    const renderRepairServiceItem = ({ item }: { item: any }) => (
         <View style={styles.serviceCard}>
             <Image source={{ uri: item.image }} style={styles.serviceImage} />
             <View style={styles.serviceInfo}>

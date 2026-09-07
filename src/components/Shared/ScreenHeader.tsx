@@ -2,7 +2,9 @@ import React from 'react';
 import {Text, View, StyleSheet} from 'react-native';
 import {sizes, spacing} from '../../constants/theme';
 
-const ScreenHeader = ({mainTitle, secondTitle}) => {
+type ScreenHeaderProps = { mainTitle: any; secondTitle: any };
+
+const ScreenHeader = ({mainTitle, secondTitle}: ScreenHeaderProps) => {
   return (
     <View style={styles.container}>
       <Text style={styles.mainTitle}>{mainTitle}</Text>

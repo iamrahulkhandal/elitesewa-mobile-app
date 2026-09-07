@@ -16,17 +16,17 @@ const initialState = {
     subCategory: '',
     image: '',
     availability: {
-      days: [],
+      days: [] as string[],
       startTime: '',
       endTime: '',
     },
     serviceProvider: {
       name: '',
       experience: '',
-      certifications: [],
+      certifications: [] as string[],
       contact: { phone: '', email: '' },
     },
-    addons: [],
+    addons: [] as any[],
     terms: false,
     cancellationPolicy: '',
   },
@@ -41,9 +41,9 @@ const serviceFormSlice = createSlice({
     updateField: (state, action) => {
       const { field, value } = action.payload;
       const keys = field.split('.');
-      let current = state.formData;
+      let current: any = state.formData;
 
-      keys.forEach((key, index) => {
+      keys.forEach((key: any, index: number) => {
         if (index === keys.length - 1) {
           current[key] = value;
         } else {
@@ -54,7 +54,7 @@ const serviceFormSlice = createSlice({
     },
     setError: (state, action) => {
       const { field, error } = action.payload;
-      state.errors[field] = error;
+      (state.errors as Record<string, any>)[field] = error;
     },
     resetForm: (state) => {
       state.formData = initialState.formData;
@@ -63,7 +63,7 @@ const serviceFormSlice = createSlice({
     },
     setValidationStatus: (state, action) => {
       const { field, isValid } = action.payload;
-      state.validationStatus[field] = isValid;
+      (state.validationStatus as Record<string, any>)[field] = isValid;
     },
     setFormData: (state, action) => {
       state.formData = action.payload;

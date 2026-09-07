@@ -2,7 +2,9 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import InputField from '../FormComponents/InputField';
 
-const OwnerDetails = ({ ownerData, onChange }) => {
+type OwnerDetailsProps = { ownerData: any; onChange: (...args: any[]) => void };
+
+const OwnerDetails = ({ ownerData, onChange }: OwnerDetailsProps) => {
   return (
     <View>
       <InputField

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import type { AppNavigation } from '../types/navigation';
 import {
   View,
   Text,
@@ -15,14 +16,16 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
 import { API_URL } from '@env';
 
-const STATUS_COLORS = {
+const STATUS_COLORS: Record<string, string> = {
   SUCCESS: '#2ecc71',
   FAILED: '#e74c3c',
   CANCELLED: '#e67e22',
   PENDING: '#f39c12',
 };
 
-const PaymentHistoryScreen = ({ navigation }) => {
+type PaymentHistoryScreenProps = { navigation: AppNavigation };
+
+const PaymentHistoryScreen = ({ navigation }: PaymentHistoryScreenProps) => {
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -42,7 +45,7 @@ const PaymentHistoryScreen = ({ navigation }) => {
       const response = await axios.get(endpoint);
       const list = response.data.payments || [];
       // Newest first.
-      list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      list.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
       setPayments(list);
     } catch (error: any) {
       console.error('Error fetching payment history:', error.message);
@@ -70,7 +73,7 @@ const PaymentHistoryScreen = ({ navigation }) => {
     }, [userId, role])
   );
 
-  const formatDate = (value) => {
+  const formatDate = (value: any) => {
     if (!value) return 'N/A';
     const d = new Date(value);
     return d.toLocaleDateString('en-GB', {
@@ -80,7 +83,7 @@ const PaymentHistoryScreen = ({ navigation }) => {
     });
   };
 
-  const renderItem = ({ item }) => {
+  const renderItem = ({ item }: { item: any }) => {
     const statusColor = STATUS_COLORS[item.status] || '#7f8c8d';
     return (
       <TouchableOpacity

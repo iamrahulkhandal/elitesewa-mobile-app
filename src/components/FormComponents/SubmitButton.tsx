@@ -1,7 +1,9 @@
 import React from 'react';
 import { TouchableOpacity, View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 
-const SubmitButton = ({ onSubmit, disabled = false, loading = false, label = 'Submit' }) => {
+type SubmitButtonProps = { onSubmit: (...args: any[]) => void; disabled?: boolean; label?: string; loading?: boolean };
+
+const SubmitButton = ({ onSubmit, disabled = false, loading = false, label = 'Submit' }: SubmitButtonProps) => {
   // While a submission is in flight the button must not take a second tap:
   // tapping twice used to start two bookings and two payment attempts.
   const isBlocked = disabled || loading;

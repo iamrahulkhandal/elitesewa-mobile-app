@@ -10,7 +10,7 @@ import type { AppNavigation } from '../../types/navigation';
 const Services = () => {
   const navigation = useNavigation<AppNavigation>();
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item }: { item: any }) => (
     <TouchableOpacity
       style={styles.item}
       onPress={() => navigation.navigate(item.navigate, { service: item })} // Navigate to the appropriate screen

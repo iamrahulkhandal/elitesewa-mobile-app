@@ -2,7 +2,9 @@ import React from 'react';
 import {View, StyleSheet} from 'react-native';
 import {spacing} from '../../../constants/theme';
 
-const CardContent = ({children, style}) => {
+type CardContentProps = { children: any; style: any };
+
+const CardContent = ({children, style}: CardContentProps) => {
   return <View style={[styles.content, style]}>{children}</View>;
 };
 

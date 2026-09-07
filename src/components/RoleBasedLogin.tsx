@@ -1,4 +1,5 @@
 // src/components/RoleBasedLogin.js
+import type { AppNavigation } from '../types/navigation';
 import React, {useState, useEffect} from 'react';
 import {View, StyleSheet,Keyboard,TouchableWithoutFeedback,TextInput,TouchableOpacity} from 'react-native';
 import { useRoute } from '@react-navigation/native';
@@ -11,7 +12,9 @@ import {loginAndPersist, setProfileCompleted, setProfileCompletionStatus} from '
 import { CommonActions } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const RoleBasedLogin = ({navigation}) => {
+type RoleBasedLoginProps = { navigation: AppNavigation };
+
+const RoleBasedLogin = ({navigation}: RoleBasedLoginProps) => {
   const route = useRoute<AppRoute>();
   const { role } = route.params;
   const [mobile, setMobile] = useState('');

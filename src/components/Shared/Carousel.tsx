@@ -5,7 +5,9 @@ import {sizes, spacing} from '../../constants/theme';
 const CARD_WIDTH = sizes.width - 80;
 const CARD_WIDTH_SPACING = CARD_WIDTH + spacing.l;
 
-const Carousel = ({renderItem, items = []}) => {
+type CarouselProps = { renderItem: (info: any) => React.ReactElement | null; items?: any[] };
+
+const Carousel = ({renderItem, items = []}: CarouselProps) => {
   return (
     <FlatList
       data={items}

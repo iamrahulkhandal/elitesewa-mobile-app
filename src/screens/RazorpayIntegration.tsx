@@ -4,7 +4,7 @@ import RazorpayCheckout from 'react-native-razorpay';
 import { API_URL } from '@env';
 
 
-const RazorpayIntegration = (props) => { 
+const RazorpayIntegration = (props: any) => { 
   const handlePayment = async () => {
     const options = {
       description: 'Payment for your service', 
@@ -23,13 +23,13 @@ const RazorpayIntegration = (props) => {
 
     try {
       RazorpayCheckout.open(options)
-        .then((data) => {
+        .then((data: any) => {
           // On payment success
           const { razorpay_payment_id } = data;
           Alert.alert('Payment Success', `Payment ID: ${razorpay_payment_id}`);
           savePaymentData(data); // Send data to your backend
         })
-        .catch((error) => {
+        .catch((error: any) => {
           // On payment failure
           Alert.alert('Payment Failed', error.description);
         });
@@ -38,7 +38,7 @@ const RazorpayIntegration = (props) => {
     }
   };
 
-  const savePaymentData = async (paymentData) => {
+  const savePaymentData = async (paymentData: any) => {
     const response = await fetch(`${API_URL}/api/razorPayPaymentRoutes`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

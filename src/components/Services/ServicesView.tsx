@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import type { AppNavigation, AppRoute } from '../../types/navigation';
 import { View, Text, Image, StyleSheet, FlatList, ScrollView, ActivityIndicator, RefreshControl, TouchableOpacity, Alert, Dimensions } from 'react-native';
 import axios from 'axios';
 import { useAppSelector } from '../../store/hooks';
@@ -18,7 +19,9 @@ import { fileUrl } from '../../utils/fileUrl';
 
 const { width: screenWidth } = Dimensions.get('window');
 
-const ServicesView = ({ route, navigation }) => {
+type ServicesViewProps = { route: AppRoute; navigation: AppNavigation };
+
+const ServicesView = ({ route, navigation }: ServicesViewProps) => {
   const { serviceId, role } = route.params;
   const user = useAppSelector((state) => state.auth.user);
   const userId = useAppSelector((state) => state.auth.userId);
@@ -132,7 +135,7 @@ const ServicesView = ({ route, navigation }) => {
     }
   };
   // Function to extract video ID from YouTube URL
-  const extractVideoId = (url) => {
+  const extractVideoId = (url: string) => {
     const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
     const match = url.match(regex);
     return match ? match[1] : null;
@@ -160,13 +163,13 @@ const ServicesView = ({ route, navigation }) => {
     );
   };
 
-  const handleImagePress = (index, type) => {
+  const handleImagePress = (index: number, type: any) => {
     setSelectedImageIndex(index);
     setViewingType(type); // Set to either "banners" or "images"
     setIsImageViewVisible(true);
   };
 
-  const handlePlanSelect = (plan) => {
+  const handlePlanSelect = (plan: any) => {
     // console.log(plan,'plan...');
 
     setSelectedPlan(plan); // Save the selected plan
@@ -180,7 +183,7 @@ const ServicesView = ({ route, navigation }) => {
       billingType: plan.billingType || 'onetime',
     });
   };
-  const handleActivePlanSelect = (plan, vehicle, planActiveDate) => {
+  const handleActivePlanSelect = (plan: any, vehicle: any, planActiveDate: string) => {
     setSelectedPlan(plan); // Save the selected plan
     // Navigate to VehicleAndOwnerDetails and pass the selected plan along with serviceId
     navigation.navigate('Checkout', {
@@ -196,8 +199,8 @@ const ServicesView = ({ route, navigation }) => {
   };
 
   const viewingImages = viewingType === 'banners'
-    ? service?.banners?.map(banner => ({ uri: fileUrl(banner) }))
-    : service?.images?.map(image => ({ uri: fileUrl(image) }));
+    ? service?.banners?.map((banner: any) => ({ uri: fileUrl(banner) }))
+    : service?.images?.map((image: any) => ({ uri: fileUrl(image) }));
 
   if (loading) {
     return (
@@ -226,7 +229,7 @@ const ServicesView = ({ route, navigation }) => {
     );
   }
 
-  const convertDuration = (duration) => {
+  const convertDuration = (duration: number) => {
     const hours = Math.floor(duration / 60);
     const minutes = duration % 60;
     return `${hours}h ${minutes}m`;
@@ -264,7 +267,7 @@ const ServicesView = ({ route, navigation }) => {
             activeDotColor="#007BFF"
           >
 
-            {service?.banners?.map((banner, index) => (
+            {service?.banners?.map((banner: any, index: number) => (
               <TouchableOpacity key={`banner-${index}`} onPress={() => handleImagePress(index, 'banners')}>
                 <Image
                   source={{ uri: fileUrl(banner) }}
@@ -321,7 +324,7 @@ const ServicesView = ({ route, navigation }) => {
               height={250}
               videoId={videoId} // Now we use the video ID extracted from service.videoUrl
               play={false}
-              onError={(error) => console.log("Error playing video:", error)}
+              onError={(error: any) => console.log("Error playing video:", error)}
               onReady={() => console.log("Video is ready to play")}
             />
           </View>
@@ -330,7 +333,7 @@ const ServicesView = ({ route, navigation }) => {
         <View style={styles.galleryContainer}>
           <Text style={styles.galleryTitle}>Gallery Images</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {service?.images?.map((image, index) => (
+            {service?.images?.map((image: any, index: number) => (
               <TouchableOpacity key={`gallery-${index}`} onPress={() => handleImagePress(index, 'images')}>
                 <Image source={{ uri: fileUrl(image) }} style={styles.galleryImage} />
               </TouchableOpacity>
@@ -438,7 +441,7 @@ const ServicesView = ({ route, navigation }) => {
           <View style={styles.card}>
             <Text style={styles.titlebreakpick}>Get Assistance Now</Text>
 
-            {service.plans.map((plan, index) => (
+            {service.plans.map((plan: any, index: number) => (
               <PlanBreak key={index} plan={plan} onSelect={handlePlanSelect} /> 
             ))}
           </View>
@@ -446,7 +449,7 @@ const ServicesView = ({ route, navigation }) => {
           {["673f16c47a12ef01b200c943"].includes(serviceId) && (
           <View style={styles.card}>
             <Text style={styles.titlebreakpick}>Higher Professional Drivers</Text>
-            {service.plans.map((plan, index) => (
+            {service.plans.map((plan: any, index: number) => (
               <PlanPick key={index} plan={plan} onSelect={handlePlanSelect} />
             ))}
           </View>
@@ -454,7 +457,7 @@ const ServicesView = ({ route, navigation }) => {
           {!["673f16bd7a12ef01b200c941","673f16c47a12ef01b200c943"].includes(serviceId) && (
           <View>
             <Text style={styles.title}>OUR PLANS</Text>
-            {service.plans.map((plan, index) => (
+            {service.plans.map((plan: any, index: number) => (
               <Plan key={index} plan={plan} onSelect={handlePlanSelect} serviceid={serviceId} />
             ))}
           </View>

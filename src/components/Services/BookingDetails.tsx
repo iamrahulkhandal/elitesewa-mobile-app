@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import type { AppRoute } from '../../types/navigation';
 import type { Booking } from '../../types/models';
 import { View, Text, StyleSheet,TouchableOpacity, ScrollView, Image, Dimensions,ActivityIndicator, RefreshControl } from 'react-native';
 import axios from 'axios';
@@ -11,7 +12,7 @@ import ImageViewing from 'react-native-image-viewing';
 import DailyWashUpdates from './DailyWashUpdates';
 import { fileUrl } from '../../utils/fileUrl';
 const { width: screenWidth } = Dimensions.get('window');
-const BookingDetails = ({ route }) => {
+const BookingDetails = ({ route }: { route: AppRoute }) => {
   const { item_id } = route.params;
   const [bookingDetails, setBookingDetails] = useState<Booking>({});
   const [refreshing, setRefreshing] = useState(false);
@@ -54,7 +55,7 @@ useFocusEffect(
        } 
      }, [longImages]);
  
-const fetchShortImages = async (id) => {
+const fetchShortImages = async (id: string) => {
   try {
     const response = await axios.get(`${API_URL}/api/services/shorting/${id}`);
     setShortImages(response.data.shortdescription || []);
@@ -99,7 +100,7 @@ const fetchBookingDetails = async () => {
     );
   }
 
-  const renderStars = (rating) => {
+  const renderStars = (rating: number) => {
     let stars = [];
     for (let i = 0; i < 5; i++) {
       if (i < rating) {
@@ -125,7 +126,7 @@ const fetchBookingDetails = async () => {
     vehicleId 
   } = bookingDetails;
 
-  const handleImagePress = index => {
+  const handleImagePress = (index: number) => {
     setSelectedImageIndex(index);
     setIsImageViewVisible(true);
   };

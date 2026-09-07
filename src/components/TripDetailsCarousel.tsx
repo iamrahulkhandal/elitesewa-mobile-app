@@ -5,7 +5,9 @@ import {sizes} from '../constants/theme';
 import CarouselIndicators from './Shared/CarouselIndicators';
 import * as Animatable from 'react-native-animatable';
 
-const TripDetailsCarousel = ({slides, id}) => {
+type TripDetailsCarouselProps = { slides: any; id: any };
+
+const TripDetailsCarousel = ({slides, id}: TripDetailsCarouselProps) => {
   const scrollAnimated = useRef(new Animated.Value(0)).current;
   return (
     <>

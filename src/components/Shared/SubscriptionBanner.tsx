@@ -26,7 +26,7 @@ const SubscriptionBanner = () => {
           const response = await axios.get(`${API_URL}/api/subscription/user/${userId}`);
           const subscriptions = response.data.subscriptions || [];
 
-          const halted = subscriptions.find((s) => s.status === 'halted');
+          const halted = subscriptions.find((s: any) => s.status === 'halted');
           if (halted) {
             setBanner({
               type: 'error',
@@ -36,7 +36,7 @@ const SubscriptionBanner = () => {
           }
 
           const chargingSoon = subscriptions.find(
-            (s) =>
+            (s: any) =>
               s.status === 'active' &&
               s.nextChargeAt &&
               new Date(s.nextChargeAt).getTime() - Date.now() < THREE_DAYS_MS &&

@@ -27,7 +27,7 @@ const popularServices = [
 
 const PopularServices = () => {
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item }: { item: any }) => (
     <View style={styles.card}>
                   <Image
         style={styles.image}

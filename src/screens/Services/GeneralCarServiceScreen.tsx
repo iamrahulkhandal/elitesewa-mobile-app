@@ -35,7 +35,7 @@ const services = [
 ];
 
 const GeneralCarServiceScreen = () => {
-    const renderServiceItem = ({ item }) => (
+    const renderServiceItem = ({ item }: { item: any }) => (
         <View style={styles.serviceCard}>
             <Image source={{ uri: item.image }} style={styles.serviceImage} />
             <View style={styles.serviceInfo}>

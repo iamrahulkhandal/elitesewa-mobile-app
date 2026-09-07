@@ -1,18 +1,21 @@
 import React from 'react';
+import type { PlanSummary, ServiceSummary, Vehicle } from '../../types/models';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-const Activeplan = ({ plan,service, vehicle, createdAt, onSelect, planActiveDate }) => {
+type ActiveplanProps = { plan: PlanSummary; service: ServiceSummary; vehicle: Vehicle; createdAt: string; onSelect: (...args: any[]) => void; planActiveDate: string };
+
+const Activeplan = ({ plan,service, vehicle, createdAt, onSelect, planActiveDate }: ActiveplanProps) => {
   const { name, price, duration } = plan;
 
-  const calculateEndDate = (planActiveDate, duration) => {
+  const calculateEndDate = (planActiveDate: string, duration: string | number) => {
     const startDate = new Date(planActiveDate);
-    const durationInDays = parseInt(duration, 10);
+    const durationInDays = parseInt(String(duration), 10);
     startDate.setUTCDate(startDate.getUTCDate() + durationInDays);
     return startDate;
   };
 
-  const formatDate = (date) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+  const formatDate = (date: Date) => {
+    const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
     return date.toLocaleDateString(undefined, options);
   };
 

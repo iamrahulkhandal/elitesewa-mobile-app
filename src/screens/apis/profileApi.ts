@@ -6,7 +6,7 @@ export const getItems = async () => {
   return await axios.get(`${API_URL}items`);
 };
 
-export const createItem = async (item, image) => {
+export const createItem = async (item: any, image: any) => {
   const formData = new FormData();
   formData.append('name', item.name);
   formData.append('email', item.email);
@@ -23,7 +23,7 @@ export const createItem = async (item, image) => {
   });
 };
 
-export const updateItem = async (id, item, image) => {
+export const updateItem = async (id: string, item: any, image: any) => {
   const formData = new FormData();
   formData.append('name', item.name);
   formData.append('email', item.email);
@@ -40,6 +40,6 @@ export const updateItem = async (id, item, image) => {
   });
 };
 
-export const deleteItem = async (id) => {
+export const deleteItem = async (id: string) => {
   return await axios.delete(`${API_URL}items/${id}`);
 };

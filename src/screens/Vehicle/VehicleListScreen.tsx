@@ -43,7 +43,7 @@ const VehicleListScreen = () => {
   
   
     // Handle vehicle deletion
-    const handleDelete = async (id) => {
+    const handleDelete = async (id: string) => {
       try {
         await axios.delete(`${API_URL}/vehicles/${id}`);
         Toast.show({                                                                                         
@@ -64,7 +64,7 @@ const VehicleListScreen = () => {
       }
     };
 
-  const ConfirmDelete = (id) => {
+  const ConfirmDelete = (id: string) => {
     Alert.alert(
       "Delete Vehicle",
       "Are you sure you want to delete this vehicle?",
@@ -78,7 +78,7 @@ const VehicleListScreen = () => {
   // Function to handle edit
 
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item }: { item: any }) => (
     <View style={styles.vehicleItem} key={item.id}>
 
       <Image source={{ uri: fileUrl(item.images?.[0]) }} style={styles.vehicleImage} />

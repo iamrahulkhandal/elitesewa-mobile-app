@@ -1,9 +1,12 @@
 import React from 'react';
+import type { FieldErrors } from '../../types/models';
 import { View, TextInput, Text, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker'; // Import Picker component
 
-const BasicInfo = ({ formData, onChange, errors }) => {
-  const handleChange = (field, value) => {
+type BasicInfoProps = { formData: any; onChange: (...args: any[]) => void; errors: FieldErrors };
+
+const BasicInfo = ({ formData, onChange, errors }: BasicInfoProps) => {
+  const handleChange = (field: string, value: any) => {
     onChange(field, value);
   };
 

@@ -39,7 +39,7 @@ import PaymentSuccessScreen from '../screens/PaymentSuccessScreen';
 import PaymentFailedScreen from '../screens/PaymentFailedScreen';
 import DrawerNavigator from './DrawerNavigator';
 const Stack = createStackNavigator();
-const MainNavigator = ({ role, startRouteName }) => {
+const MainNavigator = ({ role, startRouteName }: { role?: string; startRouteName?: string }) => {
   const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
   const navigation = useNavigation<AppNavigation>();
@@ -56,7 +56,7 @@ const MainNavigator = ({ role, startRouteName }) => {
     }
   };
   // Logout function using logoutAndClear
-  const handleLogout = async navigation => {
+  const handleLogout = async (navigation: AppNavigation) => {
     try {
       await dispatch(logoutAndClear()); // Dispatch the logoutAndClear action
       await AsyncStorage.removeItem('userData');
@@ -77,9 +77,9 @@ const MainNavigator = ({ role, startRouteName }) => {
     }
   };
 
-  const HeaderIconButton = ({ navigation, component }) => (
+  const HeaderIconButton = ({ navigation, routeName }: { navigation: AppNavigation; routeName: string }) => (
     <TouchableOpacity
-      onPress={() => navigation.navigate(component)}
+      onPress={() => navigation.navigate(routeName)}
       style={styles.iconButton}>
       <Feather name="plus-circle" size={28} color="#007AFF" />
     </TouchableOpacity>
@@ -243,7 +243,7 @@ const MainNavigator = ({ role, startRouteName }) => {
           options={({ navigation }) => ({
             title: 'Services',
             headerRight: () => (
-              <HeaderIconButton navigation={navigation} component={ServiceForm} />
+              <HeaderIconButton navigation={navigation} routeName="ServiceForm" />
             ),
             headerTitleAlign: 'center',
             headerStyle: {
@@ -293,7 +293,7 @@ const MainNavigator = ({ role, startRouteName }) => {
             headerRight: () => (
               <HeaderIconButton
                 navigation={navigation}
-                component={CreateCategory}
+                routeName="CreateCategory"
               />
             ),
             headerTitleAlign: 'center',
@@ -497,7 +497,7 @@ const MainNavigator = ({ role, startRouteName }) => {
             headerRight: () => (
               <HeaderIconButton
                 navigation={navigation}
-                component={TestimonialCreate}
+                routeName="TestimonialCreate"
               />
             ),
             headerTitleAlign: 'center',
@@ -515,7 +515,7 @@ const MainNavigator = ({ role, startRouteName }) => {
           options={{
             title: 'Icons Listing',
             headerRight: () => (
-              <HeaderIconButton navigation={navigation} component={IconsCreate} />
+              <HeaderIconButton navigation={navigation} routeName="IconsCreate" />
             ),
             headerTitleAlign: 'center',
             headerStyle: {

@@ -23,7 +23,7 @@ const BASE = String(API_URL || '').replace(/\/+$/, '');
  * @param {string} fallback              used when value is empty
  * @returns {string} an absolute URL
  */
-export function fileUrl(value, fallback = '/uploads/noimage.png') {
+export function fileUrl(value: any, fallback = '/uploads/noimage.png') {
   const raw = value == null ? '' : String(value).trim();
   if (!raw) return `${BASE}${fallback}`;
 
@@ -43,7 +43,7 @@ export function fileUrl(value, fallback = '/uploads/noimage.png') {
  * True when a URI came from the device rather than the server — an image the
  * user has just picked and not yet uploaded.
  */
-export function isLocalUri(value) {
+export function isLocalUri(value: any) {
   return /^(file|content|data|asset):/i.test(String(value || ''));
 }
 

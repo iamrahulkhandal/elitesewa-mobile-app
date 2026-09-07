@@ -62,7 +62,7 @@ const LocationMap = ({ label, onLocationSelect, locationData }: { label?: string
     animateMapToLocation(location.latitude, location.longitude, 0.01);
   }, [location]);
 
-  const fetchAddressFromCoords = async (lat, lng) => {
+  const fetchAddressFromCoords = async (lat: any, lng: any) => {
     try {
       const response = await Geocoder.from(lat, lng);
       const formattedAddress =
@@ -76,7 +76,7 @@ const LocationMap = ({ label, onLocationSelect, locationData }: { label?: string
     }
   };
 
-  const animateMapToLocation = (lat, lng, delta = 0.005) => {
+  const animateMapToLocation = (lat: any, lng: any, delta = 0.005) => {
     mapRef.current?.animateToRegion(
       {
         latitude: lat,
@@ -88,7 +88,7 @@ const LocationMap = ({ label, onLocationSelect, locationData }: { label?: string
     );
   };
 
-  const fetchSuggestions = async (input) => {
+  const fetchSuggestions = async (input: any) => {
     if (!input || !isManualInput) {  // Only fetch suggestions if manually typed
       setSuggestions([]);
       return;
@@ -129,12 +129,12 @@ const LocationMap = ({ label, onLocationSelect, locationData }: { label?: string
    
   
 
-  const addToHistory = (entry) => {
+  const addToHistory = (entry: any) => {
     // Optionally limit history to a fixed number (here, last 5 searches)
     setSearchHistory((prev) => [entry, ...prev].slice(0, 5));
   };
 
-  const handleSelectSuggestion = async (item) => {
+  const handleSelectSuggestion = async (item: any) => {
     setQuery(item.description);
     setSuggestions([]);
     Keyboard.dismiss();
@@ -266,7 +266,7 @@ const LocationMap = ({ label, onLocationSelect, locationData }: { label?: string
     }
   };
 
-  const handleHistorySelect = (entry) => {
+  const handleHistorySelect = (entry: any) => {
     setQuery(entry.description);
     setLocation(entry.location);
     setAddress(entry.description);

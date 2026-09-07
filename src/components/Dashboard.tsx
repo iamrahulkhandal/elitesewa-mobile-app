@@ -1,4 +1,5 @@
 // src/components/Dashboard.js
+import type { AppNavigation } from '../types/navigation';
 import React, {useEffect, useState} from 'react';
 import {View, Button, StyleSheet} from 'react-native';
 import { useAppSelector, useAppDispatch } from '../store/hooks';
@@ -7,7 +8,9 @@ import {logoutAndClear} from '../store/authSlice'; // Updated import
 import axios from 'axios';
 import {API_URL} from '@env';
 
-const Dashboard = ({navigation}) => {
+type DashboardProps = { navigation: AppNavigation };
+
+const Dashboard = ({navigation}: DashboardProps) => {
   const dispatch = useAppDispatch();
   const {user, role} = useAppSelector(state => state.auth);
   const [isProfileComplete, setIsProfileComplete] = useState(true);

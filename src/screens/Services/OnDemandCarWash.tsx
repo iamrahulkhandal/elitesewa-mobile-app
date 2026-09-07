@@ -18,7 +18,7 @@ const OnDemandCarWash = () => {
         ],
     };
 
-    const handlePackageSelect = (packageId,packagePrice) => {
+    const handlePackageSelect = (packageId: any,packagePrice: any) => {
         setSelectedPackage(packageId);
         setSelectedPackagePrice(packagePrice);
         Animated.sequence([

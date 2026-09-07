@@ -12,11 +12,13 @@ import CardContent from './Shared/Card/CardContent';
 const CARD_WIDTH = sizes.width / 2 - (spacing.l + spacing.l / 2);
 const CARD_HEIGHT = 220;
 
-const TripsList = ({list}) => {
+type TripsListProps = { list: any };
+
+const TripsList = ({list}: TripsListProps) => {
   const navigation = useNavigation<AppNavigation>();
   return (
     <View style={styles.container}>
-      {list.map((item, index) => {
+      {list.map((item: any, index: number) => {
         return (
           <Card
             key={item.id}

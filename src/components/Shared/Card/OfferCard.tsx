@@ -1,7 +1,9 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 
-const OfferCard = ({ title, price, duration, features }) => (
+type OfferCardProps = { title: string; price: any; duration: any; features: any };
+
+const OfferCard = ({ title, price, duration, features }: OfferCardProps) => (
   <View style={styles.card}>
     <View style={styles.header}>
       <Image 
@@ -13,7 +15,7 @@ const OfferCard = ({ title, price, duration, features }) => (
     <Text style={styles.title}>{title}</Text>
     <Text style={styles.duration}>{duration}</Text>
     <View style={styles.features}>
-      {features.map((feature, index) => (
+      {features.map((feature: any, index: number) => (
         <Text key={index} style={styles.featureText}>★ {feature}</Text>
       ))}
     </View>

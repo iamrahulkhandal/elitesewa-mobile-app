@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useReducer, useRef } from 'react';
+import type { AppNavigation, AppRoute } from '../../types/navigation';
 import {
   View,
   Text,
@@ -18,7 +19,7 @@ import * as ImagePicker from 'react-native-image-picker';
 import { API_URL } from '@env';
 
 // Form Reducer for Managing State More Efficiently
-const formReducer = (state, action) => {
+const formReducer = (state: any, action: any) => {
   switch (action.type) {
     case 'SET_FIELD':
       return { ...state, [action.field]: action.value };
@@ -29,7 +30,9 @@ const formReducer = (state, action) => {
   }
 };
 
-const ExecutiveServicesUpdate = ({route ,navigation}) =>{
+type ExecutiveServicesUpdateProps = { route: AppRoute; navigation: AppNavigation };
+
+const ExecutiveServicesUpdate = ({route ,navigation}: ExecutiveServicesUpdateProps) =>{
 
   const { item_id,payment_id } = route.params; 
 

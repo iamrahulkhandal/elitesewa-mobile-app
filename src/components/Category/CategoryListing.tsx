@@ -24,7 +24,7 @@ const CategoryListing = () => {
     }
   };
 
-  const fetchChildCategories = async (parentId) => {
+  const fetchChildCategories = async (parentId: string) => {
     try {
       const response = await axios.get(`${API_URL}/api/categories/parent/${parentId}`);
       return response.data;
@@ -34,7 +34,7 @@ const CategoryListing = () => {
     }
   };
 
-  const toggleExpand = async (category) => {
+  const toggleExpand = async (category: any) => {
     category.expanded = !category.expanded; // Toggle expanded state
 
     // If expanding, fetch child categories
@@ -46,7 +46,7 @@ const CategoryListing = () => {
     setCategories([...categories]); // Trigger re-render
   };
 
-  const openEditModal = (category) => {
+  const openEditModal = (category: any) => {
     setSelectedCategory(category);
     setCategoryName(category.name);
     setModalVisible(true);
@@ -67,7 +67,7 @@ const CategoryListing = () => {
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (id: string) => {
     const childCategories = await fetchChildCategories(id);
     if (childCategories.length > 0) {
       Alert.alert("", "Cannot delete this category because it has existing child categories.");
@@ -82,7 +82,7 @@ const CategoryListing = () => {
     }
   };
 
-  const renderCategoryItem = (category) => (
+  const renderCategoryItem = (category: any) => (
     <View style={styles.categoryItem}>
       <View style={styles.categoryHeader}>
         <TouchableOpacity onPress={() => toggleExpand(category)}>

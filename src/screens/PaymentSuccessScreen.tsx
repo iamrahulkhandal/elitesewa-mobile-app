@@ -1,10 +1,13 @@
 import React from 'react';
+import type { AppRoute } from '../types/navigation';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5'; // Using FontAwesome5 for the checkmark
 import { useNavigation } from '@react-navigation/native';
 import type { AppNavigation } from '../types/navigation';
 
-const PaymentSuccessScreen = ({route}) => {
+type PaymentSuccessScreenProps = { route: AppRoute };
+
+const PaymentSuccessScreen = ({route}: PaymentSuccessScreenProps) => {
     const navigation = useNavigation<AppNavigation>();
     const { paymentId, vehicleNumber, planPrice,planActive } = route.params;
   return (

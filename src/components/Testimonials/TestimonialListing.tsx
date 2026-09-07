@@ -37,13 +37,13 @@ const TestimonialListing = () => {
   }, [user]);
 
   // Render each testimonial item
-  const renderTestimonialItem = ({ item }) => {
+  const renderTestimonialItem = ({ item }: { item: any }) => {
     // fileUrl falls back to the shared noimage.png placeholder on its own. The
     // old fallback here was a bare relative path, which never rendered.
     const profilePicture = fileUrl(item.userProfilePicture);
 
     // Render stars based on rating
-    const renderStars = (rating) => {
+    const renderStars = (rating: number) => {
       let stars = [];
       for (let i = 0; i < 5; i++) {
         if (i < rating) {

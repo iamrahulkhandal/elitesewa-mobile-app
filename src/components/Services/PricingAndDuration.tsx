@@ -1,7 +1,10 @@
 import React from 'react';
+import type { FieldErrors } from '../../types/models';
 import { View, TextInput, Text } from 'react-native';
 
-const PricingAndDuration = ({ formData, onChange, errors }) => {
+type PricingAndDurationProps = { formData: any; onChange: (...args: any[]) => void; errors: FieldErrors };
+
+const PricingAndDuration = ({ formData, onChange, errors }: PricingAndDurationProps) => {
   return (
     <View>
       <TextInput

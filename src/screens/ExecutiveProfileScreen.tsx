@@ -58,7 +58,7 @@ function ExecutiveProfileScreen() {
     }
   };
 
-  const showSnackbarMessage = (msg) => {
+  const showSnackbarMessage = (msg: string) => {
     setMessage(msg);
     setShowSnackbar(true);
   };

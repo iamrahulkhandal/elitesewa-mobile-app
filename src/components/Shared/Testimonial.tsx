@@ -7,7 +7,7 @@ import type { AppNavigation } from '../../types/navigation';
 const Testimonial = () => {
   const navigation = useNavigation<AppNavigation>();
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item }: { item: any }) => (
     <View style={styles.testimonialContainer}>
       <Image source={{ uri: item.image }} style={styles.image} />
       <Text style={styles.name}>{item.name}</Text>

@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Toast from 'react-native-toast-message';
 
 // Returns a valid Date or null (empty string / undefined / unparseable input).
-const parseTime = (value) => {
+const parseTime = (value: any) => {
   if (!value) return null;
   const parsed = value instanceof Date ? value : new Date(value);
   return isNaN(parsed.getTime()) ? null : parsed;
@@ -14,7 +14,7 @@ const parseTime = (value) => {
 // The Android time picker has no native min/max-time support, so when
 // `maximumDate`/`minimumDate` are set the limits are enforced after picking,
 // by time-of-day comparison.
-const isAfterTimeOfDay = (picked, max) =>
+const isAfterTimeOfDay = (picked: any, max: any) =>
   picked.getHours() > max.getHours() ||
   (picked.getHours() === max.getHours() && picked.getMinutes() > max.getMinutes());
 
@@ -36,7 +36,7 @@ const TimePicker = ({ label, time, onChange, maximumDate, minimumDate, minimumMe
     setSelectedTime(parseTime(time));
   }, [time]);
 
-  const onChangeInternal = (event, pickedTime) => {
+  const onChangeInternal = (event: any, pickedTime: any) => {
     setShow(false);
     if (pickedTime) {
       if (maximumDate && isAfterTimeOfDay(pickedTime, maximumDate)) {
@@ -64,7 +64,7 @@ const TimePicker = ({ label, time, onChange, maximumDate, minimumDate, minimumMe
     }
   };
 
-  const formatTime = (date) => {
+  const formatTime = (date: Date) => {
     const hours = date.getHours();
     const minutes = date.getMinutes();
     const formattedHours = hours % 12 || 12;

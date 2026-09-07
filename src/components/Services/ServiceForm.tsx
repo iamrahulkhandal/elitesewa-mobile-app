@@ -29,7 +29,7 @@ const ServiceForm = () => {
   const formData = useAppSelector((state) => state.serviceForm.formData);
   const errors = useAppSelector((state) => state.serviceForm.errors);
 
-  const validateField = (fieldName, value) => {
+  const validateField = (fieldName: any, value: any) => {
     let isValid = true;
     let error = '';
 
@@ -82,7 +82,7 @@ const ServiceForm = () => {
         break;
       case 'availability.days':
         const validDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-        if (!value || !value.every(day => validDays.includes(day))) {
+        if (!value || !value.every((day: any) => validDays.includes(day))) {
           isValid = false;
           error = 'Days must be valid days of the week.';
         }
@@ -146,7 +146,7 @@ const ServiceForm = () => {
     return isValid;
   };
 
-  const handleChange = (field, value) => {
+  const handleChange = (field: string, value: any) => {
     dispatch(updateField({ field, value }));
     validateField(field, value);
   };
