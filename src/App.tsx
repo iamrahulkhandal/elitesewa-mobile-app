@@ -1,0 +1,143 @@
+import React, { useEffect, useState } from 'react';
+import type { UserProfile } from './types/models';
+import { StatusBar } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Provider as ReduxProvider } from 'react-redux';
+import { Provider as PaperProvider } from 'react-native-paper';
+import { NavigationContainer, CommonActions } from '@react-navigation/native';
+import { PersistGate } from 'redux-persist/integration/react';
+import store, { persistor } from './store/store';
+import MainNavigator from './navigation/MainNavigator';
+import LoadingIndicator from './components/LoadingIndicator';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { API_URL } from '@env';
+import LandingPage from './components/LandingPage';
+import 'react-native-gesture-handler';
+import 'react-native-vector-icons/Fonts/Ionicons.ttf';
+import Toast from 'react-native-toast-message';
+
+const App = () => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isProfileComplete, setIsProfileComplete] = useState(true);
+  const [profileUpdateScreen, setProfileUpdateScreen] = useState('LandingPage');
+  const [userData, setUserData] = useState<UserProfile | null>(null);
+  const [role, setRole] = useState('');
+  const [navigationContainer, setNavigationContainer] = useState<any | null>(null);
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const storedRole = await AsyncStorage.getItem('userRole');
+        if (storedRole) {
+          setRole(storedRole);
+        }
+
+        const userDataString = await AsyncStorage.getItem('userData');
+        if (!userDataString || userDataString === 'null' || userDataString === 'undefined') {
+          setIsLoggedIn(false);
+          setIsLoading(false);
+          return;
+        }
+
+        const parsedUserData = JSON.parse(userDataString);
+        if (!parsedUserData || typeof parsedUserData !== 'object' || !parsedUserData.role || !parsedUserData.user) {
+          throw new Error('Invalid or incomplete user data');
+        }
+
+        setUserData(parsedUserData);
+        setIsLoggedIn(true);
+        const userRole = parsedUserData.role;
+        setRole(userRole);
+        setProfileUpdateScreen(`${userRole.charAt(0).toUpperCase() + userRole.slice(1)}ProfileUpdate`);
+
+        const response = await axios.get(
+          `${API_URL}/api/${userRole}/profile-status`,
+          { params: { mobile: parsedUserData.user } },
+        );
+
+        if (response && response.data && typeof response.data.isProfileComplete === 'boolean') {
+          setIsProfileComplete(response.data.isProfileComplete);
+        } else {
+          throw new Error('Invalid response data for profile status');
+        }
+      } catch (error: any) {
+        console.error('Failed to load auth data:', error.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkLoginStatus();
+  }, []);
+
+  const handleRoleSelect = (selectedRole: string) => {
+    setRole(selectedRole);
+    AsyncStorage.setItem('userRole', selectedRole);
+  };
+
+  // The native theme is Theme.AppCompat.DayNight, but the app itself is
+  // light-only. Without pinning the bar style the icons stay light on the light
+  // background and become invisible in the device's light mode.
+  //
+  // No backgroundColor on purpose: that sets window.statusBarColor, which
+  // targetSdk 36 ignores and Play flags as a deprecated edge-to-edge API.
+  const statusBar = <StatusBar barStyle="dark-content" />;
+
+  if (isLoading) {
+    return (
+      <SafeAreaProvider>
+        {statusBar}
+        <LoadingIndicator />
+      </SafeAreaProvider>
+    );
+  }
+
+  if (!role) {
+    return (
+      <ReduxProvider store={store}>
+        <SafeAreaProvider>
+          <PaperProvider>
+            {statusBar}
+            <NavigationContainer ref={setNavigationContainer}>
+              <LandingPage onRoleSelect={handleRoleSelect} />
+            </NavigationContainer>
+            <Toast />
+          </PaperProvider>
+        </SafeAreaProvider>
+      </ReduxProvider>
+    );
+  }
+
+  return (
+    <ReduxProvider store={store}>
+      <PersistGate loading={null} persistor={persistor}>  
+        <SafeAreaProvider>
+        <PaperProvider>
+          {statusBar}
+          <NavigationContainer ref={setNavigationContainer}>
+            {!role ? (
+              <LandingPage onRoleSelect={handleRoleSelect} />
+            ) : (
+              <MainNavigator
+                role={role}
+                startRouteName={
+                  isLoggedIn
+                    ? isProfileComplete
+                      ? 'Main'
+                      : profileUpdateScreen
+                    : 'RoleBasedLogin'
+                }
+              />
+            )}
+          </NavigationContainer>
+          <Toast />
+        </PaperProvider>
+        </SafeAreaProvider>
+      </PersistGate>
+    </ReduxProvider>
+  );
+};
+
+export default App;
