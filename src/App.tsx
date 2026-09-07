@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import type { UserProfile } from './types/models';
 import { StatusBar } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider as ReduxProvider } from 'react-redux';
@@ -21,9 +22,9 @@ const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isProfileComplete, setIsProfileComplete] = useState(true);
   const [profileUpdateScreen, setProfileUpdateScreen] = useState('LandingPage');
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState<UserProfile | null>(null);
   const [role, setRole] = useState('');
-  const [navigationContainer, setNavigationContainer] = useState(null);
+  const [navigationContainer, setNavigationContainer] = useState<any | null>(null);
 
   useEffect(() => {
     const checkLoginStatus = async () => {

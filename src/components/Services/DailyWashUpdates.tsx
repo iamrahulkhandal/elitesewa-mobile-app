@@ -22,10 +22,10 @@ type DailyWashUpdatesProps = { paymentResponseId: string };
 
 const DailyWashUpdates = ({ paymentResponseId }: DailyWashUpdatesProps) => {
   const role = useAppSelector((state) => state.auth.role);
-  const [logs, setLogs] = useState([]);
+  const [logs, setLogs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [drafts, setDrafts] = useState<Record<string, string>>({}); // logId -> comment text being edited
-  const [savingId, setSavingId] = useState(null);
+  const [savingId, setSavingId] = useState<any | null>(null);
 
   const fetchLogs = async () => {
     try {

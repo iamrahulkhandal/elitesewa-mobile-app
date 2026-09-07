@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import type { Vehicle } from '../../types/models';
 import { View, Text,Alert, FlatList, TouchableOpacity, StyleSheet,Image,Button} from 'react-native';
 // react-native's SafeAreaView is iOS-only; this one applies insets on Android too.
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -15,7 +16,7 @@ import { fileUrl } from '../../utils/fileUrl';
 const VehicleListScreen = () => {
 
   const navigation = useNavigation<AppNavigation>();
-  const [vehicles, setVehicles] = useState([]);
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
 
 
     // Fetch all vehicles

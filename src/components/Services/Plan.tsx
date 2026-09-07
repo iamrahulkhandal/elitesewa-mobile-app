@@ -17,11 +17,11 @@ const Plan = ({ plan, onSelect,serviceid}: PlanProps) => {
         <Text style={styles.autopayBadge}>Auto-renews monthly · cancel anytime</Text>
       )}
       <Text style={styles.duration}>Plan Duration: {duration} {serviceid === '673f16b97a12ef01b200c940' ? 'Minutes' : 'Days'}</Text>
-      {keyPoints?.length > 0 && (
+      {(keyPoints?.length ?? 0) > 0 && (
         <Text style={styles.keyPointsHeading}>Key Points:</Text>
       )}
 
-      {keyPoints.map((point, index) => (
+      {keyPoints?.map((point, index) => (
         <Text key={index} style={styles.keyPoint}>
           • {point}
         </Text>

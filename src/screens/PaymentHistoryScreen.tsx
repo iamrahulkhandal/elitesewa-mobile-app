@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import type { Booking } from '../types/models';
 import type { AppNavigation } from '../types/navigation';
 import {
   View,
@@ -26,7 +27,7 @@ const STATUS_COLORS: Record<string, string> = {
 type PaymentHistoryScreenProps = { navigation: AppNavigation };
 
 const PaymentHistoryScreen = ({ navigation }: PaymentHistoryScreenProps) => {
-  const [payments, setPayments] = useState([]);
+  const [payments, setPayments] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -124,7 +125,7 @@ const PaymentHistoryScreen = ({ navigation }: PaymentHistoryScreenProps) => {
   return (
     <FlatList
       data={payments}
-      keyExtractor={(item) => item._id.toString()}
+      keyExtractor={(item) => String(item._id)}
       renderItem={renderItem}
       contentContainerStyle={styles.list}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}

@@ -38,14 +38,26 @@ export type FieldErrors = Record<string, string>;
 export type ServiceSummary = {
   _id?: string;
   name?: string;
+  title?: string;
+  subtitle?: string;
   description?: string;
   longDescription?: string;
+  price?: number;
+  duration?: string | number;
   banners?: string[];
   images?: string[];
+  icon?: string;
+  iconLib?: string;
+  categoryId?: string;
+  isPopular?: boolean;
+  isShowing?: boolean;
+  comingSoon?: boolean;
+  plans?: PlanSummary[];
 };
 
 export type PlanSummary = {
   _id?: string;
+  status?: string;
   name?: string;
   price?: number;
   duration?: number;
@@ -97,4 +109,6 @@ export type Booking = {
   service?: string;
   rating?: number;
   reviews?: unknown[];
+  createdAt?: string;
+  planActiveDate?: string;
 };

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import type { Booking, ServiceSummary } from '../../types/models';
 import type { AppNavigation, AppRoute } from '../../types/navigation';
 import { View, Text, Image, StyleSheet, FlatList, ScrollView, ActivityIndicator, RefreshControl, TouchableOpacity, Alert, Dimensions } from 'react-native';
 import axios from 'axios';
@@ -22,24 +23,24 @@ const { width: screenWidth } = Dimensions.get('window');
 type ServicesViewProps = { route: AppRoute; navigation: AppNavigation };
 
 const ServicesView = ({ route, navigation }: ServicesViewProps) => {
-  const { serviceId, role } = route.params;
+  const { serviceId, role } = route.params ?? {};
   const user = useAppSelector((state) => state.auth.user);
   const userId = useAppSelector((state) => state.auth.userId);
   const userRole = useAppSelector((state) => state.auth.role);
-  const [service, setService] = useState(null);
-  const [activePlan, setActivePlan] = useState(null);
+  const [service, setService] = useState<ServiceSummary | null>(null);
+  const [activePlan, setActivePlan] = useState<any | null>(null);
   const [videoId, setVideoId] = useState('');
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<any | null>(null);
   const [isImageViewVisible, setIsImageViewVisible] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [viewingType, setViewingType] = useState('banners'); // State to track whether we are viewing banners or gallery images
-  const [selectedPlan, setSelectedPlan] = useState(null);
+  const [selectedPlan, setSelectedPlan] = useState<any | null>(null);
   const staticVideoId = 'dQw4w9WgXcQ'; // Static YouTube video ID (replace with any valid ID)
-  const [payments, setPayments] = useState([]);
-  const [shortImages, setShortImages] = useState([]);
-  const [longImages, setLongImages] = useState([]);
-  const [imageDimensions, setImageDimensions] = useState([]);
+  const [payments, setPayments] = useState<Booking[]>([]);
+  const [shortImages, setShortImages] = useState<any[]>([]);
+  const [longImages, setLongImages] = useState<any[]>([]);
+  const [imageDimensions, setImageDimensions] = useState<any[]>([]);
   const [maxImageHeight, setMaxImageHeight] = useState(300);
 
   useEffect(() => {
@@ -125,7 +126,7 @@ const ServicesView = ({ route, navigation }: ServicesViewProps) => {
       setLoading(true);
       const response = await axios.get(`${API_URL}/api/services/${serviceId}`);
       // Get the video ID from service.videoUrl
-      setVideoId(extractVideoId(response?.data?.videoUrl));
+      setVideoId(extractVideoId(response?.data?.videoUrl) ?? '');
       setService(response.data);
       setError(null);
     } catch (error) {
@@ -175,7 +176,7 @@ const ServicesView = ({ route, navigation }: ServicesViewProps) => {
     setSelectedPlan(plan); // Save the selected plan
     // Navigate to VehicleAndOwnerDetails and pass the selected plan along with serviceId
     navigation.navigate('Checkout', {
-      serviceId: service._id,
+      serviceId: service?._id,
       planId: plan._id,
       planPrice: plan.price,
       planActive: false,
@@ -187,7 +188,7 @@ const ServicesView = ({ route, navigation }: ServicesViewProps) => {
     setSelectedPlan(plan); // Save the selected plan
     // Navigate to VehicleAndOwnerDetails and pass the selected plan along with serviceId
     navigation.navigate('Checkout', {
-      serviceId: service._id,
+      serviceId: service?._id,
       planId: plan._id,
       planPrice: plan.price,
       planActive: true,
@@ -282,7 +283,7 @@ const ServicesView = ({ route, navigation }: ServicesViewProps) => {
       </View> 
         {/* Image Zoom Gallery */}
         <ImageViewing 
-          images={viewingImages}
+          images={viewingImages ?? []}
           imageIndex={selectedImageIndex}
           visible={isImageViewVisible}
           onRequestClose={() => setIsImageViewVisible(false)}
@@ -315,7 +316,7 @@ const ServicesView = ({ route, navigation }: ServicesViewProps) => {
         </View>
         <View style={styles.iconContainer}>
           {/* Service Duration */}
-          <Text style={styles.name}>Service Time - {convertDuration(service.duration)}</Text>
+          <Text style={styles.name}>Service Time - {convertDuration(Number(service?.duration ?? 0))}</Text>
         </View>
 
         {videoId && (
@@ -441,7 +442,7 @@ const ServicesView = ({ route, navigation }: ServicesViewProps) => {
           <View style={styles.card}>
             <Text style={styles.titlebreakpick}>Get Assistance Now</Text>
 
-            {service.plans.map((plan: any, index: number) => (
+            {service.plans?.map((plan: any, index: number) => (
               <PlanBreak key={index} plan={plan} onSelect={handlePlanSelect} /> 
             ))}
           </View>
@@ -449,7 +450,7 @@ const ServicesView = ({ route, navigation }: ServicesViewProps) => {
           {["673f16c47a12ef01b200c943"].includes(serviceId) && (
           <View style={styles.card}>
             <Text style={styles.titlebreakpick}>Higher Professional Drivers</Text>
-            {service.plans.map((plan: any, index: number) => (
+            {service.plans?.map((plan: any, index: number) => (
               <PlanPick key={index} plan={plan} onSelect={handlePlanSelect} />
             ))}
           </View>
@@ -457,7 +458,7 @@ const ServicesView = ({ route, navigation }: ServicesViewProps) => {
           {!["673f16bd7a12ef01b200c941","673f16c47a12ef01b200c943"].includes(serviceId) && (
           <View>
             <Text style={styles.title}>OUR PLANS</Text>
-            {service.plans.map((plan: any, index: number) => (
+            {service.plans?.map((plan: any, index: number) => (
               <Plan key={index} plan={plan} onSelect={handlePlanSelect} serviceid={serviceId} />
             ))}
           </View>

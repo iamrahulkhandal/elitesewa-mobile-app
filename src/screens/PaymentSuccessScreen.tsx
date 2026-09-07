@@ -9,7 +9,7 @@ type PaymentSuccessScreenProps = { route: AppRoute };
 
 const PaymentSuccessScreen = ({route}: PaymentSuccessScreenProps) => {
     const navigation = useNavigation<AppNavigation>();
-    const { paymentId, vehicleNumber, planPrice,planActive } = route.params;
+    const { paymentId, vehicleNumber, planPrice,planActive } = route.params ?? {};
   return (
     <View style={styles.container}>
       <View style={styles.iconContainer}>

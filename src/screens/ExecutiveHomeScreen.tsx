@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import type { ServiceSummary } from '../types/models';
 import type { AppNavigation } from '../types/navigation';
 import {
   View,
@@ -36,10 +37,10 @@ const ExecutiveHomeScreen = ({ navigation }: ExecutiveHomeScreenProps) => {
   const dispatch = useAppDispatch();
   const { user, role } = useAppSelector(state => state.auth);
   const [isProfileComplete, setIsProfileComplete] = useState(true);
-  const [services, setServices] = useState([]);
-  const [testimonials, setTestimonials] = useState([]);
+  const [services, setServices] = useState<ServiceSummary[]>([]);
+  const [testimonials, setTestimonials] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<any | null>(null);
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
@@ -95,7 +96,7 @@ const ExecutiveHomeScreen = ({ navigation }: ExecutiveHomeScreenProps) => {
         if (response.data.isProfileComplete !== isProfileComplete) {
           setIsProfileComplete(response.data.isProfileComplete);
           if (!response.data.isProfileComplete) {
-            const profileUpdateScreen = `${role.charAt(0).toUpperCase() + role.slice(1)}ProfileUpdate`;
+            const profileUpdateScreen = `${(role ?? '').charAt(0).toUpperCase() + (role ?? '').slice(1)}ProfileUpdate`;
             navigation.dispatch(
               CommonActions.reset({
                 index: 0,

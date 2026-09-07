@@ -2,10 +2,10 @@ import React from 'react';
 import type { PlanSummary, ServiceSummary, Vehicle } from '../../types/models';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-type ActiveplanProps = { plan: PlanSummary; service: ServiceSummary; vehicle: Vehicle; createdAt: string; onSelect: (...args: any[]) => void; planActiveDate: string };
+type ActiveplanProps = { plan?: PlanSummary; service?: ServiceSummary; vehicle?: Vehicle; createdAt?: string; onSelect: (...args: any[]) => void; planActiveDate?: string };
 
 const Activeplan = ({ plan,service, vehicle, createdAt, onSelect, planActiveDate }: ActiveplanProps) => {
-  const { name, price, duration } = plan;
+  const { name, price, duration } = plan ?? {};
 
   const calculateEndDate = (planActiveDate: string, duration: string | number) => {
     const startDate = new Date(planActiveDate);
@@ -19,10 +19,10 @@ const Activeplan = ({ plan,service, vehicle, createdAt, onSelect, planActiveDate
     return date.toLocaleDateString(undefined, options);
   };
 
-  const endDate = calculateEndDate(planActiveDate, duration);
+  const endDate = calculateEndDate(planActiveDate ?? '', duration ?? 0);
   const isPlanActive = endDate > new Date();
   const endDateFormatted = formatDate(endDate);
-  const startDateFormatted = formatDate(new Date(planActiveDate));
+  const startDateFormatted = formatDate(new Date(planActiveDate ?? ''));
   const serviceDateFormatted = createdAt ? formatDate(new Date(createdAt)) : 'Service date not available';
 
   return (
@@ -33,7 +33,7 @@ const Activeplan = ({ plan,service, vehicle, createdAt, onSelect, planActiveDate
       <Text style={styles.serviceDate}>Service Date: {serviceDateFormatted}</Text>
       <Text style={styles.expirationDate}>Plan Expiry Date: {endDateFormatted}</Text>
       {vehicle ? (
-        <Text style={styles.vehicleInfo}>Vehicle Number: {vehicle.vehicleDetails.number}</Text>
+        <Text style={styles.vehicleInfo}>Vehicle Number: {vehicle.vehicleDetails?.number}</Text>
       ) : (
         <Text style={styles.vehicleInfo}>Vehicle details not available</Text>
       )}

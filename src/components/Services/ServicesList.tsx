@@ -1,4 +1,5 @@
 // src/components/ServicesList.js
+import type { ServiceSummary } from '../../types/models';
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity, Button } from 'react-native';
 import axios from 'axios';
@@ -8,7 +9,7 @@ import type { AppNavigation } from '../../types/navigation';
 
 const ServicesList = () => {
   const navigation = useNavigation<AppNavigation>();
-  const [services, setServices] = useState([]);
+  const [services, setServices] = useState<ServiceSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -49,7 +50,7 @@ const ServicesList = () => {
       <FlatList
         data={services}
         renderItem={renderServiceItem}
-        keyExtractor={(item) => item._id}
+        keyExtractor={(item) => String(item._id)}
         contentContainerStyle={styles.listContainer}
       />
     </View>

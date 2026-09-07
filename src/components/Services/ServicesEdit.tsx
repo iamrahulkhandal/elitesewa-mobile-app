@@ -15,7 +15,7 @@ import { fileUrl, isLocalUri } from '../../utils/fileUrl';
 type ServicesEditProps = { navigation: AppNavigation; route: AppRoute };
 
 const ServicesEdit = ({navigation, route}: ServicesEditProps) => {
-  const {serviceId} = route.params;
+  const {serviceId} = route.params ?? {};
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -29,17 +29,17 @@ const ServicesEdit = ({navigation, route}: ServicesEditProps) => {
     iconLib: '',
   });
   const [isUpload, setIsUpload] = useState(false);
-  const [images, setImages] = useState([]);
-  const [banners, setBanners] = useState([]);
-  const [dropdownData, setDropdownData] = useState([]);
+  const [images, setImages] = useState<any[]>([]);
+  const [banners, setBanners] = useState<any[]>([]);
+  const [dropdownData, setDropdownData] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [parentCategories, setParentCategories] = useState('');
-  const [videoId, setVideoId] = useState(null);
+  const [videoId, setVideoId] = useState<any | null>(null);
   const [isVideoValid, setIsVideoValid] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [availableIcons, setAvailableIcons] = useState([]);
-  const [selectedIcon, setSelectedIcon] = useState(null);
-  const [selectedIconLib, setSelectedIconLib] = useState(null);
+  const [availableIcons, setAvailableIcons] = useState<any[]>([]);
+  const [selectedIcon, setSelectedIcon] = useState<any | null>(null);
+  const [selectedIconLib, setSelectedIconLib] = useState<any | null>(null);
   const [isIconModalVisible, setIsIconModalVisible] = useState(false);
   const [plans, setPlans] = useState([{ name: '', price: '', duration: '', keyPoints: [''] }]);
 

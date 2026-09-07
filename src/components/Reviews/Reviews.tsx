@@ -3,7 +3,7 @@ import {View, StyleSheet} from 'react-native';
 import Review from './Review';
 import {spacing} from '../../constants/theme';
 
-const Reviews = ({reviews = []}) => {
+const Reviews = ({reviews = []}: {reviews?: any[]}) => {
   return (
     <View style={styles.container}>
       {reviews.map(review => (

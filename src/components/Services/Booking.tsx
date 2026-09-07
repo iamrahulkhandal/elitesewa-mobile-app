@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import type { Booking } from '../../types/models';
 import type { AppNavigation } from '../../types/navigation';
 import {
   View,
@@ -24,10 +25,10 @@ const isDailyWash = (item: any) => /daily/i.test(item.serviceId?.name || '');
 type BookingProps = { navigation: AppNavigation };
 
 const Booking = ({ navigation }: BookingProps) => {
-  const [payments, setPayments] = useState([]);
+  const [payments, setPayments] = useState<Booking[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [executiveservicesid, setExecutiveservicesid] = useState(null);
+  const [executiveservicesid, setExecutiveservicesid] = useState<any | null>(null);
   const [washProgress, setWashProgress] = useState<Record<string, number>>({}); // paymentId -> days logged
 
   // Access user and role from Redux store
@@ -200,7 +201,7 @@ const Booking = ({ navigation }: BookingProps) => {
   return (
     <FlatList
       data={payments}
-      keyExtractor={(item) => item._id.toString()}
+      keyExtractor={(item) => String(item._id)}
       renderItem={renderPaymentItem}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
       contentContainerStyle={styles.list}

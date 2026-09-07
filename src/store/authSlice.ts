@@ -2,14 +2,24 @@
 import { createSlice } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+type AuthState = {
+    userId: string | null;
+    /** The signed-in user's profile, or their mobile number before it loads. */
+    user: any;
+    role: string | null;
+    isProfileComplete: boolean;
+};
+
+const initialAuthState: AuthState = {
+    userId: null,
+    user: null,
+    role: null,
+    isProfileComplete: false, // Added field to track profile completion
+};
+
 const authSlice = createSlice({
     name: 'auth',
-    initialState: {
-        userId: null,
-        user: null,
-        role: null,
-        isProfileComplete: false, // Added field to track profile completion
-    },
+    initialState: initialAuthState,
     reducers: {
         login: (state, action) => {
             state.userId = action.payload.userId;

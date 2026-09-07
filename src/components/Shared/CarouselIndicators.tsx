@@ -36,7 +36,7 @@ const CarouselIndicators = ({
           }
           return acc;
         },
-        {inputRange: [], translateOutputRange: [], widthOutputRange: []},
+        {inputRange: [] as number[], translateOutputRange: [] as number[], widthOutputRange: [] as number[]},
       ),
     [dotSize, dotSpacing, slideWidth, slides],
   );

@@ -1,4 +1,5 @@
 import "react-native-get-random-values";
+import type { Vehicle } from '../../types/models';
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { FlatList,StyleSheet, Alert, View, Text, Keyboard, ScrollView,TouchableWithoutFeedback} from 'react-native';
 import { useAppSelector } from '../../store/hooks';
@@ -81,12 +82,12 @@ const Index = (props: any) => {
   const userMobile = useAppSelector((state) => state.auth.user); // stored as the customer's mobile
   const [serviceData, setServiceData] = useState({ serviceType: '' });
 
-  const [routeData, setRouteData] = useState(null);
+  const [routeData, setRouteData] = useState<any | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   // setIsLoading only disables the button on the next render, so a fast double
   // tap can still get through. A ref flips synchronously and closes that gap.
   const isSubmittingRef = useRef(false);
-  const [savedVehicles, setSavedVehicles] = useState([]);
+  const [savedVehicles, setSavedVehicles] = useState<Vehicle[]>([]);
   const [showSavedModal, setShowSavedModal] = useState(false);
   const services = ['On Site Repairs', 'Battery Jumpstart', 'Fuel Delivery','Towing Service'];
   const fetchAllData = async () => {

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import type { AppRoute } from '../types/navigation';
-import { TouchableOpacity, Alert, type GestureResponderEvent } from 'react-native';
+import { TouchableOpacity, Alert, type GestureResponderEvent, type TouchableOpacityProps } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 import CustomerHomeScreen from '../screens/CustomerHomeScreen';
@@ -63,6 +63,9 @@ const BottomTabNavigator = ({ route }: BottomTabNavigatorProps) => {
                 },
                 // `ref` is dropped: the navigator types it for its own element,
                 // which is not the TouchableOpacity ref type under React 19.
+                // The rest is cast because the navigator types most of the bag
+                // as `T | null`, while TouchableOpacity takes `undefined` for
+                // "use the default". The props are only forwarded, never read.
                 tabBarButton: ({ ref: _ref, ...props }) => {
                     // Custom behavior for tab click
                     const handlePress = (event: GestureResponderEvent) => {
@@ -73,7 +76,7 @@ const BottomTabNavigator = ({ route }: BottomTabNavigatorProps) => {
                     };
 
                     return (
-                        <TouchableOpacity {...props} onPress={handlePress}>
+                        <TouchableOpacity {...(props as TouchableOpacityProps)} onPress={handlePress}>
                             {props.children}
                         </TouchableOpacity>
                     );

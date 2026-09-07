@@ -5,9 +5,9 @@ import { API_URL } from '@env';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const CategoryListing = () => {
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState<any[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState<any | null>(null);
   const [categoryName, setCategoryName] = useState('');
 
   useEffect(() => {

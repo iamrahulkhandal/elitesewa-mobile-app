@@ -158,7 +158,7 @@ const CustomerProfileUpdate = ({ navigation }: { navigation: AppNavigation }) =>
   };
 
   const handleFocus = (field: string) => {
-    setErrors((prevErrors) => ({ ...prevErrors, [field]: null }));
+    setErrors((prevErrors) => ({ ...prevErrors, [field]: '' }));
   };
 
   return (

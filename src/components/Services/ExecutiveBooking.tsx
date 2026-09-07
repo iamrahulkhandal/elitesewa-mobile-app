@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import type { Booking } from '../../types/models';
 import type { AppNavigation } from '../../types/navigation';
 import {
   View,
@@ -22,7 +23,7 @@ const isDailyWash = (item: any) => /daily/i.test(item.serviceId?.name || '');
 type ExecutiveBookingProps = { navigation: AppNavigation };
 
 const ExecutiveBooking = ({ navigation }: ExecutiveBookingProps) => {
-  const [payments, setPayments] = useState([]);
+  const [payments, setPayments] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [washProgress, setWashProgress] = useState<Record<string, number>>({}); // paymentId -> days logged
@@ -141,12 +142,12 @@ const ExecutiveBooking = ({ navigation }: ExecutiveBookingProps) => {
   return (
     <FlatList
       data={payments}
-      keyExtractor={(item) => item._id}
+      keyExtractor={(item) => String(item._id)}
       renderItem={renderPaymentItem}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}
       contentContainerStyle={styles.list}
       ListEmptyComponent={
-        !loading && <Text style={styles.emptyText}>No payments found.</Text>
+        !loading ? <Text style={styles.emptyText}>No payments found.</Text> : null
       }
     />
   );

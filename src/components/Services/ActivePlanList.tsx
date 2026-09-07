@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import type { Booking, PlanSummary } from '../../types/models';
 import type { AppNavigation, AppRoute } from '../../types/navigation';
 import { View, Text, StyleSheet, ScrollView, ActivityIndicator, RefreshControl, TouchableOpacity, Alert } from 'react-native';
 import axios from 'axios';
@@ -20,13 +21,13 @@ const SUBSCRIPTION_STATUS_LABELS: Record<string, string> = {
 type ActivePlanListProps = { route: AppRoute; navigation: AppNavigation };
 
 const ActivePlanList = ({ route, navigation }: ActivePlanListProps) => {
-  const { role } = route.params;
+  const { role } = route.params ?? {};
   const userId = useAppSelector((state) => state.auth.userId);
   const userRole = useAppSelector((state) => state.auth.role);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [payments, setPayments] = useState([]);
-  const [subscriptions, setSubscriptions] = useState([]);
+  const [error, setError] = useState<any | null>(null);
+  const [payments, setPayments] = useState<Booking[]>([]);
+  const [subscriptions, setSubscriptions] = useState<PlanSummary[]>([]);
 
   useEffect(() => {
     fetchPayments();
@@ -83,7 +84,7 @@ const ActivePlanList = ({ route, navigation }: ActivePlanListProps) => {
 
   // Subscriptions worth showing: hide fully closed ones.
   const visibleSubscriptions = subscriptions.filter(
-    (s) => !['cancelled', 'completed', 'created'].includes(s.status)
+    (s) => !['cancelled', 'completed', 'created'].includes(s.status ?? '')
   );
 
   const renderSubscriptionCard = (subscription: any) => {
@@ -145,7 +146,7 @@ const ActivePlanList = ({ route, navigation }: ActivePlanListProps) => {
   // Plans still inside their duration window, with the fields the card needs.
   const activePayments = payments.filter((payment) => {
     if (!payment?.planId || !payment?.vehicleId || !payment?.planActiveDate) return false;
-    return calculateEndDate(payment.planActiveDate, payment.planId.duration) > new Date();
+    return calculateEndDate(payment.planActiveDate ?? '', String(payment.planId?.duration ?? '')) > new Date();
   });
 
   if (loading) {

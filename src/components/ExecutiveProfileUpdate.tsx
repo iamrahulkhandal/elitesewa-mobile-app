@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import type { ServiceSummary } from '../types/models';
 import type { AppNavigation } from '../types/navigation';
 import type { FieldErrors } from '../types/models';
 import {
@@ -38,7 +39,7 @@ const ExecutiveProfileUpdate = ({ navigation }: { navigation: AppNavigation }) =
     services: [], // services instead of selectedServices
   });
 
-  const [servicesList, setServicesList] = useState([]); // List of all available services
+  const [servicesList, setServicesList] = useState<ServiceSummary[]>([]); // List of all available services
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [showSnackbar, setShowSnackbar] = useState(false);

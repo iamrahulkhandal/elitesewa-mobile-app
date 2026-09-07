@@ -1,4 +1,5 @@
 // src/components/ServiceDetails.js
+import type { ServiceSummary } from '../../types/models';
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, Button } from 'react-native';
 import axios from 'axios';
@@ -10,8 +11,8 @@ import { API_URL } from '@env';
 const ServiceDetails = () => {
   const route = useRoute<AppRoute>();
   const navigation = useNavigation<AppNavigation>();
-  const { serviceId } = route.params; // Get the service ID from the route parameters
-  const [service, setService] = useState(null);
+  const { serviceId } = route.params ?? {}; // Get the service ID from the route parameters
+  const [service, setService] = useState<ServiceSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -36,10 +37,10 @@ const ServiceDetails = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{service.title}</Text>
-      <Text style={styles.subtitle}>{service.subtitle}</Text>
-      <Text style={styles.description}>{service.description}</Text>
-      <Text style={styles.price}>Price: ${service.price}</Text>
+      <Text style={styles.title}>{service?.title}</Text>
+      <Text style={styles.subtitle}>{service?.subtitle}</Text>
+      <Text style={styles.description}>{service?.description}</Text>
+      <Text style={styles.price}>Price: ${service?.price}</Text>
       {/* Add more fields as needed */}
       <Button title="Back" onPress={() => navigation.goBack()} />
     </View>

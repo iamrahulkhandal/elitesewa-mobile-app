@@ -42,13 +42,13 @@ const ServicesCreate = ({ navigation }: ServicesCreateProps) => {
     iconLib: '',
   });
 
-  const [images, setImages] = useState([]);
-  const [banners, setBanners] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [videoId, setVideoId] = useState(null);
+  const [images, setImages] = useState<any[]>([]);
+  const [banners, setBanners] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [videoId, setVideoId] = useState<any | null>(null);
   const [isVideoValid, setIsVideoValid] = useState(true);
-  const [availableIcons, setAvailableIcons] = useState([]);
-  const [selectedIcon, setSelectedIcon] = useState(null);
+  const [availableIcons, setAvailableIcons] = useState<any[]>([]);
+  const [selectedIcon, setSelectedIcon] = useState<any | null>(null);
   const [isIconModalVisible, setIsIconModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [dropdownData, setDropdownData] = useState([{ parentId: null, items: [], selectedId: null }]);

@@ -60,7 +60,7 @@ const TimePicker = ({ label, time, onChange, maximumDate, minimumDate, minimumMe
         return;
       }
       setSelectedTime(pickedTime);
-      onChange(pickedTime);
+      onChange?.(pickedTime);
     }
   };
 

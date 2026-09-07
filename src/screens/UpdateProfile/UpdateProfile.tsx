@@ -56,7 +56,7 @@ function UpdateProfile() {
   useEffect(() => {
     // console.log(email);
     // console.log(name);
-    const userData = route.params.data;
+    const userData = route.params?.data;
     setEmail(userData.email);
     setGender(userData.gender);
     setImage(userData.image);

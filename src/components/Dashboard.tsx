@@ -27,7 +27,7 @@ const Dashboard = ({navigation}: DashboardProps) => {
 
           if (!response.data.isProfileComplete) {
             const profileUpdateScreen = `${
-              role.charAt(0).toUpperCase() + role.slice(1)
+              (role ?? '').charAt(0).toUpperCase() + (role ?? '').slice(1)
             }ProfileUpdate`;
            // navigation.navigate(profileUpdateScreen);
             // Resetting the stack and navigating to HomeScreen

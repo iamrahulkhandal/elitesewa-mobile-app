@@ -5,7 +5,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import { API_URL } from '@env';
 
 const CreateCategory = () => {
-  const [categories, setCategories] = useState([]); // All categories from API
+  const [categories, setCategories] = useState<any[]>([]); // All categories from API
   const [name, setName] = useState(''); // New category name
   const [dropdownData, setDropdownData] = useState([ 
     { parentId: null, items: [], selectedId: null },

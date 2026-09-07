@@ -26,12 +26,12 @@ function LoginPage({props}: {props?: any}) {
   const [mobile, setMobile] = useState('');
   const [mobileVerify, setMobileVerify] = useState(false);
   const [mobileExist, setMobileExist] = useState(false);
-  const [otp, setOtp] = useState([]);
+  const [otp, setOtp] = useState<any[]>([]);
   const [otpVerify, setOtpVerify] = useState(false);
-  const [userVerify, setUserVerify] = useState([]);
+  const [userVerify, setUserVerify] = useState<any[]>([]);
 
   const [mobileOtpVerify, setmobileOtpVerify] = useState(false);
-  const [userData, setUserData] = useState([]);
+  const [userData, setUserData] = useState<any[]>([]);
 
   const handleMobile = (text: string) => {
     // console.log(text);
@@ -108,7 +108,7 @@ function LoginPage({props}: {props?: any}) {
     getData();
   }, []);
 
-  const [motp, setmOtp] = useState(null);
+  const [motp, setmOtp] = useState<any | null>(null);
   const [timer, setTimer] = useState(30);
   const [isResendDisabled, setIsResendDisabled] = useState(false);
 

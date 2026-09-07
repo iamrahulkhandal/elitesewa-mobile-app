@@ -117,7 +117,7 @@ function RegisterPage({props}: RegisterPageProps) {
   }
 
 
-  const [motp, setmOtp] = useState(null);
+  const [motp, setmOtp] = useState<any | null>(null);
   const [timer, setTimer] = useState(30);
   const [isResendDisabled, setIsResendDisabled] = useState(false);
 

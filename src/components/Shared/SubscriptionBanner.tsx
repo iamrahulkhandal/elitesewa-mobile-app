@@ -16,7 +16,7 @@ const SubscriptionBanner = () => {
   const navigation = useNavigation<AppNavigation>();
   const userId = useAppSelector((state) => state.auth.userId);
   const role = useAppSelector((state) => state.auth.role);
-  const [banner, setBanner] = useState(null);
+  const [banner, setBanner] = useState<any | null>(null);
 
   useFocusEffect(
     useCallback(() => {

@@ -39,7 +39,7 @@ const SavedDetailsModal = ({ visible, vehicles, onSelect, onNew }: SavedDetailsM
           <FlatList
             data={vehicles}
             renderItem={renderVehicle}
-            keyExtractor={(item) => item._id}
+            keyExtractor={(item) => String(item._id)}
             style={styles.list}
           />
           <TouchableOpacity style={styles.newButton} onPress={onNew}>

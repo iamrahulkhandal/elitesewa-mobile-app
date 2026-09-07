@@ -2,12 +2,7 @@
   "extends": "@react-native/typescript-config",
   "compilerOptions": {
     "allowJs": true,
-    "checkJs": false,
-
-    // `strict` is on via the React Native base config. These two are the last
-    // holdouts and are being cleared one at a time; delete each line as its
-    // errors reach zero.
-    "strictNullChecks": false
+    "checkJs": false
   },
   "include": ["src", "__tests__", "index.ts", "*.config.js", ".eslintrc.js"],
   "exclude": ["node_modules", "android", "ios", "**/Pods/**"]

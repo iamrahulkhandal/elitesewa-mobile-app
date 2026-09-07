@@ -13,13 +13,13 @@ import DailyWashUpdates from './DailyWashUpdates';
 import { fileUrl } from '../../utils/fileUrl';
 const { width: screenWidth } = Dimensions.get('window');
 const BookingDetails = ({ route }: { route: AppRoute }) => {
-  const { item_id } = route.params;
+  const { item_id } = route.params ?? {};
   const [bookingDetails, setBookingDetails] = useState<Booking>({});
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
-    const [shortImages, setShortImages] = useState([]);
-    const [longImages, setLongImages] = useState([]); 
-    const [imageDimensions, setImageDimensions] = useState([]);
+    const [shortImages, setShortImages] = useState<any[]>([]);
+    const [longImages, setLongImages] = useState<any[]>([]); 
+    const [imageDimensions, setImageDimensions] = useState<any[]>([]);
     const [imageServiceId, setImageServiceId] = useState();
     const [maxImageHeight, setMaxImageHeight] = useState(300);
     const [isImageViewVisible, setIsImageViewVisible] = useState(false);
@@ -153,11 +153,11 @@ const fetchBookingDetails = async () => {
 
       <Card title="Vehicle Information">
         <DetailsRow label="Vehicle Number" value={vehicleId?.vehicleDetails?.number || 'N/A'} />
-        <DetailsRow label="Model" value={vehicleId.vehicleDetails?.model || 'N/A'} />
-        <DetailsRow label="Manufacturer" value={vehicleId.vehicleDetails?.manufacturer || 'N/A'} />
-        <DetailsRow label="Year" value={vehicleId.vehicleDetails?.year ||'N/A'} />
-        <DetailsRow label="Fuel Type" value={vehicleId.vehicleDetails?.fuelType || 'N/A'} />
-        <DetailsRow label="registrationDate" value={vehicleId.vehicleDetails?.registrationDate ? new Date(vehicleId.vehicleDetails.registrationDate).toLocaleDateString('en-GB')  // Format: DD/MM/YYYY
+        <DetailsRow label="Model" value={vehicleId?.vehicleDetails?.model || 'N/A'} />
+        <DetailsRow label="Manufacturer" value={vehicleId?.vehicleDetails?.manufacturer || 'N/A'} />
+        <DetailsRow label="Year" value={vehicleId?.vehicleDetails?.year ||'N/A'} />
+        <DetailsRow label="Fuel Type" value={vehicleId?.vehicleDetails?.fuelType || 'N/A'} />
+        <DetailsRow label="registrationDate" value={vehicleId?.vehicleDetails?.registrationDate ? new Date(vehicleId.vehicleDetails.registrationDate).toLocaleDateString('en-GB')  // Format: DD/MM/YYYY
 : 'N/A'} />
       </Card>
 
@@ -198,8 +198,8 @@ const fetchBookingDetails = async () => {
 
                      </Swiper>
                     ) : (
-                      serviceId.longDescription && serviceId.longDescription.trim() !== '' && (
-                        <Text style={styles.description}>{serviceId.longDescription}</Text>
+                      serviceId?.longDescription && serviceId?.longDescription.trim() !== '' && (
+                        <Text style={styles.description}>{serviceId?.longDescription}</Text>
                       )
                     )}
           </View>
@@ -235,9 +235,9 @@ const fetchBookingDetails = async () => {
           <DetailsRow label="Service Name" value={executiveServiceId?.name || 'N/A'} />
           <DetailsRow label="Description" value={executiveServiceId?.description || 'N/A'} isMultiline />
           <DetailsRow label="Duration" value={executiveServiceId?.duration || 'N/A'} />
-          {executiveServiceId?.images?.length > 0 && (
+          {(executiveServiceId?.images?.length ?? 0) > 0 && (
         <View style={styles.servicesexeimage}>
-            {executiveServiceId.images.map((img, index) => (
+            {executiveServiceId?.images?.map((img, index) => (
               <View key={index} style={{ marginBottom: 10 }}>
                 <Image source={{ uri: fileUrl(img) }} style={styles.image} />
               </View>
@@ -251,7 +251,7 @@ const fetchBookingDetails = async () => {
        {executiveServiceId &&(
       <Card title="Executive Ratings & Reviews">
         <DetailsRow label="Executive Name" value={executiveId?.name || 'N/A'} />
-        <DetailsRow label="Executive Rating" value={renderStars(executiveServiceId.executiveRating)} />
+        <DetailsRow label="Executive Rating" value={renderStars(executiveServiceId?.executiveRating ?? 0)} />
         <DetailsRow label="Executive Review" value={executiveServiceId?.executiveReview || 'N/A'} isMultiline />
       </Card>
        )}

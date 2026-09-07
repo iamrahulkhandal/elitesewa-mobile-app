@@ -8,7 +8,7 @@ import { fileUrl } from '../../utils/fileUrl';
 
 const TestimonialListing = () => {
   const { user } = useAppSelector((state) => state.auth); // Access user details from Redux
-  const [testimonials, setTestimonials] = useState([]);
+  const [testimonials, setTestimonials] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Fetch testimonials from the server

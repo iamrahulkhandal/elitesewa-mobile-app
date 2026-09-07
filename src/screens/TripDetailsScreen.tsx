@@ -13,7 +13,7 @@ type TripDetailsScreenProps = { navigation: AppNavigation; route: AppRoute };
 
 const TripDetailsScreen = ({navigation, route}: TripDetailsScreenProps) => {
   //const insets = useSafeAreaInsets();
-  const {trip} = route.params;
+  const {trip} = route.params ?? {};
   const slides = [trip.image, ...trip.gallery];
   return (
     <View style={styles.container}>
@@ -44,7 +44,7 @@ const TripDetailsScreen = ({navigation, route}: TripDetailsScreenProps) => {
 };
 
 TripDetailsScreen.sharedElements = (route: any) => {
-  const {trip} = route.params;
+  const {trip} = route.params ?? {};
   return [
     {
       id: `trip.${trip.id}.image`,

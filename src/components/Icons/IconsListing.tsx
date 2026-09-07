@@ -6,9 +6,9 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const IconsListing = () => {
-  const [iconsData, setIconsData] = useState([]);
+  const [iconsData, setIconsData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<any | null>(null);
 
   useEffect(() => {
     const fetchIconsData = async () => {

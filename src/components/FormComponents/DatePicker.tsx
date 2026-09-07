@@ -31,7 +31,7 @@ const DatePicker = ({ label, date, onChange, maximumDate, minimumDate }: DatePic
     setShow(false);
     if (pickedDate) {
       setSelectedDate(pickedDate);
-      onChange(pickedDate);
+      onChange?.(pickedDate);
     }
   };
 

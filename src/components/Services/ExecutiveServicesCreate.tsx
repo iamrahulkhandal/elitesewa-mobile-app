@@ -61,12 +61,12 @@ type ExecutiveServicesCreateProps = { route: AppRoute; navigation: AppNavigation
 
 const ExecutiveServicesCreate = ({route , navigation}: ExecutiveServicesCreateProps) =>{
 
-  const { item_id } = route.params; 
+  const { item_id } = route.params ?? {}; 
 
   const [formState, dispatch] = useReducer(formReducer, EMPTY_FORM);
-  const [images, setImages] = useState([]);
+  const [images, setImages] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<any | null>(null);
   const inputRefs = useRef<Record<string, TextInput | null>>({});
 
   // Image Picker Callback Function

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import type { ServiceSummary } from '../../types/models';
 import {
   View,
   Text,
@@ -20,10 +21,10 @@ import type { AppNavigation } from '../../types/navigation';
 
 const CustomHomeServices = () => {
   const navigation = useNavigation<AppNavigation>();
-  const [services, setServices] = useState([]);
+  const [services, setServices] = useState<ServiceSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<any | null>(null);
 
   useEffect(() => {
     const categoryId = '6736424636a5412c42c20da1'; // Define the categoryId here
@@ -99,7 +100,7 @@ const CustomHomeServices = () => {
             style={styles.item}
             onPress={() => navigation.navigate('ServicesView', { serviceId: item._id })}
           >
-            {getIconComponent(item.iconLib, item.icon, 30, '#FFC107')}
+            {getIconComponent(item.iconLib ?? '', item.icon ?? '', 30, '#FFC107')}
             <Text style={styles.itemText}>{item.name}</Text>
             {item.comingSoon && <Text style={styles.comingSoon}>Coming Soon</Text>}
           </TouchableOpacity>

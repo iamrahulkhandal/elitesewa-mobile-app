@@ -34,14 +34,14 @@ type ExecutiveServicesUpdateProps = { route: AppRoute; navigation: AppNavigation
 
 const ExecutiveServicesUpdate = ({route ,navigation}: ExecutiveServicesUpdateProps) =>{
 
-  const { item_id,payment_id } = route.params; 
+  const { item_id,payment_id } = route.params ?? {}; 
 
   const [formState, dispatch] = useReducer(formReducer, {
     customerRating: '',
     customerReview: '',
   });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<any | null>(null);
 
   // Form Validation
   const validateFormData = () => {

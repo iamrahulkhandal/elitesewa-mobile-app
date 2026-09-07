@@ -16,7 +16,7 @@ type RoleBasedLoginProps = { navigation: AppNavigation };
 
 const RoleBasedLogin = ({navigation}: RoleBasedLoginProps) => {
   const route = useRoute<AppRoute>();
-  const { role } = route.params;
+  const { role } = route.params ?? {};
   const [mobile, setMobile] = useState('');
   const [otp, setOtp] = useState('');
   const [isLoading, setIsLoading] = useState(false);

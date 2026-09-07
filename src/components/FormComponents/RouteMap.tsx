@@ -26,20 +26,20 @@ const RouteMap = ({ onRouteSelect, routeData = { origin: null, destination: null
 
   // State for "From" (origin)
   const [originQuery, setOriginQuery] = useState('');
-  const [originSuggestions, setOriginSuggestions] = useState([]);
+  const [originSuggestions, setOriginSuggestions] = useState<any[]>([]);
   const [originLoading, setOriginLoading] = useState(false);
-  const [origin, setOrigin] = useState(null);
+  const [origin, setOrigin] = useState<any | null>(null);
   
   // State for "To" (destination)
   const [destinationQuery, setDestinationQuery] = useState('');
-  const [destinationSuggestions, setDestinationSuggestions] = useState([]);
+  const [destinationSuggestions, setDestinationSuggestions] = useState<any[]>([]);
   const [destinationLoading, setDestinationLoading] = useState(false);
-  const [destination, setDestination] = useState(null);
+  const [destination, setDestination] = useState<any | null>(null);
 
-  const [distance, setDistance] = useState(null);
-  const [duration, setDuration] = useState(null);
+  const [distance, setDistance] = useState<any | null>(null);
+  const [duration, setDuration] = useState<any | null>(null);
   
-  const mapRef = useRef(null);
+  const mapRef = useRef<MapView | null>(null);
 
   useEffect(() => {
     if (routeData?.origin && routeData?.destination) {
@@ -243,7 +243,7 @@ const RouteMap = ({ onRouteSelect, routeData = { origin: null, destination: null
             onReady={(result) => {
               setDistance(result.distance);
               setDuration(result.duration);
-              mapRef.current.fitToCoordinates(result.coordinates, {
+              mapRef.current?.fitToCoordinates(result.coordinates, {
                 edgePadding: { right: 50, bottom: 50, left: 50, top: 50 },
               });
             }}

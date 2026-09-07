@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import type { ServiceSummary } from '../../types/models';
 import type { AppNavigation } from '../../types/navigation';
 import {
   View,
@@ -24,10 +25,10 @@ import { fileUrl } from '../../utils/fileUrl';
 type ServicesListingProps = { navigation: AppNavigation };
 
 const ServicesListing = ({ navigation }: ServicesListingProps) => {
-  const [services, setServices] = useState([]);
+  const [services, setServices] = useState<ServiceSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<any | null>(null);
 
   useEffect(() => {
     fetchServices();
@@ -178,7 +179,7 @@ const ServicesListing = ({ navigation }: ServicesListingProps) => {
     <>
       <FlatList
         data={services.filter(service => !service.isShowing)} // ✅ Filter here
-        keyExtractor={item => item._id}
+        keyExtractor={item => String(item._id)}
         renderItem={renderServiceItem}
         contentContainerStyle={styles.listContainer}
         refreshControl={

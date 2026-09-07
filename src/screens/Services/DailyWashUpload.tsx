@@ -23,12 +23,12 @@ const MAX_PHOTOS = 5;
 type DailyWashUploadProps = { route: AppRoute; navigation: AppNavigation };
 
 const DailyWashUpload = ({ route, navigation }: DailyWashUploadProps) => {
-  const { item_id } = route.params;
+  const { item_id } = route.params ?? {};
   const executiveId = useAppSelector((state) => state.auth.userId);
 
   const [date, setDate] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
-  const [images, setImages] = useState([]);
+  const [images, setImages] = useState<any[]>([]);
   const [uploading, setUploading] = useState(false);
 
   const formatDate = (d: any) =>
@@ -51,7 +51,7 @@ const DailyWashUpload = ({ route, navigation }: DailyWashUploadProps) => {
     });
 
     if (result.didCancel || !result.assets || result.assets.length === 0) return;
-    setImages((prev) => [...prev, result.assets[0].uri]);
+    setImages((prev) => [...prev, (result.assets ?? [])[0]?.uri]);
   };
 
   const removeImage = (index: number) => {

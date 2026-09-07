@@ -22,7 +22,7 @@ const Plans = ({ plan, serviceId, user }: PlansProps) => {
       image: fileUrl(null),
       currency: 'INR',
       key: RAZORPAY_KEY_ID,
-      amount: price * 100, // Convert to paise (Indian currency unit)
+      amount: (price ?? 0) * 100, // Convert to paise (Indian currency unit)
       name: 'EliteSewa',
       prefill: {
         email: user.email || 'kailashprogrammer@gmail.com',
@@ -93,7 +93,7 @@ const Plans = ({ plan, serviceId, user }: PlansProps) => {
       <Text style={styles.price}>Price: Rs. {price}</Text>
       <Text style={styles.duration}>Duration: {duration} Min</Text>
       <Text style={styles.keyPointsHeading}>Key Points:</Text>
-      {keyPoints.map((point, index) => (
+      {keyPoints?.map((point, index) => (
         <Text key={index} style={styles.keyPoint}>
           • {point}
         </Text>

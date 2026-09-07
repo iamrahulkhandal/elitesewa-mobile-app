@@ -26,7 +26,7 @@ const Rating = ({
   disabled = true,
   size = 12,
 }: RatingProps) => {
-  const _rating = getCorrectRating(rating);
+  const _rating = getCorrectRating(rating ?? 0);
   return (
     <View
       style={[styles.container, containerStyle].concat(
@@ -34,7 +34,7 @@ const Rating = ({
       )}>
       {showLabelTop && (
         <Text style={styles.label}>
-          {getRatingLabel(_rating)} {getFractionDigitsRating(rating)}
+          {getRatingLabel(_rating)} {getFractionDigitsRating(rating ?? 0)}
         </Text>
       )}
       <AirbnbRating
@@ -46,7 +46,7 @@ const Rating = ({
         size={size}
       />
       {showLabelInline && (
-        <Text style={styles.label}>{getFractionDigitsRating(rating)}</Text>
+        <Text style={styles.label}>{getFractionDigitsRating(rating ?? 0)}</Text>
       )}
     </View>
   );

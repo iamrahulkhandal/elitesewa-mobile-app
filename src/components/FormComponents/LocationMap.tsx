@@ -30,16 +30,16 @@ const LocationMap = ({ label, onLocationSelect, locationData }: { label?: string
   const [address, setAddress] = useState("");
   const [query, setQuery] = useState('');
   const [isManualInput, setIsManualInput] = useState(false);
-  const [suggestions, setSuggestions] = useState([]);
+  const [suggestions, setSuggestions] = useState<any[]>([]);
   const [loadingSuggestions, setLoadingSuggestions] = useState(false);
   const [loadingCurrent, setLoadingCurrent] = useState(false);
 
   // Additional features
   const [isTracking, setIsTracking] = useState(false); 
-  const [searchHistory, setSearchHistory] = useState([]);
+  const [searchHistory, setSearchHistory] = useState<any[]>([]);
   
-  const mapRef = useRef(null);
-  const watchId = useRef(null);
+  const mapRef = useRef<MapView | null>(null);
+  const watchId = useRef<number | null>(null);
   useEffect(() => {
     if (locationData && (locationData.latitude !== location.latitude || locationData.longitude !== location.longitude)) {
       setLocation(locationData);
@@ -156,7 +156,7 @@ const LocationMap = ({ label, onLocationSelect, locationData }: { label?: string
         const newLocation = { id: uuidv4(), latitude: lat, longitude: lng,address: details.formatted_address};
         setLocation(newLocation);
         setAddress(details.formatted_address);
-        onLocationSelect(newLocation);
+        onLocationSelect?.(newLocation);
         animateMapToLocation(lat, lng, 0.015);
         addToHistory({
           id: uuidv4(),
@@ -200,7 +200,7 @@ const LocationMap = ({ label, onLocationSelect, locationData }: { label?: string
           setLocation(newLocation);
           const fetchedAddress = await fetchAddressFromCoords(latitude, longitude);
           setAddress(fetchedAddress);
-          onLocationSelect(newLocation);
+          onLocationSelect?.(newLocation);
           animateMapToLocation(latitude, longitude, 0.015);
           addToHistory({ id: uuidv4(), description: fetchedAddress, location: newLocation,address:query });
         },
@@ -245,7 +245,7 @@ const LocationMap = ({ label, onLocationSelect, locationData }: { label?: string
             setLocation(newLocation);
             const fetchedAddress = await fetchAddressFromCoords(latitude, longitude);
             setAddress(fetchedAddress);
-            onLocationSelect(newLocation);
+            onLocationSelect?.(newLocation);
             animateMapToLocation(latitude, longitude, 0.015);
           },
           (error) => {
@@ -270,7 +270,7 @@ const LocationMap = ({ label, onLocationSelect, locationData }: { label?: string
     setQuery(entry.description);
     setLocation(entry.location);
     setAddress(entry.description);
-    onLocationSelect(entry.location);
+    onLocationSelect?.(entry.location);
     animateMapToLocation(entry.location.latitude, entry.location.longitude, 0.015);
   };
 

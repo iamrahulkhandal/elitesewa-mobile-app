@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { AppNavigation } from '../../types/navigation';
 const OnDemandCarWash = () => {
     const navigation = useNavigation<AppNavigation>();
-    const [selectedPackage, setSelectedPackage] = useState(null);
+    const [selectedPackage, setSelectedPackage] = useState<any | null>(null);
     const [selectedPrice, setSelectedPackagePrice] = useState(0);
     const [scaleValue] = useState(new Animated.Value(1));
 
