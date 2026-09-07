@@ -26,14 +26,27 @@ import {
   getErrorMessage,
   isPaymentCancelled,
 } from '../../utils/apiError';
+
+type RoutePoint = {
+  latitude: number | string;
+  longitude: number | string;
+  address?: string | null;
+};
+
+type RouteData = {
+  origin: RoutePoint;
+  destination: RoutePoint;
+  distance?: number | string | null;
+  duration?: number | string | null;
+};
  
 const Index = (props: any) => {
   const { route: vehicleRoute } = props;
   const navigation = useNavigation<AppNavigation>();
   const { serviceId, planPrice, planId, planDuration, vehicleId, planActive, billingType } = vehicleRoute.params;
   const isMonthlyPlan = billingType === 'monthly';
-    const [showSnackbar, setShowSnackbar] = useState(false);
-  const [message] = useState('');
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const message = '';
   const [location, setLocation] = useState({ latitude: 28.6132, longitude: 77.2092, address:null});
 
   const [vehicleData, setVehicleData] = useState({
@@ -45,14 +58,6 @@ const Index = (props: any) => {
     registrationTime: '',
     fuelType: '',
   });
-
-  // Membership state can be used for display if needed.
-  const [, setMembershipDetails] = useState({
-    plan: '',
-    status: '',
-    startDate: '',
-    expireDate: '',
-  }); 
 
   const [ownerData, setOwnerData] = useState({
     ownerName: '',
@@ -82,7 +87,7 @@ const Index = (props: any) => {
   const userMobile = useAppSelector((state) => state.auth.user); // stored as the customer's mobile
   const [serviceData, setServiceData] = useState({ serviceType: '' });
 
-  const [routeData, setRouteData] = useState<any | null>(null);
+  const [routeData, setRouteData] = useState<RouteData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   // setIsLoading only disables the button on the next render, so a fast double
   // tap can still get through. A ref flips synchronously and closes that gap.
@@ -308,9 +313,24 @@ const Index = (props: any) => {
     return /[A-Za-z]/.test(raw) && !/\d{5}/.test(raw);
   };
   const isValidMobile = (value: any) => /^[6-9]\d{9}$/.test(value.trim());
-  const isValidEmail = (value: any) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+  const isValidEmail = (value: any) => /^[^\s@]+@(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,}$/.test(value.trim());
 
-  const validateInputs = () => {
+  // Each step returns false as soon as it has reported a problem, so the
+  // checks below run in the same order, and stop at the same point, as the
+  // single function these were split out of.
+
+  const showValidationError = (text2: string) => {
+    Toast.show({
+      type: 'error',
+      text1: 'Validation Error',
+      text2,
+      position: 'bottom',
+      visibilityTime: 3000,
+    });
+    return false;
+  };
+
+  const validateVehicleFields = () => {
     // Vehicle: only number and model are required for a car wash booking.
     if (
       !validateField(vehicleData.number, 'Vehicle number is required') ||
@@ -330,8 +350,11 @@ const Index = (props: any) => {
     if (vehicleData.year && !isValidYear(vehicleData.year)) {
       return validateField('', `Year must be between 1980 and ${new Date().getFullYear()}`);
     }
+    return true;
+  };
 
-    // Registration date/time must not be in the future (also guards prefilled data).
+  // Registration date/time must not be in the future (also guards prefilled data).
+  const validateRegistrationNotInFuture = () => {
     const now = new Date();
     const regDate = vehicleData.registrationDate ? new Date(vehicleData.registrationDate) : null;
     const regTime = vehicleData.registrationTime ? new Date(vehicleData.registrationTime) : null;
@@ -343,16 +366,12 @@ const Index = (props: any) => {
       (regTime.getHours() > now.getHours() ||
         (regTime.getHours() === now.getHours() && regTime.getMinutes() > now.getMinutes()));
     if (regDateInFuture || regTimeInFuture) {
-      Toast.show({
-        type: 'error',
-        text1: 'Validation Error',
-        text2: 'Registration date/time cannot be in the future',
-        position: 'bottom',
-        visibilityTime: 3000,
-      });
-      return false;
+      return showValidationError('Registration date/time cannot be in the future');
     }
+    return true;
+  };
 
+  const validateOwner = () => {
     // Owner: Aadhaar/PAN and parking number are optional now.
     if (
       !validateField(ownerData.ownerName, 'Owner name is required') ||
@@ -371,21 +390,28 @@ const Index = (props: any) => {
     if (!isValidEmail(ownerData.ownerEmail)) {
       return validateField('', 'Owner email looks invalid');
     }
+    return true;
+  };
 
+  const validateServiceType = () => {
     if (serviceId === '673f16bd7a12ef01b200c941') {
-      if (!validateField(serviceData.serviceType, 'Service type is required')) return false;
+      return validateField(serviceData.serviceType, 'Service type is required');
     }
+    return true;
+  };
 
-    // Scheduled services need at least 30 minutes of lead time. Merge the
-    // date field with the time-of-day field before comparing.
-    const combineDateTime = (dateValue: any, timeValue: any) => {
-      const date = dateValue ? new Date(dateValue) : null;
-      const time = timeValue ? new Date(timeValue) : null;
-      if (!date || Number.isNaN(date.getTime()) || !time || Number.isNaN(time.getTime())) return null;
-      const combined = new Date(date);
-      combined.setHours(time.getHours(), time.getMinutes(), 0, 0);
-      return combined;
-    };
+  // Scheduled services need at least 30 minutes of lead time. Merge the
+  // date field with the time-of-day field before comparing.
+  const combineDateTime = (dateValue: any, timeValue: any) => {
+    const date = dateValue ? new Date(dateValue) : null;
+    const time = timeValue ? new Date(timeValue) : null;
+    if (!date || Number.isNaN(date.getTime()) || !time || Number.isNaN(time.getTime())) return null;
+    const combined = new Date(date);
+    combined.setHours(time.getHours(), time.getMinutes(), 0, 0);
+    return combined;
+  };
+
+  const validateSchedule = () => {
     // Zero the seconds so the comparison works in whole minutes, matching the
     // minute-level precision of the pickers.
     const minSchedule = new Date(Date.now() + 30 * 60 * 1000);
@@ -401,17 +427,13 @@ const Index = (props: any) => {
     for (const check of scheduleChecks) {
       const scheduled = combineDateTime(check.date, check.time);
       if (scheduled && scheduled < minSchedule) {
-        Toast.show({
-          type: 'error',
-          text1: 'Validation Error',
-          text2: `${check.label} time must be at least 30 minutes from now`,
-          position: 'bottom',
-          visibilityTime: 3000,
-        });
-        return false;
+        return showValidationError(`${check.label} time must be at least 30 minutes from now`);
       }
     }
+    return true;
+  };
 
+  const validateLocation = () => {
     if (
       !validateField(location.latitude, 'Location latitude is required') ||
       !validateField(location.longitude, 'Location longitude is required')
@@ -419,17 +441,18 @@ const Index = (props: any) => {
       return false;
 
     if (serviceId === '673f16c47a12ef01b200c943' && routeData === null) {
-      Toast.show({
-        type: 'error',
-        text1: 'Validation Error',
-        text2: 'Please select a route (From and To addresses) using RouteMap',  
-        position: 'bottom',
-        visibilityTime: 3000,
-      });
-      return false;
+      return showValidationError('Please select a route (From and To addresses) using RouteMap');
     }
     return true;
   };
+
+  const validateInputs = () =>
+    validateVehicleFields() &&
+    validateRegistrationNotInFuture() &&
+    validateOwner() &&
+    validateServiceType() &&
+    validateSchedule() &&
+    validateLocation();
 
   const handlePlanChange = (value: any) => {
     setServiceData({ serviceType: value });
@@ -485,7 +508,7 @@ const Index = (props: any) => {
       };
 
       // Optionally update state if you need to display membership details
-      setMembershipDetails(membership);
+      // setMembershipDetails(membership);
 
       const paymentRequestResponse = await axios.post(
         `${API_URL}/api/payment/save-request`,
@@ -500,7 +523,7 @@ const Index = (props: any) => {
           userId,
           serviceId,
           planId,
-          amount: planActive ? planPrice : planPrice,
+          amount: planPrice,
           currency: 'INR',
           status: 'PENDING',
         }

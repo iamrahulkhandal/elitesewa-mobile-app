@@ -25,7 +25,7 @@ const ActivePlanList = ({ route, navigation }: ActivePlanListProps) => {
   const userId = useAppSelector((state) => state.auth.userId);
   const userRole = useAppSelector((state) => state.auth.role);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<any | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [payments, setPayments] = useState<Booking[]>([]);
   const [subscriptions, setSubscriptions] = useState<PlanSummary[]>([]);
 
