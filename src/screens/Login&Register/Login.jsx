@@ -12,6 +12,7 @@ import {useNavigation} from '@react-navigation/native';
 import styles from './style';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Error from 'react-native-vector-icons/MaterialIcons';
 import {useEffect, useState} from 'react';
 // Removed invalid import from reanimated
 import Toast from 'react-native-toast-message';

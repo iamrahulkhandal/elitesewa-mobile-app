@@ -5,6 +5,7 @@ import axios from 'axios';
 import { API_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
+import Toast from 'react-native-toast-message';
 
 const HomeDrawerContent = ({ navigation, role, handleLogout }) => {
   const [activeRoute, setActiveRoute] = useState('Home'); // Set default active route
@@ -34,7 +35,14 @@ const HomeDrawerContent = ({ navigation, role, handleLogout }) => {
 
       setUserData(response.data);
     } catch (error) {
-      showSnackbarMessage('Error fetching user data: ' + error.message);
+      console.error(error);
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Unable to load your profile. Please try again.',
+        position: 'bottom',
+        visibilityTime: 3000,
+      });
     } finally {
       setIsLoading(false);
     }

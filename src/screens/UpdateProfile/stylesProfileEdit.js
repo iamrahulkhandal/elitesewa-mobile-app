@@ -18,8 +18,6 @@ export default StyleSheet.create({
   },
   button: {
     alignItems: 'center',
-    marginTop: 0,
-    alignItems: 'center',
     textAlign: 'center',
     marginTop: 30,
   },

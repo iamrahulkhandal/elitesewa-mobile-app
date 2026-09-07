@@ -557,10 +557,6 @@ const styles = StyleSheet.create({
       fontWeight:'800',
       marginBottom:5,
     },
-    button:{
-      marginTop:20,
-      borderRadius:4,
-    },
     buttonContent: {
       backgroundColor:'#09b5e1',
       borderRadius: 1,

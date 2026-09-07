@@ -12,7 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useIsFocused } from '@react-navigation/native';
 
 import FeatherIcon from 'react-native-vector-icons/Feather';
-import { getUser } from '../apis/UserService';
+import { getUser, getClientList } from '../apis/UserService';
 import { fileUrl } from '../../utils/fileUrl';
 
 const UserListScreen = ({navigation}) => {

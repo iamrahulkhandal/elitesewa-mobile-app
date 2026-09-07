@@ -110,7 +110,7 @@ const AddEditVehicleScreen = ({ route, navigation }) => {
         Toast.show({                                                                                         
           type:'success',
           text1:'Vehicle',
-          text1:'Vehicle Updated Successfully',
+          text2:'Vehicle Updated Successfully',
         })
         navigation.navigate('VehicleListScreen', vehicle)
       } else {
@@ -124,7 +124,7 @@ const AddEditVehicleScreen = ({ route, navigation }) => {
         Toast.show({                                                                                         
           type:'success',
           text1:'Vehicle',
-          text1:'Vehicle added Successfully',
+          text2:'Vehicle added Successfully',
         })
         navigation.navigate('VehicleListScreen')
       }

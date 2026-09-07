@@ -14,6 +14,7 @@ import {
   Platform,
   Image,
   ScrollView,
+  Switch,
 } from 'react-native';
 import axios from 'axios';
 import * as ImagePicker from 'react-native-image-picker';

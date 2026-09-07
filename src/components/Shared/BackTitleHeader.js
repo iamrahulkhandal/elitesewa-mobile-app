@@ -2,7 +2,7 @@ import React from 'react';
 import {Text, View, StyleSheet} from 'react-native';
 //import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Icon2 from './Icon2';
-import {sizes, spacing} from '../../constants/theme';
+import {sizes} from '../../constants/theme';
 
 const BackTitleHeader = ({title,IconLeft,IconRight,EventLeft,EventRight,IconColorRight,IconColorLeft}) => {
   //const insets = useSafeAreaInsets();
@@ -21,7 +21,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     textAlign:'center',
-    paddingHorizontal: spacing.l,
     paddingVertical:10,
     paddingHorizontal:10,
     shadowColor:'black'

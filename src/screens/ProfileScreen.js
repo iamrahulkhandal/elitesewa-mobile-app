@@ -543,14 +543,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 10,
   },
-  detailsContainer: {
-    width: '90%',
-    marginTop: 20,
-  },
-  detailText: {
-    fontSize: 16,
-    marginVertical: 5,
-  },
   loadingIndicator: {
     marginVertical: 20,
   },
@@ -574,15 +566,6 @@ const styles = StyleSheet.create({
   infoContainer: {
     marginLeft: 16,
     flex: 1,
-  },
-  label: {
-    fontSize: 14,
-    color: '#718096',
-  },
-  value: {
-    fontSize: 16,
-    color: '#2D3748',
-    fontWeight: '500',
   },
 
   containerBox: {

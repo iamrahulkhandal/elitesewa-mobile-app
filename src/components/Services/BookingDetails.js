@@ -6,6 +6,7 @@ import { useCallback } from 'react';
 import Swiper from 'react-native-swiper';
 import { API_URL } from '@env';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Import FontAwesome icons
+import ImageViewing from 'react-native-image-viewing';
 import DailyWashUpdates from './DailyWashUpdates';
 import { fileUrl } from '../../utils/fileUrl';
 const { width: screenWidth } = Dimensions.get('window');
@@ -19,6 +20,8 @@ const BookingDetails = ({ route }) => {
     const [imageDimensions, setImageDimensions] = useState([]);
     const [imageServiceId, setImageServiceId] = useState();
     const [maxImageHeight, setMaxImageHeight] = useState(300);
+    const [isImageViewVisible, setIsImageViewVisible] = useState(false);
+    const [selectedImageIndex, setSelectedImageIndex] = useState(0);
  
 useFocusEffect(
   useCallback(() => {
@@ -121,6 +124,13 @@ const fetchBookingDetails = async () => {
     vehicleId 
   } = bookingDetails;
 
+  const handleImagePress = index => {
+    setSelectedImageIndex(index);
+    setIsImageViewVisible(true);
+  };
+
+  const viewingImages = longImages.map(img => ({ uri: fileUrl(img) }));
+
   return (
     <ScrollView style={styles.container} 
       refreshControl={
@@ -170,7 +180,7 @@ const fetchBookingDetails = async () => {
             activeDotColor="#007BFF"
           >
                       {longImages.map((img, index) => (
-                        <TouchableOpacity key={`banner-${index}`} onPress={() => handleImagePress(index, 'banners')}>
+                        <TouchableOpacity key={`banner-${index}`} onPress={() => handleImagePress(index)}>
                     <Image
                     key={index}
                     source={{ uri: fileUrl(img) }}
@@ -191,6 +201,14 @@ const fetchBookingDetails = async () => {
                       )
                     )}
           </View>
+
+          {/* Image Zoom Gallery */}
+          <ImageViewing
+            images={viewingImages}
+            imageIndex={selectedImageIndex}
+            visible={isImageViewVisible}
+            onRequestClose={() => setIsImageViewVisible(false)}
+          />
       </Card>
 
       {/* Plan Details */}

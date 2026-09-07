@@ -2,11 +2,12 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, Button } from 'react-native';
 import axios from 'axios';
-import { useRoute } from '@react-navigation/native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 import { API_URL } from '@env';
 
 const ServiceDetails = () => {
   const route = useRoute();
+  const navigation = useNavigation();
   const { serviceId } = route.params; // Get the service ID from the route parameters
   const [service, setService] = useState(null);
   const [loading, setLoading] = useState(true);
