@@ -44,3 +44,8 @@ const store = configureStore({
 // Create and export persistor
 export const persistor = persistStore(store);
 export default store;
+
+// `rootReducer` rather than `store.getState` so selectors see the plain slice
+// shape without redux-persist's `_persist` key layered on top.
+export type RootState = ReturnType<typeof rootReducer>;
+export type AppDispatch = typeof store.dispatch;

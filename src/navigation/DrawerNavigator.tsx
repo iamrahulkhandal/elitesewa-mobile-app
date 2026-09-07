@@ -28,6 +28,7 @@ const DrawerNavigator = ({ role, handleLogout, navigation, route }) => {
 
   return (
     <Drawer.Navigator
+      id={undefined}
       drawerContent={(props) => (
         <HomeDrawerContent {...props} role={currentRole} handleLogout={handleLogout} />
       )}

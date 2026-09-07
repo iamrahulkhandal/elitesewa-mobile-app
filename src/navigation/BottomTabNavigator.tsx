@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { TouchableOpacity, Alert } from 'react-native';
+import { TouchableOpacity, Alert, type GestureResponderEvent } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 import CustomerHomeScreen from '../screens/CustomerHomeScreen';
@@ -33,6 +33,7 @@ const BottomTabNavigator = ({ route }) => {
 
     return (
         <Tab.Navigator
+            id={undefined}
             screenOptions={({ route }) => ({
                 tabBarActiveTintColor: '#09b5e1',  // Active tab color
                 tabBarInactiveTintColor: 'gray', // Inactive tab color
@@ -57,12 +58,14 @@ const BottomTabNavigator = ({ route }) => {
                     }
                     return <Icon name={iconName} size={size} color={color} />;
                 },
-                tabBarButton: (props) => {
+                // `ref` is dropped: the navigator types it for its own element,
+                // which is not the TouchableOpacity ref type under React 19.
+                tabBarButton: ({ ref: _ref, ...props }) => {
                     // Custom behavior for tab click
-                    const handlePress = () => {
+                    const handlePress = (event: GestureResponderEvent) => {
                         showAlert(route.name);  // Show alert when tab is clicked
                         if (props.onPress) {
-                            props.onPress(); // Ensure default navigation behavior is still executed
+                            props.onPress(event); // Ensure default navigation behavior is still executed
                         }
                     };
 

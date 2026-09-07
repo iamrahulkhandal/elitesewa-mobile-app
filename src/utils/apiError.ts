@@ -177,6 +177,14 @@ export const getFieldErrors = (error) => {
 };
 
 /**
+ * An Error carrying the axios response that produced it, so callers that catch
+ * an HTTP-200 failure can still reach the status and body.
+ */
+export interface ApiError extends Error {
+  response?: { status?: number; data?: unknown };
+}
+
+/**
  * Throws when an axios response carries `{ success: false }`.
  *
  * Endpoints that report failures with HTTP 200 resolve normally, so without
@@ -185,7 +193,7 @@ export const getFieldErrors = (error) => {
 export const assertApiSuccess = (response, fallback) => {
   const data = response && response.data;
   if (isObject(data) && data.success === false) {
-    const error = new Error(readApiPayload(data) || fallback);
+    const error: ApiError = new Error(readApiPayload(data) || fallback);
     error.response = response;
     throw error;
   }

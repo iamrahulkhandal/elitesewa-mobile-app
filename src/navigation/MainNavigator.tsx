@@ -3,7 +3,8 @@ import { TouchableOpacity, View, Text, Alert, StyleSheet } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useNavigation, CommonActions } from '@react-navigation/native';
-import { useSelector, useDispatch } from 'react-redux';
+import type { AppNavigation } from '../types/navigation';
+import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { logoutAndClear } from '../store/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { HeaderTitleProvider } from './HeaderTitleContext';
@@ -39,18 +40,13 @@ import PaymentFailedScreen from '../screens/PaymentFailedScreen';
 import DrawerNavigator from './DrawerNavigator';
 const Stack = createStackNavigator();
 const MainNavigator = ({ role, startRouteName }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [isLoading, setIsLoading] = useState(true);
-  const [headerTitle, setHeaderTitle] = useState('Home');
-  const navigation = useNavigation();
-  const isProfileComplete = useSelector(
+  const navigation = useNavigation<AppNavigation>();
+  const isProfileComplete = useAppSelector(
     state => state.auth.isProfileComplete,
   );
 
-  // Update header title dynamically
-  const updateHeaderTitle = (title) => {
-    setHeaderTitle(title);
-  };
 
   const handleLeftButtonPress = () => {
     if (isProfileComplete) {
@@ -91,13 +87,13 @@ const MainNavigator = ({ role, startRouteName }) => {
 
   return (
     <HeaderTitleProvider>
-      <Stack.Navigator initialRouteName={startRouteName}>
+      <Stack.Navigator id={undefined} initialRouteName={startRouteName}>
         {/* Stack for the Drawer Navigator (which contains tabs) */}
         <Stack.Screen
           name='Main'
           options={{ headerShown: false }}
         >
-          {(props) => <DrawerNavigator {...props} role={role} handleLogout={handleLogout} updateHeaderTitle={updateHeaderTitle} headerTitle={headerTitle} />}
+          {(props) => <DrawerNavigator {...props} role={role} handleLogout={handleLogout} />}
         </Stack.Screen>
         {/* Screens added to the stack */}
         <Stack.Screen

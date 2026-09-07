@@ -5,11 +5,12 @@ import axios from 'axios';
 import { API_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
+import type { UserProfile } from '../types/models';
 import Toast from 'react-native-toast-message';
 
 const HomeDrawerContent = ({ navigation, role, handleLogout }) => {
   const [activeRoute, setActiveRoute] = useState('Home'); // Set default active route
-  const [userData, setUserData] = useState({});
+  const [userData, setUserData] = useState<UserProfile>({});
   const [userRole, setUserRole] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
