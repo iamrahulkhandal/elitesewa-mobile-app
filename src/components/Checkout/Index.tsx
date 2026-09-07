@@ -1,7 +1,7 @@
 import "react-native-get-random-values";
 import type { Vehicle } from '../../types/models';
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { FlatList,StyleSheet, Alert, View, Text, Keyboard, ScrollView,TouchableWithoutFeedback} from 'react-native';
+import { FlatList,StyleSheet, View, Text, Keyboard, TouchableWithoutFeedback} from 'react-native';
 import { useAppSelector } from '../../store/hooks';
 import { Snackbar } from 'react-native-paper';
 import RazorpayCheckout from 'react-native-razorpay';
@@ -30,10 +30,10 @@ import {
 const Index = (props: any) => {
   const { route: vehicleRoute } = props;
   const navigation = useNavigation<AppNavigation>();
-  const { serviceId, planPrice, planId, planDuration, vehicleId, planActive, planActiveDate, billingType } = vehicleRoute.params;
+  const { serviceId, planPrice, planId, planDuration, vehicleId, planActive, billingType } = vehicleRoute.params;
   const isMonthlyPlan = billingType === 'monthly';
     const [showSnackbar, setShowSnackbar] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message] = useState('');
   const [location, setLocation] = useState({ latitude: 28.6132, longitude: 77.2092, address:null});
 
   const [vehicleData, setVehicleData] = useState({
@@ -47,7 +47,7 @@ const Index = (props: any) => {
   });
 
   // Membership state can be used for display if needed.
-  const [membershipDetails, setMembershipDetails] = useState({
+  const [, setMembershipDetails] = useState({
     plan: '',
     status: '',
     startDate: '',
@@ -304,7 +304,7 @@ const Index = (props: any) => {
   const isValidVehicleModel = (value: any) => {
     const raw = value.trim();
     if (raw.length < 2 || raw.length > 40) return false;
-    if (!/^[A-Za-z0-9][A-Za-z0-9 .\/+-]*$/.test(raw)) return false;
+    if (!/^[A-Za-z0-9][A-Za-z0-9 ./+-]*$/.test(raw)) return false;
     return /[A-Za-z]/.test(raw) && !/\d{5}/.test(raw);
   };
   const isValidMobile = (value: any) => /^[6-9]\d{9}$/.test(value.trim());
@@ -336,10 +336,10 @@ const Index = (props: any) => {
     const regDate = vehicleData.registrationDate ? new Date(vehicleData.registrationDate) : null;
     const regTime = vehicleData.registrationTime ? new Date(vehicleData.registrationTime) : null;
     const regDateInFuture =
-      regDate && !isNaN(regDate.getTime()) && regDate.toDateString() !== now.toDateString() && regDate > now;
+      regDate && !Number.isNaN(regDate.getTime()) && regDate.toDateString() !== now.toDateString() && regDate > now;
     const regTimeInFuture =
-      regTime && !isNaN(regTime.getTime()) &&
-      (!regDate || isNaN(regDate.getTime()) || regDate.toDateString() === now.toDateString()) &&
+      regTime && !Number.isNaN(regTime.getTime()) &&
+      (!regDate || Number.isNaN(regDate.getTime()) || regDate.toDateString() === now.toDateString()) &&
       (regTime.getHours() > now.getHours() ||
         (regTime.getHours() === now.getHours() && regTime.getMinutes() > now.getMinutes()));
     if (regDateInFuture || regTimeInFuture) {
@@ -381,7 +381,7 @@ const Index = (props: any) => {
     const combineDateTime = (dateValue: any, timeValue: any) => {
       const date = dateValue ? new Date(dateValue) : null;
       const time = timeValue ? new Date(timeValue) : null;
-      if (!date || isNaN(date.getTime()) || !time || isNaN(time.getTime())) return null;
+      if (!date || Number.isNaN(date.getTime()) || !time || Number.isNaN(time.getTime())) return null;
       const combined = new Date(date);
       combined.setHours(time.getHours(), time.getMinutes(), 0, 0);
       return combined;

@@ -138,7 +138,7 @@ const ActivePlanList = ({ route, navigation }: ActivePlanListProps) => {
 
   const calculateEndDate = (planActiveDate: string, duration: string) => {
     const startDate = new Date(planActiveDate);
-    const durationInDays = parseInt(duration, 10);
+    const durationInDays = Number.parseInt(duration, 10);
     startDate.setUTCDate(startDate.getUTCDate() + durationInDays);
     return startDate;
   };

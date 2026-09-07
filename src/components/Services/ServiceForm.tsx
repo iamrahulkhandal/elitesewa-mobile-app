@@ -63,19 +63,19 @@ const ServiceForm = () => {
         }
         break;
       case 'price':
-        if (!value || isNaN(value) || value <= 0) {
+        if (!value || Number.isNaN(Number(value)) || value <= 0) {
           isValid = false;
           error = 'Price must be a valid positive number.';
         }
         break;
       case 'discount':
-        if (value && (isNaN(value) || value < 0 || value > formData.price)) {
+        if (value && (Number.isNaN(Number(value)) || value < 0 || value > formData.price)) {
           isValid = false;
           error = 'Discount must not exceed the price.';
         }
         break;
       case 'duration':
-        if (!value || isNaN(value) || value <= 0 || value > 120) {
+        if (!value || Number.isNaN(Number(value)) || value <= 0 || value > 120) {
           isValid = false;
           error = 'Duration must be a positive number not exceeding 120.';
         }
@@ -101,7 +101,7 @@ const ServiceForm = () => {
         }
         break;
       case 'serviceProvider.experience':
-        if (!value || isNaN(value) || value <= 0) {
+        if (!value || Number.isNaN(Number(value)) || value <= 0) {
           isValid = false;
           error = 'Experience must be a positive number.';
         }

@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 const parseDate = (value: any) => {
   if (!value) return null;
   const parsed = value instanceof Date ? value : new Date(value);
-  return isNaN(parsed.getTime()) ? null : parsed;
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
 };
 
 type DatePickerProps = {

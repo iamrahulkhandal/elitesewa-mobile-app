@@ -9,7 +9,7 @@ const Activeplan = ({ plan,service, vehicle, createdAt, onSelect, planActiveDate
 
   const calculateEndDate = (planActiveDate: string, duration: string | number) => {
     const startDate = new Date(planActiveDate);
-    const durationInDays = parseInt(String(duration), 10);
+    const durationInDays = Number.parseInt(String(duration), 10);
     startDate.setUTCDate(startDate.getUTCDate() + durationInDays);
     return startDate;
   };

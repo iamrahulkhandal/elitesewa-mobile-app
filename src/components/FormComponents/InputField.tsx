@@ -13,7 +13,7 @@ type InputFieldProps = {
   multiline?: boolean;
 };
 
-const InputField = ({ label, value, onChange, placeholder, keyboardType, editable }: InputFieldProps) => {
+const InputField = ({ label, value, onChange, placeholder, keyboardType, editable, multiline }: InputFieldProps) => {
   return (
     <View style={styles.container}>
       <Text style={styles.label}>{label}</Text>
@@ -23,7 +23,8 @@ const InputField = ({ label, value, onChange, placeholder, keyboardType, editabl
         onChangeText={onChange}  
         placeholder={placeholder}
         keyboardType={keyboardType}
-        editable={editable !== undefined ? editable : true}
+        editable={editable ?? true}
+        multiline={multiline}
       />
     </View>  
   );

@@ -12,7 +12,7 @@ const VehicleDetails = ({ vehicleData, onChange,active }: VehicleDetailsProps) =
     // when the registration date is today (or not yet chosen).
     const now = new Date();
     const regDate = vehicleData.registrationDate ? new Date(vehicleData.registrationDate) : null;
-    const regDateIsToday = !regDate || isNaN(regDate.getTime()) || regDate.toDateString() === now.toDateString();
+    const regDateIsToday = !regDate || Number.isNaN(regDate.getTime()) || regDate.toDateString() === now.toDateString();
 
     return (
         <View>

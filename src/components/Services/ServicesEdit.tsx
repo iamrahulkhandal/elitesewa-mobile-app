@@ -217,7 +217,7 @@ const ServicesEdit = ({navigation, route}: ServicesEditProps) => {
       Alert.alert('Validation Error', 'Description is required.');
       return false;
     }
-    if (!duration.trim() || isNaN(Number(duration))) {
+    if (!duration.trim() || Number.isNaN(Number(duration))) {
       Alert.alert('Validation Error', 'Duration must be a valid number.');
       return false;
     }

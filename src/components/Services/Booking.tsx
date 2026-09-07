@@ -117,7 +117,7 @@ const Booking = ({ navigation }: BookingProps) => {
 
   // Plan window: planActiveDate + duration days.
   const planEndDate = (item: any) => {
-    const days = parseInt(item.planId?.duration, 10);
+    const days = Number.parseInt(item.planId?.duration, 10);
     if (!item.planActiveDate || !Number.isFinite(days)) return null;
     const end = new Date(item.planActiveDate);
     end.setDate(end.getDate() + days);
@@ -127,7 +127,7 @@ const Booking = ({ navigation }: BookingProps) => {
   const renderPaymentItem = ({ item }: { item: any }) => {
     const daily = isDailyWash(item);
     const daysLogged = washProgress[item._id];
-    const totalDays = parseInt(item.planId?.duration, 10);
+    const totalDays = Number.parseInt(item.planId?.duration, 10);
     const endDate = daily ? planEndDate(item) : null;
     const planEnded = endDate && endDate < new Date();
 

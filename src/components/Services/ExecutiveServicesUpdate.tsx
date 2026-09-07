@@ -46,7 +46,7 @@ const ExecutiveServicesUpdate = ({route ,navigation}: ExecutiveServicesUpdatePro
   // Form Validation
   const validateFormData = () => {
     const { customerRating,customerReview} = formState;
-    if (!customerRating.trim() || isNaN(customerRating)) {
+    if (!customerRating.trim() || Number.isNaN(Number(customerRating))) {
       setError('Rating must be a valid number.');
       return false;
     }

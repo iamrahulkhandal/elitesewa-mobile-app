@@ -92,7 +92,7 @@ const ExecutiveBooking = ({ navigation }: ExecutiveBookingProps) => {
   const renderPaymentItem = ({ item }: { item: any }) => {
     const daily = isDailyWash(item);
     const daysLogged = washProgress[item._id];
-    const totalDays = parseInt(item.planId?.duration, 10);
+    const totalDays = Number.parseInt(item.planId?.duration, 10);
 
     return (
       <View style={styles.card}>

@@ -137,7 +137,7 @@ const ServicesView = ({ route, navigation }: ServicesViewProps) => {
   };
   // Function to extract video ID from YouTube URL
   const extractVideoId = (url: string) => {
-    const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+    const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^/]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
     const match = url.match(regex);
     return match ? match[1] : null;
   };
@@ -407,7 +407,7 @@ const ServicesView = ({ route, navigation }: ServicesViewProps) => {
                 // Function to calculate the expiration date
                 const calculateEndDate = (planActiveDate, duration) => {
                   const startDate = new Date(planActiveDate); // Parse the ISO string
-                  const durationInDays = parseInt(duration, 10); // Ensure duration is treated as a number
+                  const durationInDays = Number.parseInt(duration, 10); // Ensure duration is treated as a number
                   startDate.setUTCDate(startDate.getUTCDate() + durationInDays); // Add duration (in days)
                   return startDate; // Return the end date as a Date object
                 };

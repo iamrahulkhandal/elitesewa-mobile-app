@@ -7,13 +7,13 @@ const PriceBreakout = ({ serviceid,locationData,planPrice}: PriceBreakoutProps) 
   const ratePerKm = 10;
   const fixedCharge = planPrice;
 
-  const distanceValue = parseFloat(locationData?.distance) || 0;
+  const distanceValue = Number.parseFloat(locationData?.distance) || 0;
   const distanceCharge = distanceValue * ratePerKm;
   const total = fixedCharge + distanceCharge;
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Price Breakout {parseFloat(locationData?.distance)}</Text>
+      <Text style={styles.title}>Price Breakout {Number.parseFloat(locationData?.distance)}</Text>
       <View style={styles.breakdown}>
         <Text style={styles.lineItem}>Service Fixed Charge: ₹{fixedCharge}</Text>
         <Text style={styles.lineItem}>Distance: {distanceValue} km</Text>

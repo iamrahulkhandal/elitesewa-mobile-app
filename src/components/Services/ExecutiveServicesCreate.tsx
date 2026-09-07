@@ -105,7 +105,7 @@ const ExecutiveServicesCreate = ({route , navigation}: ExecutiveServicesCreatePr
       setError('Description is required.');
       return false;
     }
-    if (!duration.trim() || isNaN(Number(duration))) {
+    if (!duration.trim() || Number.isNaN(Number(duration))) {
       setError('Duration must be a valid number.');
       return false;
     }
@@ -113,7 +113,7 @@ const ExecutiveServicesCreate = ({route , navigation}: ExecutiveServicesCreatePr
       setError('At least 1 image is required.');
       return false;
     }
-    if (!executiveRating.trim() || isNaN(Number(executiveRating))) {
+    if (!executiveRating.trim() || Number.isNaN(Number(executiveRating))) {
       setError('Rating must be a valid number.');
       return false;
     }
@@ -121,7 +121,7 @@ const ExecutiveServicesCreate = ({route , navigation}: ExecutiveServicesCreatePr
       setError('Review is required.');
       return false;
     }
-    // if (!customerRating.trim() || isNaN(Number(customerRating))) {
+    // if (!customerRating.trim() || Number.isNaN(Number(customerRating))) {
     //   setError('Rating must be a valid number.');
     //   return false;
     // }

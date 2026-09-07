@@ -8,7 +8,7 @@ import Toast from 'react-native-toast-message';
 const parseTime = (value: any) => {
   if (!value) return null;
   const parsed = value instanceof Date ? value : new Date(value);
-  return isNaN(parsed.getTime()) ? null : parsed;
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
 };
 
 // The Android time picker has no native min/max-time support, so when

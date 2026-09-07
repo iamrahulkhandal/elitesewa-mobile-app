@@ -22,7 +22,7 @@ const Schedule = ({ insuranceData, onChange, serviceid }: ScheduleProps) => {
   const minTime = new Date(now.getTime() + 30 * 60 * 1000);
   const isTodayOrUnset = (value: any) => {
     const date = value ? new Date(value) : null;
-    return !date || isNaN(date.getTime()) || date.toDateString() === now.toDateString();
+    return !date || Number.isNaN(date.getTime()) || date.toDateString() === now.toDateString();
   };
 
   return (
