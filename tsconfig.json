@@ -1,3 +1,14 @@
 {
-  "extends": "@react-native/typescript-config"
+  "extends": "@react-native/typescript-config",
+  "compilerOptions": {
+    // Incremental migration: .js and .tsx coexist while files are converted
+    // one batch at a time. Tighten these once the last .js file is gone.
+    "allowJs": true,
+    "checkJs": false,
+    "strict": false,
+    "noImplicitAny": false,
+    "strictNullChecks": false
+  },
+  "include": ["src", "__tests__", "index.js", "*.config.js", ".eslintrc.js"],
+  "exclude": ["node_modules", "android", "ios", "**/Pods/**"]
 }
