@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import type { Booking } from '../../types/models';
+// Aliased: an imported type sharing a name with the local component makes
+// Babel treat `export default Booking` as type-only and drop it, leaving the
+// module with no default export at runtime.
+import type { Booking as BookingRecord } from '../../types/models';
 import type { AppNavigation } from '../../types/navigation';
 import {
   View,
@@ -25,7 +28,7 @@ const isDailyWash = (item: any) => /daily/i.test(item.serviceId?.name || '');
 type BookingProps = { navigation: AppNavigation };
 
 const Booking = ({ navigation }: BookingProps) => {
-  const [payments, setPayments] = useState<Booking[]>([]);
+  const [payments, setPayments] = useState<BookingRecord[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [executiveservicesid, setExecutiveservicesid] = useState<any | null>(null);
