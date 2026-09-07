@@ -3,11 +3,12 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import ServicesData from '../../Data/ServicesData'; // Ensure the path is correct
+import ServicesData from '../../components/Data/ServicesData'; // Ensure the path is correct
 import { useNavigation } from '@react-navigation/native';
+import type { AppNavigation } from '../../types/navigation';
 
 const Services = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<AppNavigation>();
 
   const renderItem = ({ item }) => (
     <TouchableOpacity

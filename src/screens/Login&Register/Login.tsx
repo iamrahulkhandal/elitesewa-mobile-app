@@ -9,6 +9,7 @@ const {
   Alert,
 } = require('react-native');
 import {useNavigation} from '@react-navigation/native';
+import type { AppNavigation } from '../../types/navigation';
 import styles from './style';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -21,7 +22,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '@env';
 
 function LoginPage({props}) {
-  const navigation = useNavigation();
+  const navigation = useNavigation<AppNavigation>();
   const [mobile, setMobile] = useState([]);
   const [mobileVerify, setMobileVerify] = useState(false);
   const [mobileExist, setMobileExist] = useState(false);

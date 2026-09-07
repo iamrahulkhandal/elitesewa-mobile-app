@@ -2,9 +2,10 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5'; // Using FontAwesome5 for the cross icon
 import { useNavigation } from '@react-navigation/native';
+import type { AppNavigation } from '../types/navigation';
 
 const PaymentFailedScreen = ({ route }) => {
-    const navigation = useNavigation();
+    const navigation = useNavigation<AppNavigation>();
     // Params are optional so a stray navigation here cannot crash the screen.
     const { planPrice, reason } = route.params || {};
   return (

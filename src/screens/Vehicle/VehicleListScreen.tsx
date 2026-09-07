@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
 import {API_URL} from '@env';
 import {useFocusEffect} from '@react-navigation/native';
+import type { AppNavigation } from '../../types/navigation';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Toast from 'react-native-toast-message';
 import {useNavigation} from '@react-navigation/native';
@@ -13,7 +14,7 @@ import { fileUrl } from '../../utils/fileUrl';
 
 const VehicleListScreen = () => {
 
-  const navigation = useNavigation();
+  const navigation = useNavigation<AppNavigation>();
   const [vehicles, setVehicles] = useState([]);
 
 

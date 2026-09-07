@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Animated,Image } from 'react-native';
+import {Alert, View, Text, StyleSheet, TouchableOpacity, ScrollView, Animated,Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
+import type { AppNavigation } from '../../types/navigation';
 const OnDemandCarWash = () => {
-    const navigation = useNavigation();
+    const navigation = useNavigation<AppNavigation>();
     const [selectedPackage, setSelectedPackage] = useState(null);
     const [selectedPrice, setSelectedPackagePrice] = useState(0);
     const [scaleValue] = useState(new Animated.Value(1));
@@ -32,7 +33,7 @@ const OnDemandCarWash = () => {
                 navigation.navigate('PaymentScreen', { price: selectedPrice })
             )
         } else {
-            alert('Please select a package.');
+            Alert.alert('', 'Please select a package.');
         }
     };
 

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import type { FieldErrors } from '../../types/models';
 import { View, TextInput, Button, Image ,StyleSheet,TouchableOpacity,Text, Alert,ScrollView} from 'react-native';
 // react-native's SafeAreaView is iOS-only; this one applies insets on Android too.
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -6,19 +7,19 @@ import { createUser, updateUser } from '../apis/UserService';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import { launchCamera } from 'react-native-image-picker';
 import { ensureCameraPermission } from '../../utils/cameraPermission';
-import BackTitleHeader from '../../src/components/Shared/BackTitleHeader';
+import BackTitleHeader from '../../components/Shared/BackTitleHeader';
 import { fileUrl } from '../../utils/fileUrl';
 
 export default function UserFormScreen({ route, navigation }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [image, setImage] = useState('');
-  const [errors, setErrors] = useState({});
+  const [image, setImage] = useState<{ uri?: string } | null>(null);
+  const [errors, setErrors] = useState<FieldErrors>({});
   const [isFormValid, setIsFormValid] = useState(false);
 
 const validateForm = () => {
-    let errors = {};
+    let errors: FieldErrors = {};
 
     // Validate name field
     if (!name) {
@@ -126,7 +127,7 @@ const validateForm = () => {
       </View>
     </View>
 
-    <ScrollView contentContainerStyle={styles.content}>
+    <ScrollView>
           <View style={styles.container}>
         <TextInput
             style={styles.input}

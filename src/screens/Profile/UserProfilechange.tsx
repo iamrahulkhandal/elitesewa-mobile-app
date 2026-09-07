@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import type { FieldErrors } from '../../types/models';
 import { View, TextInput, Button, Image ,StyleSheet,TouchableOpacity,Text, Alert,ScrollView} from 'react-native';
 // react-native's SafeAreaView is iOS-only; this one applies insets on Android too.
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -6,12 +7,12 @@ import { createUser, updateUser } from '../apis/UserService';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import { launchCamera } from 'react-native-image-picker';
 import { ensureCameraPermission } from '../../utils/cameraPermission';
-import BackTitleHeader from '../../src/components/Shared/BackTitleHeader';
+import BackTitleHeader from '../../components/Shared/BackTitleHeader';
 import { fileUrl } from '../../utils/fileUrl';
 
 export default function UserProfilechange({ route, navigation }) {
-  const [image, setImage] = useState('');
-  const [errors, setErrors] = useState({});
+  const [image, setImage] = useState<{ uri?: string } | null>(null);
+  const [errors, setErrors] = useState<FieldErrors>({});
   const [isFormValid, setIsFormValid] = useState(false);
 
 const validateForm = () => {
@@ -56,7 +57,7 @@ const validateForm = () => {
     if (!hasPermission) return;
 
     // Camera only — capture a live photo instead of picking from the gallery.
-    launchCamera({ mediaType: 'photo', noData: true, saveToPhotos: false }, (response) => {
+    launchCamera({ mediaType: 'photo', saveToPhotos: false }, (response) => {
       if (response.assets) {
 
         setImage(response.assets[0]); 
@@ -98,7 +99,7 @@ const validateForm = () => {
       </View>
     </View>
 
-    <ScrollView contentContainerStyle={styles.content}>
+    <ScrollView>
       <View style={styles.container}>
         <Button title="Pick Image" onPress={handleImagePick} />
         {/* <Text style={styles.error}>{errors.image}</Text> */}

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import type { UserProfile } from '../../types/models';
 import {
   StyleSheet,
   ScrollView,
@@ -18,7 +19,7 @@ import { fileUrl } from '../../utils/fileUrl';
 const UserListScreen = ({navigation}) => {
   const isFocused = useIsFocused();
 
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<UserProfile>({});
 
   useEffect(() => {
     const phone = '9651783692'; 

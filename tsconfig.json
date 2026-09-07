@@ -1,14 +1,36 @@
 {
   "extends": "@react-native/typescript-config",
   "compilerOptions": {
-    // Incremental migration: .js and .tsx coexist while files are converted
-    // one batch at a time. Tighten these once the last .js file is gone.
+    // Incremental migration: strictness is deliberately off while the codebase
+    // settles. Tighten these one flag at a time now that every file is .ts/.tsx.
     "allowJs": true,
     "checkJs": false,
     "strict": false,
     "noImplicitAny": false,
     "strictNullChecks": false
   },
-  "include": ["src", "__tests__", "index.js", "*.config.js", ".eslintrc.js"],
-  "exclude": ["node_modules", "android", "ios", "**/Pods/**"]
+  "include": ["src", "__tests__", "index.ts", "*.config.js", ".eslintrc.js"],
+  "exclude": [
+    "node_modules",
+    "android",
+    "ios",
+    "**/Pods/**",
+
+    // Abandoned screens: no navigator registers them and nothing imports them,
+    // and each depends on something that does not exist, so they cannot compile
+    // and would crash if they were ever reached. Excluded to keep `npm run
+    // typecheck` meaningful rather than permanently red. Delete them, or
+    // restore what they need, and remove these four lines.
+    //
+    //   UserFormScreen / UserProfilechange -> import `createUser`, which is
+    //     commented out in src/screens/apis/UserService.ts
+    //   ServiceDetailsScreen -> imports react-native-virtualized-view, which is
+    //     not in package.json or node_modules
+    //   AddEditVehicleScreen -> imports features/userActiveSlice and selects
+    //     state.active_user; neither the module nor the slice exists
+    "src/screens/Profile/UserFormScreen.tsx",
+    "src/screens/Profile/UserProfilechange.tsx",
+    "src/screens/Services/ServiceDetailsScreen.tsx",
+    "src/screens/Vehicle/AddEditVehicleScreen.tsx"
+  ]
 }

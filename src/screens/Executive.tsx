@@ -1,11 +1,12 @@
 import React, {useState, useEffect} from 'react';
+import type { UserProfile } from '../types/models';
 import {Text, View} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {API_URL} from '@env';
 import {Button} from 'react-native-paper';
 function Executive({navigation}) {
-  const [userData, setUserData] = useState('');
+  const [userData, setUserData] = useState<UserProfile>({});
   async function getData() {
     const token = await AsyncStorage.getItem('token');
     // console.log(token);

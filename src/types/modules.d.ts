@@ -21,3 +21,12 @@ declare module 'react-navigation-shared-element';
  */
 declare module '@gorhom/bottom-sheet';
 declare module '@react-native-community/geolocation';
+
+// Image imports (e.g. `import male from '../assets/male.png'`) resolve through
+// Metro's asset pipeline, which TypeScript knows nothing about.
+declare module '*.png';
+declare module '*.jpg';
+declare module '*.jpeg';
+declare module '*.gif';
+declare module '*.svg';
+declare module '*.webp';

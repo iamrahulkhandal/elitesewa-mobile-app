@@ -12,6 +12,8 @@ import Back from 'react-native-vector-icons/Ionicons';
 import {RadioButton} from 'react-native-paper';
 import ImagePicker from 'react-native-image-crop-picker';
 import {useNavigation} from '@react-navigation/native';
+import type { AppRoute } from '../../types/navigation';
+import type { AppNavigation } from '../../types/navigation';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useRoute} from '@react-navigation/native';
@@ -26,9 +28,9 @@ function UpdateProfile() {
   const [gender, setGender] = useState('');
   const [profession, setProfession] = useState('');
   const [mobile, setMobile] = useState('');
-  const route = useRoute();
+  const route = useRoute<AppRoute>();
 
-  const navigation = useNavigation();
+  const navigation = useNavigation<AppNavigation>();
   const selectPhoto = () => {
     ImagePicker.openPicker({
       path: 'my-file-path.jpg',
@@ -42,7 +44,8 @@ function UpdateProfile() {
       freeStyleCropEnabled: true,
     }).then(image => {
       // console.log(image);
-      const data = `data:${image.mime};base64,${image.data}`;
+      const base64 = (image as { data?: string }).data;
+      const data = `data:${image.mime};base64,${base64}`;
       // const data = `data:${image.mime};base64,${image.path};name:'photo.jpg'`;
       // console.log(data)
       setImage(data);
@@ -63,9 +66,9 @@ function UpdateProfile() {
     setMobile(userData.mobile)
   },[]);                                                                                                   
   const updateProfile = () => { 
-    var formdata = '';
+    let formdata: Record<string, unknown> | string = '';
     if(email == ''){
-      var formdata = {                                                                            
+      formdata = {                                                                            
         name: name,                                                                                          
         image,
         email,
@@ -75,7 +78,7 @@ function UpdateProfile() {
         gender
       };
     }else{
-      var formdata = {
+      formdata = {
         name: name,
         image,
         email,

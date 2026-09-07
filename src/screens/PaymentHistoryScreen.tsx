@@ -9,7 +9,7 @@ import {
   RefreshControl,
 } from 'react-native';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useAppSelector } from '../store/hooks';
 import { useFocusEffect } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
@@ -27,8 +27,8 @@ const PaymentHistoryScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
-  const userId = useSelector((state) => state.auth.userId);
-  const role = useSelector((state) => state.auth.role);
+  const userId = useAppSelector((state) => state.auth.userId);
+  const role = useAppSelector((state) => state.auth.role);
 
   const fetchPayments = async () => {
     if (!userId || !role) return;
@@ -42,7 +42,7 @@ const PaymentHistoryScreen = ({ navigation }) => {
       const response = await axios.get(endpoint);
       const list = response.data.payments || [];
       // Newest first.
-      list.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
       setPayments(list);
     } catch (error) {
       console.error('Error fetching payment history:', error.message);

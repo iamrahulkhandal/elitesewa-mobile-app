@@ -29,7 +29,7 @@ const ServiceDetailsScreen = ({ route }) => {
         data={service.features}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.item}>
+          <TouchableOpacity>
               <Text style={styles.featureItem}>• {item.feature}</Text>
             </TouchableOpacity>
         )}
@@ -54,7 +54,7 @@ const ServiceDetailsScreen = ({ route }) => {
         data={service.additionalInfo}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-            <TouchableOpacity style={styles.item}>
+            <TouchableOpacity>
               <Text style={styles.additionalItem}>• {item.feature}</Text>
             </TouchableOpacity>
         )}

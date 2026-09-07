@@ -9,6 +9,7 @@ const {
   Alert,
 } = require('react-native');
 import {useNavigation} from '@react-navigation/native';
+import type { AppNavigation } from '../../types/navigation';
 import styles from './style';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -33,7 +34,7 @@ function RegisterPage({props}) {
   const [userType, setUserType] = useState('');
   const [secretText, setSecretText] = useState('');
   const [verify, setVerify] = useState(false);
-  const navigation = useNavigation();
+  const navigation = useNavigation<AppNavigation>();
   function handelSubmit() {
     const userData = {
       name: name,

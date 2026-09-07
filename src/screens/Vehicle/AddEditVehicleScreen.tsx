@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
+import type { CameraOptions } from 'react-native-image-picker';
+import type { FieldErrors } from '../../types/models';
 import { View, Button, TextInput, FlatList, Image,StyleSheet, TouchableOpacity, Alert, Text,ScrollView} from 'react-native';
 import { launchCamera } from 'react-native-image-picker';
 import { ensureCameraPermission } from '../../utils/cameraPermission';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {API_URL} from '@env';
-import { useSelector, useDispatch } from 'react-redux';
+import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import Toast from 'react-native-toast-message';
 import { fetchActiveUserDetails } from '../../../features/userActiveSlice';
 import { fileUrl } from '../../utils/fileUrl';
 
 const AddEditVehicleScreen = ({ route, navigation }) => {
-  const dispatch = useDispatch();
-  const { active_user, loading: userLoading, error: userError } = useSelector((state) => state.active_user);
+  const dispatch = useAppDispatch();
+  const { active_user, loading: userLoading, error: userError } = useAppSelector((state) => state.active_user);
   const { vehicle } = route.params || {};
   const [vehicles, setVehicles] = useState([]);
   const [name, setName] = useState('');
@@ -20,12 +22,12 @@ const AddEditVehicleScreen = ({ route, navigation }) => {
   const [selectedImages, setSelectedImages] = useState([]);
   const [selectedVehicleId, setSelectedVehicleId] = useState(null);
   const [removedImages, setRemovedImages] = useState([]);
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<FieldErrors>({});
 
  
   const validateForm = () => {
     let valid = true;
-    let formErrors = {};
+    let formErrors: FieldErrors = {};
 
     if (name.trim() === '') {
       formErrors.name = 'Vehicle name is required';
@@ -65,7 +67,7 @@ const AddEditVehicleScreen = ({ route, navigation }) => {
     if (!hasPermission) return;
 
     // Camera only — capture a live photo instead of picking from the gallery.
-    const options = {
+    const options: CameraOptions = {
       mediaType: 'photo',
       quality: 1,
       saveToPhotos: false,
@@ -187,7 +189,7 @@ const AddEditVehicleScreen = ({ route, navigation }) => {
       {errors.model && <Text style={styles.errorText}>{errors.model}</Text>}
       <Text style={styles.label}>Vehicle Images</Text>
           <TouchableOpacity
-            onPress={() => selectImages(selectImages)}
+            onPress={() => selectImages()}
             style={styles.imagePickerButton}
           >
             <Text style={styles.imagePickerText}>Pick Images</Text>
@@ -201,7 +203,7 @@ const AddEditVehicleScreen = ({ route, navigation }) => {
             <View  key={item.id}>
               <Image  source={{ uri: item.uri }} style={styles.imagePreview} />
               <TouchableOpacity onPress={() => handleImageRemove(item)} style={styles.imageRemove}>
-              <Icon style={styles.imageRemoveIcon} name="highlight-remove" color="red" size={24} />
+              <Icon name="highlight-remove" color="red" size={24} />
               </TouchableOpacity>
             </View>
           )}

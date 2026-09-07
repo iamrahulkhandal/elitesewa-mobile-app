@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, ScrollView } from 'react-native';
-import {RNPickerSelect} from '@react-native-picker/picker';
+import RNPickerSelect from 'react-native-picker-select';
 import {Picker} from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
+import type { AppNavigation } from '../../types/navigation';
 const carTypes = [
   {
     type: 'Hatchback',
@@ -75,7 +76,7 @@ const carTypes = [
 ];
 
   const DailyCarWashScreen = () => {
-    const navigation = useNavigation();
+    const navigation = useNavigation<AppNavigation>();
 
   const [selectedCarType, setSelectedCarType] = useState(carTypes[0]);
   return (

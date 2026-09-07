@@ -1,12 +1,12 @@
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
-import {colors, sizes, spacing} from '../src/constants/theme';
-import Icon from '../src/components/Shared/Icon';
+import {colors, sizes, spacing} from '../constants/theme';
+import Icon from '../components/Shared/Icon';
 //import {useSafeAreaInsets} from 'react-native-safe-area-context';
-// import TripDetailsCard from '../src/components/TripDetailsCard/TripDetailsCard';
+// import TripDetailsCard from '../components/TripDetailsCard/TripDetailsCard';
 import * as Animatable from 'react-native-animatable';
-import TripDetailsCarousel from '../src/components/TripDetailsCarousel';
-import FavoriteButton from '../src/components/Shared/FavoriteButton';
+import TripDetailsCarousel from '../components/TripDetailsCarousel';
+import FavoriteButton from '../components/Shared/FavoriteButton';
 
 const TripDetailsScreen = ({navigation, route}) => {
   //const insets = useSafeAreaInsets();

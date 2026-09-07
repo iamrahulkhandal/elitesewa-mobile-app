@@ -11,6 +11,8 @@ export type UserProfile = {
   name?: string;
   email?: string;
   mobile?: string;
+  /** Older admin endpoints spell the same field `phone`. */
+  phone?: string;
   image?: string;
   gender?: string;
   profession?: string;

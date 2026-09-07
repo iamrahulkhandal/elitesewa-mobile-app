@@ -10,7 +10,7 @@ import {
   Alert,
 } from 'react-native';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useAppSelector } from '../../store/hooks';
 import * as ImagePicker from 'react-native-image-picker';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -21,7 +21,7 @@ const MAX_PHOTOS = 5;
 
 const DailyWashUpload = ({ route, navigation }) => {
   const { item_id } = route.params;
-  const executiveId = useSelector((state) => state.auth.userId);
+  const executiveId = useAppSelector((state) => state.auth.userId);
 
   const [date, setDate] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);

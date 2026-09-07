@@ -9,7 +9,7 @@ import {
   Image,
   RefreshControl
 } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { logoutAndClear } from '../store/authSlice';
 import axios from 'axios';
 import { API_URL } from '@env';
@@ -17,7 +17,6 @@ import Swiper from 'react-native-swiper';
 import TopPlacesCarousel from '../components/TopPlacesCarousel';
 import HomeServices from '../components/Shared/HomeServices';
 import CustomHomeServices from '../components/Shared/CustomHomeServices';
-import SubscriptionBanner from '../components/Shared/SubscriptionBanner';
 import CleaningService from '../components/Shared/CleaningService';
 import Services from '../components/Shared/Services';
 import PopularServices from '../components/Shared/PopularServices';
@@ -30,9 +29,9 @@ import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Import FontAwesome icons
 import { fileUrl } from '../utils/fileUrl';
 
-const CustomerHomeScreen = ({ navigation }) => {
-  const dispatch = useDispatch();
-  const { user, role } = useSelector(state => state.auth);
+const ExecutiveHomeScreen = ({ navigation }) => {
+  const dispatch = useAppDispatch();
+  const { user, role } = useAppSelector(state => state.auth);
   const [isProfileComplete, setIsProfileComplete] = useState(true);
   const [services, setServices] = useState([]);
   const [testimonials, setTestimonials] = useState([]);
@@ -128,7 +127,7 @@ const CustomerHomeScreen = ({ navigation }) => {
   const handleRefresh = async () => {
     setRefreshing(true);
     const categoryId = '6736424636a5412c42c20d53';
-    await fetchServices(categoryId);
+    await fetchServices();
 
     await fetchTestimonials();
     setRefreshing(false);
@@ -145,8 +144,8 @@ const CustomerHomeScreen = ({ navigation }) => {
         onPress={() =>
           navigation.navigate('ServicesView', { serviceId: item._id })
         }>
-        <View style={styles.serviceContainer}>
-          <View style={styles.serviceContent}>
+        <View>
+          <View>
             {/* {item.iconLib === 'Material Icons' ? ( 
             <MaterialIcon name={item.icon} size={28} color="#007BFF" style={styles.icon} />
           ) : item.iconLib === 'FontAwesome' ? (
@@ -155,11 +154,8 @@ const CustomerHomeScreen = ({ navigation }) => {
             <Image source={{ uri: fileUrl(item.images?.[0]) }} style={styles.serviceSwiperImage} />
           </View>
            <View style={styles.nameprice}>
-            {["673ecdcbf3db97399444bd87", "673f16a97a12ef01b200c93f"].includes(item._id) ? (
-              <Text style={styles.serviceSwiperName}> Starting Monthly @</Text>
-            ) : (
-              <Text style={styles.serviceSwiperName}>Starting From</Text>
-            )}
+            <Text style={styles.serviceSwiperName}>Starting From</Text>
+
             {item.plans?.[0]?.price && (
             <View style={styles.priceContainer}>
             <Text style={styles.newPrice}>₹ {item.plans[0]['price']}</Text>
@@ -199,7 +195,6 @@ const CustomerHomeScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <SubscriptionBanner />
       <FlatList
         data={[
           { id: '3', type: 'TopPlacesCarousel', list: TOP_PLACES },
@@ -266,7 +261,7 @@ const CustomerHomeScreen = ({ navigation }) => {
                     >
                       {testimonials.map((testimonial, index) => (
                         <View key={index} style={styles.swiperTestimonialsItems}>
-                          <View style={styles.testimonialContainer}>
+                          <View>
                             <View style={styles.testimonialTop}>
                               <Image source={{ uri: fileUrl(testimonial.userProfilePicture) }} style={styles.image} />
                               <Text style={styles.testimonialAuthor}>{testimonial.name}</Text>
@@ -450,4 +445,4 @@ const styles = StyleSheet.create({
     color: '#FF9800',
   },
 });
-export default CustomerHomeScreen;
+export default ExecutiveHomeScreen;
