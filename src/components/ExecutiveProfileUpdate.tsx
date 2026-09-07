@@ -142,7 +142,7 @@ const ExecutiveProfileUpdate = ({ navigation }) => {
       setMessage('Profile updated successfully');
       setShowSnackbar(true);
       navigation.navigate('Main', { screen: 'Home' });
-    } catch (error) {
+    } catch (error: any) {
       setMessage(error.response?.data?.message || 'Error updating profile');
       setShowSnackbar(true);
     } finally {

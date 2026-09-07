@@ -38,7 +38,7 @@ const HomeServices = () => {
   
       setServices(response.data); // Set the services in state
       setError(null); // Clear any previous errors
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error:', err.response ? err.response.data : err.message); // Log the full error
       setError('Failed to fetch services. Please try again.');
     } finally {

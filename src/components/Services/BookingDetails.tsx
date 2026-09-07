@@ -60,7 +60,7 @@ const fetchShortImages = async (id) => {
     setShortImages(response.data.shortdescription || []);
     setLongImages(response.data.longdescription || []);
     console.log('Long description images:', response.data.longdescription);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Failed to load images:', error.message);
   }
 }; 
@@ -84,7 +84,7 @@ const fetchBookingDetails = async () => {
     } else {
       console.warn('serviceId._id is missing');
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching booking details:', error.message);
   } finally {
     setLoading(false);

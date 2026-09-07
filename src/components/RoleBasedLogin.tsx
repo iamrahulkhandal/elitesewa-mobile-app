@@ -63,7 +63,7 @@ const RoleBasedLogin = ({navigation}) => {
       setIsOtpSent(true);
       setMessage(otpresponse.data.message);
       setShowSnackbar(true);
-    } catch (error) {
+    } catch (error: any) {
       setMessage(error.response?.data?.message || 'Error sending OTP');
       setShowSnackbar(true);
     } finally {
@@ -115,7 +115,7 @@ const RoleBasedLogin = ({navigation}) => {
         setMessage('OTP verification failed...');
         setShowSnackbar(true);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       setMessage(error.response?.data?.message || 'Error verifying OTP');
       setShowSnackbar(true);

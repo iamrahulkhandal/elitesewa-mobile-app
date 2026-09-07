@@ -45,7 +45,7 @@ const Booking = ({ navigation }) => {
       const list = response.data.payments || [];
       setPayments(list);
       fetchWashProgress(list);
-    } catch (error) {
+    } catch (error: any) {
       console.error(
         'Error fetching payment listings:',
         error.response?.data || error.message
@@ -90,7 +90,7 @@ const Booking = ({ navigation }) => {
       await axios.put(`${API_URL}/api/payment/${paymentId}/cancel`);
       Alert.alert('Success', 'Booking has been cancelled successfully.');
       fetchPayments(); // Refresh the payments list
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error cancelling booking:', error.message);
       Alert.alert('Error', 'Failed to cancel booking. Please try again.');
     }
@@ -105,7 +105,7 @@ const Booking = ({ navigation }) => {
         item_id: response.data._id,
         payment_id: paymentId,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching executive service:', error.message);
       Alert.alert('Error', 'Failed to fetch service details.');
     }

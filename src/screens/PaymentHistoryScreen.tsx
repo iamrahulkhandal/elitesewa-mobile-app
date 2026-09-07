@@ -44,7 +44,7 @@ const PaymentHistoryScreen = ({ navigation }) => {
       // Newest first.
       list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
       setPayments(list);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching payment history:', error.message);
       Toast.show({
         type: 'error',

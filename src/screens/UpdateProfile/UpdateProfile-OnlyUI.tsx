@@ -148,7 +148,11 @@ function UpdateProfile() {
           </View>
         </View>
         <View style={styles.button}>
-          <TouchableOpacity onPress={this.updateProfile} style={styles.inBut}>
+          {/* This file is the UI-only mock of UpdateProfile: it was converted
+              from a class component and every other `this.` handler is already
+              commented out. This one was missed, and `this` is undefined in a
+              function component, so pressing the button threw. */}
+          <TouchableOpacity style={styles.inBut}>
             <View>
               <Text style={styles.textSign}>Update Profile</Text>
             </View>

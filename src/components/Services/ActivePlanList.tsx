@@ -44,11 +44,11 @@ const ActivePlanList = ({ route, navigation }) => {
         try {
           const subResponse = await axios.get(`${API_URL}/api/subscription/user/${userId}`);
           setSubscriptions(subResponse.data.subscriptions || []);
-        } catch (subErr) {
+        } catch (subErr: any) {
           console.error('Error fetching subscriptions:', subErr.message);
         }
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error fetching active plans:', err.message);
       setError('Unable to load your active plans. Please check your connection and try again.');
     } finally {
@@ -69,7 +69,7 @@ const ActivePlanList = ({ route, navigation }) => {
             try {
               await axios.post(`${API_URL}/api/subscription/${subscription._id}/cancel`);
               fetchPayments();
-            } catch (err) {
+            } catch (err: any) {
               Alert.alert('Error', err.response?.data?.message || 'Unable to cancel. Please try again.');
             }
           },

@@ -68,7 +68,7 @@ const Plans = ({ plan, serviceId, user }) => {
       });
 
       Alert.alert('Success', `Payment ID: ${data.razorpay_payment_id}`);
-    } catch (error) {
+    } catch (error: any) {
       // Save failed payment response
       await axios.post(`${API_URL}/api/payment/save-response`, {
         userName: user,

@@ -61,7 +61,7 @@ const App = () => {
         } else {
           throw new Error('Invalid response data for profile status');
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Failed to load auth data:', error.message);
       } finally {
         setIsLoading(false);

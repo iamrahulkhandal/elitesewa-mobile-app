@@ -51,7 +51,7 @@ const IconsCreate = () => {
       } else {
         Alert.alert('Error', 'Failed to create icon.');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error:', error);
       Alert.alert('Error', 'Something went wrong: ' + error.response?.data?.message || 'Unknown error');
     }

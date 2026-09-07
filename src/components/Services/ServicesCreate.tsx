@@ -302,7 +302,7 @@ const ServicesCreate = ({ navigation }) => {
       });
       Alert.alert('Success', 'Service created successfully');
       // navigation.goBack();
-    } catch (error) {
+    } catch (error: any) {
       Alert.alert('Error', `Failed to create service: ${error.message}`);
     } finally {
       setLoading(false);

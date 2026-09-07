@@ -1,11 +1,12 @@
 {
   "extends": "@react-native/typescript-config",
   "compilerOptions": {
-    // Incremental migration: strictness is deliberately off while the codebase
-    // settles. Tighten these one flag at a time now that every file is .ts/.tsx.
     "allowJs": true,
     "checkJs": false,
-    "strict": false,
+
+    // `strict` is on via the React Native base config. These two are the last
+    // holdouts and are being cleared one at a time; delete each line as its
+    // errors reach zero.
     "noImplicitAny": false,
     "strictNullChecks": false
   },

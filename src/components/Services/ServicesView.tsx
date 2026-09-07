@@ -102,7 +102,7 @@ const ServicesView = ({ route, navigation }) => {
         `${API_URL}/api/payment/${userRole}/${userId}/${serviceId}`
       );
       setPayments(response.data.payments || []);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching payments:', error.message);
       Toast.show({
         type: 'error',

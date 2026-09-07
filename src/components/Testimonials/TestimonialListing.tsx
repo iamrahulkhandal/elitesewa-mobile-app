@@ -25,7 +25,7 @@ const TestimonialListing = () => {
         },
       });
       setTestimonials(response.data);
-    } catch (error) {
+    } catch (error: any) {
       Alert.alert("Error", error.response?.data?.message || "Failed to fetch testimonials.");
     } finally {
       setLoading(false);

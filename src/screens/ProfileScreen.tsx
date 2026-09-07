@@ -55,7 +55,7 @@ function ProfileScreen() {
       });
 
       setUserData(response.data);
-    } catch (error) {
+    } catch (error: any) {
       showSnackbarMessage('Error fetching user data: ' + error.message);
     } finally {
       setIsLoading(false);
@@ -490,7 +490,7 @@ function ProfileScreen() {
                           routes: [{ name: 'LandingPage' }],
                         });
                       }
-                    } catch (error) {
+                    } catch (error: any) {
                       showSnackbarMessage('Error deleting account: ' + error.message);
                     }
                   },

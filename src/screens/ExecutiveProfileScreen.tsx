@@ -51,7 +51,7 @@ function ExecutiveProfileScreen() {
       });
 
       setUserData(response.data);
-    } catch (error) {
+    } catch (error: any) {
       showSnackbarMessage('Error fetching user data: ' + error.message);
     } finally {
       setIsLoading(false);

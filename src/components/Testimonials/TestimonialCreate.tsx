@@ -13,7 +13,12 @@ import { useAppSelector } from '../../store/hooks'; // Import to access Redux st
 import axios from "axios";
 import { API_URL } from "@env";
 
-const TestimonialCreate = ({ onSuccess }) => {
+type TestimonialCreateProps = {
+  /** Not supplied when reached as a navigator route; the call site guards. */
+  onSuccess?: () => void;
+};
+
+const TestimonialCreate = ({ onSuccess }: TestimonialCreateProps) => {
   const { user } = useAppSelector((state) => state.auth); // Access user details from Redux
   const [rating, setRating] = useState("");
   const [message, setMessage] = useState("");
@@ -48,7 +53,7 @@ const TestimonialCreate = ({ onSuccess }) => {
       setRating("");
       setMessage("");
       if (onSuccess) onSuccess();
-    } catch (error) {
+    } catch (error: any) {
       Alert.alert("Error", error.response?.data?.message || "Failed to submit testimonial.");
     } finally {
       setLoading(false);

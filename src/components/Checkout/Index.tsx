@@ -206,7 +206,7 @@ const Index = (props) => {
       if (customer.vehicleNumber) {
         setVehicleData((prev) => ({ ...prev, number: prev.number || customer.vehicleNumber }));
       }
-    } catch (error) {
+    } catch (error: any) {
       // Prefill is a convenience only — ignore failures silently.
       console.log('Profile prefill skipped:', error.message);
     }
@@ -223,7 +223,7 @@ const Index = (props) => {
         setSavedVehicles(vehicles);
         setShowSavedModal(true);
       }
-    } catch (error) {
+    } catch (error: any) {
       // Reuse is a convenience only — ignore failures silently.
       console.log('Saved vehicles skipped:', error.message);
     }

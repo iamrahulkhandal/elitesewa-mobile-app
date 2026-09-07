@@ -82,7 +82,7 @@ const DailyWashUpload = ({ route, navigation }) => {
       Alert.alert('Success', 'Daily photos uploaded successfully.', [
         { text: 'OK', onPress: () => navigation.goBack() },
       ]);
-    } catch (error) {
+    } catch (error: any) {
       const message = error.response?.data?.message || 'Failed to upload photos. Please try again.';
       Alert.alert('Upload failed', message);
     } finally {

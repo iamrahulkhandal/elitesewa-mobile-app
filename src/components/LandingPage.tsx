@@ -4,11 +4,19 @@ import { Appbar, Button, Text, Card } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { APP_CONFIG } from '../constants/appConfig';
 
-const LandingPage = ({ onRoleSelect }) => {
+type LandingPageProps = {
+  /**
+   * Absent when this is reached as a navigator route rather than rendered by
+   * App: React Navigation supplies only navigation and route props.
+   */
+  onRoleSelect?: (role: string) => void;
+};
+
+const LandingPage = ({ onRoleSelect }: LandingPageProps) => {
   const handleRoleSelection = async (role) => {
     try {
       await AsyncStorage.setItem('userRole', role);  
-      onRoleSelect(role); 
+      onRoleSelect?.(role);
     } catch (error) {
       console.error('Error storing role:', error);
     }

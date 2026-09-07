@@ -29,7 +29,7 @@ const DailyWashUpdates = ({ paymentResponseId }) => {
     try {
       const response = await axios.get(`${API_URL}/api/dailywash/${paymentResponseId}`);
       setLogs(response.data.logs || []);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching daily wash logs:', error.message);
     } finally {
       setLoading(false);
@@ -62,7 +62,7 @@ const DailyWashUpdates = ({ paymentResponseId }) => {
         return next;
       });
       fetchLogs();
-    } catch (error) {
+    } catch (error: any) {
       Alert.alert('Error', error.response?.data?.message || 'Failed to save comment.');
     } finally {
       setSavingId(null);
